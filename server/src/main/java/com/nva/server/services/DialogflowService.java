@@ -16,8 +16,8 @@ import java.util.Map;
 @Service
 public class DialogflowService {
     private final SessionsClient sessionsClient;
-    private String credentialsPath = "src/main/resources/dialogflow-credentials-path.json";
-    private String googleCloudPath = "https://www.googleapis.com/auth/cloud-platform";
+    private final String credentialsPath = "src/main/resources/dialogflow-credentials-path.json";
+    private final String googleCloudPath = "https://www.googleapis.com/auth/cloud-platform";
 
     public DialogflowService() throws IOException {
         GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(credentialsPath))
