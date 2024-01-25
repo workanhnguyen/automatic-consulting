@@ -1,7 +1,7 @@
-package com.nva.server.controllers;
+package com.nva.server.apis;
 
+import com.nva.server.dtos.CustomDialogflowResponse;
 import com.nva.server.services.DialogflowService;
-import daos.CustomDialogflowResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dialogflow")
-public class DialogflowController {
+public class DialogflowApi {
     @Autowired
     private Environment env;
     @Autowired

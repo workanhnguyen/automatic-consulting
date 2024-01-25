@@ -1,4 +1,4 @@
-package daos;
+package com.nva.server.dtos;
 
 import lombok.Data;
 

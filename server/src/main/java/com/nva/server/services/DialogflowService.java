@@ -4,7 +4,7 @@ import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.dialogflow.v2.*;
 import com.google.protobuf.Value;
-import daos.CustomDialogflowResponse;
+import com.nva.server.dtos.CustomDialogflowResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
