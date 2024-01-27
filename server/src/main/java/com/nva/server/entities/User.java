@@ -4,35 +4,46 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "users")
 public class User implements Serializable, UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false, length = 20)
     private String firstName;
+    @Column(nullable = false, length = 50)
     private String lastName;
+    @Column(nullable = false, length = 50)
     private String email;
+    @Column(nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-//    @CreatedDate
-//    private Date createdDate;
-//    @LastModifiedDate
-//    private Date lastModifiedDate;
-
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    private Collection<Role> roles = new ArrayList<>();
+    @CreatedDate
+    @Column(nullable = false)
+    private Long createdDate;
+    @LastModifiedDate
+    private Long lastModifiedDate;
+    @Column(nullable = false)
+    private boolean isEnabled = true;
+    @Lob
+    private String note;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,6 +54,7 @@ public class User implements Serializable, UserDetails {
     public String getUsername() {
         return email;
     }
+
     @Override
     public String getPassword() {
         return this.password;
@@ -65,6 +77,12 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isEnabled;
+    }
+
+    // Autofill created date when user is created
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = System.currentTimeMillis();
     }
 }
