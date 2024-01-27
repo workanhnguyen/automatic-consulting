@@ -1,6 +1,5 @@
 package com.nva.server;
 
-import com.nva.server.entities.EntranceScoreInformation;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.repositories.UserRepository;
