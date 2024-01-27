@@ -4,7 +4,6 @@ import com.nva.server.dtos.JwtAuthenticationResponse;
 import com.nva.server.dtos.RefreshTokenRequest;
 import com.nva.server.dtos.SignInRequest;
 import com.nva.server.dtos.SignUpRequest;
-import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.AuthenticationService;
@@ -31,7 +30,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setEmail(signUpRequest.getEmail());
         user.setFirstName(signUpRequest.getFirstName());
         user.setLastName(signUpRequest.getLastName());
-        user.setRole(Role.ROLE_USER);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
         return userRepository.save(user);

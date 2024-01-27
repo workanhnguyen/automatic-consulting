@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/dialogflow")
+@RequestMapping("/api/v1/dialogflow")
 public class DialogflowApi {
     @Autowired
     private Environment env;
