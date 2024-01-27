@@ -33,6 +33,7 @@ public class SecurityConfig {
                             request.requestMatchers("/api/v1/auth/**").permitAll();
                             request.requestMatchers("/api/v1/users/**").hasAnyAuthority(Role.ROLE_USER.name());
                             request.requestMatchers("/api/v1/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name());
+                            request.requestMatchers("/api/v1/dialogflow/**").permitAll();
                             request.requestMatchers("/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name());
                             request.anyRequest().authenticated();
                 })
