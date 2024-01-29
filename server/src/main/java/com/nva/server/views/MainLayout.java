@@ -1,31 +1,47 @@
 package com.nva.server.views;
 
+import com.nva.server.security.SecurityService;
 import com.nva.server.views.about.AboutView;
-import com.nva.server.views.helloworld.HelloWorldView;
+import com.nva.server.views.home.HomeView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
-
+    private SecurityService securityService;
     private H2 viewTitle;
 
-    public MainLayout() {
+    public MainLayout(@Autowired SecurityService securityService) {
+        this.securityService = securityService;
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
+
+        H1 logo = new H1("Vaadin CRM");
+        logo.addClassName("logo");
+        HorizontalLayout header;
+        if (securityService.getAuthenticatedUser() != null) {
+            Button logout = new Button("Logout", click ->
+                    securityService.logout());
+            header = new HorizontalLayout(logo, logout);
+        } else {
+            header = new HorizontalLayout(logo);
+        }
     }
 
     private void addHeaderContent() {
@@ -51,7 +67,7 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        nav.addItem(new SideNavItem("Hello World", HelloWorldView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
+        nav.addItem(new SideNavItem("Hello World", HomeView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
         nav.addItem(new SideNavItem("About", AboutView.class, LineAwesomeIcon.FILE.create()));
 
         return nav;

@@ -3,6 +3,7 @@ package com.nva.server;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.repositories.UserRepository;
+import com.vaadin.flow.spring.annotation.EnableVaadin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.nva")
+@EnableVaadin
 public class ServerApplication implements CommandLineRunner {
 	@Autowired
 	private UserRepository userRepository;
