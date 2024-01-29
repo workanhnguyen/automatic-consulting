@@ -11,6 +11,6 @@ public class ExceptionApi {
     // Exception to invalid api endpoint
     @RequestMapping
     public ResponseEntity<?> handleInvalidApiRequest() {
-        throw new InvalidApiEndpointException("Not found.");
+        throw new InvalidApiEndpointException("Endpoint is not found.");
     }
 }
