@@ -1,5 +1,6 @@
-package com.nva.server.configs;
+package com.nva.server.security;
 
+import com.nva.server.exceptions.CustomExceptionHandler;
 import com.nva.server.services.JwtService;
 import com.nva.server.services.UserService;
 import jakarta.servlet.FilterChain;
@@ -7,6 +8,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -20,6 +23,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserService userService;
@@ -33,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
         jwt = authHeader.substring(7); // Get string behind "Bearer "
         userEmail = jwtService.extractUsername(jwt);
 
@@ -50,7 +55,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
+            } else {
+                CustomExceptionHandler.handle(response, "Token is invalid or expired.", HttpStatus.UNAUTHORIZED);
+                return;
             }
+        } else {
+            CustomExceptionHandler.handle(response, "Token is invalid or expired.", HttpStatus.UNAUTHORIZED);
+            return;
         }
         filterChain.doFilter(request, response);
     }

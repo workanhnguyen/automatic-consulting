@@ -23,8 +23,10 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String username = extractUsername(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception e) { return false; }
     }
 
     @Override
@@ -50,7 +52,9 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String extractUsername(String token) {
-        return extractClaims(token, Claims::getSubject);
+        try {
+            return extractClaims(token, Claims::getSubject);
+        } catch (Exception e) { return null; }
     }
 
     private <T> T extractClaims(String token, Function<Claims, T> claimResolver) {
