@@ -5,6 +5,7 @@ import com.nva.server.dtos.RefreshTokenRequest;
 import com.nva.server.dtos.SignInRequest;
 import com.nva.server.dtos.SignUpRequest;
 import com.nva.server.entities.User;
+import com.nva.server.exceptions.UserExistedException;
 import com.nva.server.exceptions.UserNotFoundException;
 import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.AuthenticationService;
@@ -33,13 +34,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public User signup(SignUpRequest signUpRequest) {
-        User user = new User();
-        user.setEmail(signUpRequest.getEmail());
-        user.setFirstName(signUpRequest.getFirstName());
-        user.setLastName(signUpRequest.getLastName());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        if (userRepository.findByEmail(signUpRequest.getEmail()).isEmpty()) {
+            User user = new User();
+            user.setEmail(signUpRequest.getEmail());
+            user.setFirstName(signUpRequest.getFirstName());
+            user.setLastName(signUpRequest.getLastName());
+            user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
-        return userRepository.save(user);
+            return userRepository.save(user);
+        } else {
+            throw new UserExistedException("Email is taken.");
+        }
     }
 
     @Override

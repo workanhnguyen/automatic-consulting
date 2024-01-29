@@ -26,12 +26,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidApiEndpointException.class)
-    public ResponseEntity<?> handleInvalidRequest(InvalidApiEndpointException ex) {
+    public ResponseEntity<?> handleInvalidApiEndpointException(InvalidApiEndpointException ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setStatus(HttpStatus.NOT_FOUND.value());
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserExistedException.class)
+    public ResponseEntity<?> handleUserExistedException(UserExistedException ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        exceptionResponse.setMessage(ex.getMessage());
+        exceptionResponse.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.BAD_REQUEST);
     }
 }
