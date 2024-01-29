@@ -1,7 +1,6 @@
 package com.nva.server.security;
 
 import com.nva.server.entities.Role;
-import com.nva.server.exceptions.CustomAccessDeniedHandler;
 import com.nva.server.services.UserService;
 import com.nva.server.views.login.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
@@ -48,10 +47,12 @@ public class SecurityConfig extends VaadinWebSecurity {
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.accessDeniedHandler(new CustomAccessDeniedHandler())
-                );
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//                .exceptionHandling(exceptionHandling -> {
+//                            exceptionHandling.accessDeniedHandler(new CustomExceptionHandler());
+//                            exceptionHandling.
+//                        }
+//                );
 
         return http.build();
     }

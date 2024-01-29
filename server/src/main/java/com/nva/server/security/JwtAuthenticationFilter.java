@@ -1,6 +1,6 @@
 package com.nva.server.security;
 
-import com.nva.server.exceptions.CustomAccessDeniedHandler;
+import com.nva.server.exceptions.CustomExceptionHandler;
 import com.nva.server.services.JwtService;
 import com.nva.server.services.UserService;
 import jakarta.servlet.FilterChain;
@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,13 +56,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
             } else {
-                CustomAccessDeniedHandler errorHandler = new CustomAccessDeniedHandler();
-                errorHandler.handle(request, response, new AccessDeniedException(null));
+                CustomExceptionHandler.handle(response, "Token is invalid or expired.", HttpStatus.UNAUTHORIZED);
                 return;
             }
         } else {
-            CustomAccessDeniedHandler errorHandler = new CustomAccessDeniedHandler();
-            errorHandler.handle(request, response, new AccessDeniedException(null));
+            CustomExceptionHandler.handle(response, "Token is invalid or expired.", HttpStatus.UNAUTHORIZED);
             return;
         }
         filterChain.doFilter(request, response);

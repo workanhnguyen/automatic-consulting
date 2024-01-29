@@ -11,7 +11,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AccessDeniedErrorRouter;
 import jakarta.annotation.security.RolesAllowed;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @PageTitle("Home | Console")

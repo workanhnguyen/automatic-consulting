@@ -5,6 +5,7 @@ import com.nva.server.dtos.RefreshTokenRequest;
 import com.nva.server.dtos.SignInRequest;
 import com.nva.server.dtos.SignUpRequest;
 import com.nva.server.entities.User;
+import com.nva.server.exceptions.UserNotFoundException;
 import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.AuthenticationService;
 import com.nva.server.services.JwtService;
@@ -46,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
         } catch (AuthenticationException e) {
-            throw new IllegalArgumentException("Invalid email or password!");
+            throw new UserNotFoundException("Invalid email or password!");
         }
 
         var user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password!"));
