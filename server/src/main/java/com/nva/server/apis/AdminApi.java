@@ -1,5 +1,6 @@
 package com.nva.server.apis;
 
+import com.nva.server.exceptions.InvalidApiEndpointException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
