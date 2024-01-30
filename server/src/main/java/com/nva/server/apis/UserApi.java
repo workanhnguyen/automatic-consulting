@@ -1,7 +1,6 @@
 package com.nva.server.apis;
 
 import com.nva.server.entities.User;
-import com.nva.server.exceptions.InvalidApiEndpointException;
 import com.nva.server.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

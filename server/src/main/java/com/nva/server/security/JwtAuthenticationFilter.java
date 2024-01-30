@@ -1,7 +1,6 @@
 package com.nva.server.security;
 
 import com.nva.server.exceptions.CustomExceptionHandler;
-import com.nva.server.exceptions.UserNotFoundException;
 import com.nva.server.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
