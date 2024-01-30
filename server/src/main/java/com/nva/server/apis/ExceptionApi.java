@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/**")
 public class ExceptionApi {
     // Exception to invalid api endpoint
-    @RequestMapping
+    @RequestMapping("")
     public ResponseEntity<?> handleInvalidApiRequest() {
         throw new InvalidApiEndpointException("Endpoint is not found.");
     }
