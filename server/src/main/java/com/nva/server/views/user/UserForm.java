@@ -1,4 +1,4 @@
-package com.nva.server.views.home;
+package com.nva.server.views.user;
 
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
@@ -18,11 +18,9 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
-import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
