@@ -18,7 +18,7 @@ public class UserApi {
 
     @GetMapping
     public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok().body(userService.getUsers());
+        return ResponseEntity.ok().body(userService.getUsers(null));
     }
     @PostMapping("/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {

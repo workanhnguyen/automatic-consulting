@@ -1,6 +1,8 @@
 package com.nva.server.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,24 +25,38 @@ public class User implements Serializable, UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false, length = 20)
+
+    @Column(nullable = false, length = 20) // conditions for database
+    @NotEmpty // conditions for checking in backend - Neither null nor empty string
     private String firstName;
+
     @Column(nullable = false, length = 50)
+    @NotEmpty
     private String lastName;
+
     @Column(nullable = false, unique = true, length = 50)
+    @Email
+    @NotEmpty
     private String email;
+
     @Column(nullable = false)
+    @NotEmpty
     private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role = Role.ROLE_USER;
+
     @CreatedDate
     @Column(nullable = false)
     private Long createdDate;
+
     @LastModifiedDate
     private Long lastModifiedDate;
+
     @Column(nullable = false)
     private boolean isEnabled = true;
+
     @Lob
     private String note;
 

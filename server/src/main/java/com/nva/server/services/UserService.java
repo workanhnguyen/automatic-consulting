@@ -10,6 +10,8 @@ public interface UserService {
 //    Role saveRole(Role role);
 //    void addRoleToUser(String email, String roleName);
     Optional<User> getUser(String email);
-    List<User> getUsers();
+    List<User> getUsers(String searchTerm);
     Optional<User> findByEmail(String email);
+    long countUsers();
+    void removeUser(User user);
 }
