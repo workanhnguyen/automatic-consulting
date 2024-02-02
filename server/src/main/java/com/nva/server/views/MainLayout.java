@@ -1,8 +1,6 @@
 package com.nva.server.views;
 
-import com.nva.server.entities.User;
 import com.nva.server.security.SecurityService;
-import com.nva.server.views.about.AboutView;
 import com.nva.server.views.home.HomeView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -16,12 +14,9 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIcon;

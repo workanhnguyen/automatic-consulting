@@ -1,9 +1,6 @@
 package com.nva.server.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +21,6 @@ public class EntranceScoreInformation extends Information implements Serializabl
     @ManyToOne
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
-    @ManyToOne
-    @JoinColumn(name = "year_id", nullable = false)
-    private Year year;
+    @Column(nullable = false, length = 4)
+    private String year;
 }

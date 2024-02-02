@@ -15,16 +15,21 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AccessDeniedErrorRouter;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.security.RolesAllowed;
+import lombok.Getter;
+import org.springframework.context.annotation.Scope;
 
 import java.util.Arrays;
 
+@SpringComponent
+@Scope("prototype")
 @PageTitle("User | Management")
 @Route(value = "admin/users", layout = MainLayout.class)
 @RolesAllowed("ROLE_ADMIN")
 @AccessDeniedErrorRouter()
+@Getter
 public class UserView extends VerticalLayout {
     private final UserService userService;
 

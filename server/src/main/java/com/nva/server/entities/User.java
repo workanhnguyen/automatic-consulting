@@ -27,20 +27,21 @@ public class User implements Serializable, UserDetails {
     private Long id;
 
     @Column(nullable = false, length = 20) // conditions for database
-    @NotEmpty // conditions for checking in backend - Neither null nor empty string
+    @NotEmpty(message = "Must not be empty") // conditions for checking in backend - Neither null nor empty string
     private String firstName;
 
     @Column(nullable = false, length = 50)
-    @NotEmpty
+    @NotEmpty(message = "Must not be empty")
     private String lastName;
 
     @Column(nullable = false, unique = true, length = 50)
-    @Email
-    @NotEmpty
+    @Email(message = "Email is invalid")
+    @NotEmpty(message = "Must not be empty") //
     private String email;
 
     @Column(nullable = false)
-    @NotEmpty
+//    @Min(value = 4, message = "Password must be at least 4 characters")
+    @NotEmpty(message = "Must not be empty")
     private String password;
 
     @Enumerated(EnumType.STRING)
