@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class CreateNewUserForm extends UserForm {
-    PasswordField password = new PasswordField("Password");
+    private final PasswordField password = new PasswordField("Password");
 
     public CreateNewUserForm() {
         addClassName("create-new-user-form");

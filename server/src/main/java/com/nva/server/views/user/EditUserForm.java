@@ -9,9 +9,7 @@ import lombok.Getter;
 
 @Getter
 public class EditUserForm extends UserForm {
-
-    Button deleteBtn = new Button("Delete");
-//    ComboBox<Role> role = new ComboBox<>("Role");
+    private final Button deleteBtn = new Button("Delete");
 
     public EditUserForm() {
         addClassName("edit-user-form");
@@ -29,13 +27,6 @@ public class EditUserForm extends UserForm {
 
         return new HorizontalLayout(super.getSaveBtn(), this.deleteBtn, super.getCancelBtn());
     }
-
-//    @Getter
-//    public static abstract class EditUserFormEvent extends UserFormEvent {
-//        public EditUserFormEvent(EditUserForm source, User user) {
-//            super(source, user);
-//        }
-//    }
 
     public static class DeleteEvent extends UserFormEvent {
         DeleteEvent(EditUserForm source, User user) {
