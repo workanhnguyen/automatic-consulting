@@ -3,6 +3,7 @@ package com.nva.server.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,12 +37,11 @@ public class User implements Serializable, UserDetails {
 
     @Column(nullable = false, unique = true, length = 50)
     @Email(message = "Email is invalid")
-    @NotEmpty(message = "Must not be empty") //
+    @NotEmpty(message = "Must not be empty")
     private String email;
 
     @Column(nullable = false)
-//    @Min(value = 4, message = "Password must be at least 4 characters")
-    @NotEmpty(message = "Must not be empty")
+    @Size(min = 4, message = "Password must be at least 4 characters long")
     private String password;
 
     @Enumerated(EnumType.STRING)
