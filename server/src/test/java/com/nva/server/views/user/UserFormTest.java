@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UserFormTest {
@@ -15,7 +13,6 @@ public class UserFormTest {
 //    private String lastName;
 //    private String email;
 //    private String password;
-    private List<Role> roles;
     private User user;
 
     @BeforeEach  
@@ -24,10 +21,7 @@ public class UserFormTest {
         user.setFirstName("Anh");
         user.setLastName("Nguyen");
         user.setEmail("anh@gmail.com");
-        user.setRole(Role.ROLE_USER);
         user.setPassword("1234");
-
-        roles = Arrays.stream(Role.values()).toList();
 //        companies = new ArrayList<>();
 //        company1 = new Company();
 //        company1.setName("Vaadin Ltd");
@@ -54,7 +48,7 @@ public class UserFormTest {
 
     @Test
     public void formFieldsPopulated() {
-        UserForm userForm = new UserForm(roles);
+        UserForm userForm = new CreateNewUserForm();
         userForm.setUser(user);
 
         Assertions.assertEquals("Anh", user.getFirstName());
@@ -73,7 +67,7 @@ public class UserFormTest {
         user2.setPassword("1234");
         user2.setRole(Role.ROLE_USER);
 
-        UserForm userForm = new UserForm(roles);
+        UserForm userForm = new CreateNewUserForm();
         userForm.setUser(user2);
 
         AtomicReference<User> savedUser = new AtomicReference<>(null);

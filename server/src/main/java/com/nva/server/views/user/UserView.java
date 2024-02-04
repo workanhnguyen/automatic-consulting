@@ -1,6 +1,5 @@
 package com.nva.server.views.user;
 
-import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.services.UserService;
 import com.nva.server.views.MainLayout;
@@ -19,9 +18,8 @@ import com.vaadin.flow.server.auth.AccessDeniedErrorRouter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
-
-import java.util.Arrays;
 
 @SpringComponent
 @Scope("prototype")
@@ -30,32 +28,39 @@ import java.util.Arrays;
 @RolesAllowed("ROLE_ADMIN")
 @AccessDeniedErrorRouter()
 @Getter
+@Slf4j
 public class UserView extends VerticalLayout {
     private final UserService userService;
 
-    Grid<User> userGrid = new Grid<>(User.class);
-    TextField filterText = new TextField();
-    UserForm userForm;
+    private final Grid<User> userGrid = new Grid<>(User.class);
+    private final TextField filterText = new TextField();
+    private UserForm editUserForm;
+    private UserForm createNewUserForm;
 
     public UserView(UserService userService) {
         this.userService = userService;
 
         addClassName("user-view");
         setSizeFull();
+
         configureGrid();
         configureForm();
 
         add(getToolbar(), getContent());
-
-        // This function will be called when user types in search box
         updateUserList();
-        closeEditor();
     }
 
     private void closeEditor() {
-        userForm.setUser(null);
-        userForm.setVisible(false);
+        editUserForm.setUser(null);
+        editUserForm.setVisible(false);
+        userGrid.asSingleSelect().clear();
         removeClassName("editing");
+    }
+
+    private void closeCreator() {
+        createNewUserForm.setUser(null);
+        createNewUserForm.setVisible(false);
+        removeClassName("creating");
     }
 
     private void updateUserList() {
@@ -63,15 +68,21 @@ public class UserView extends VerticalLayout {
     }
 
     private void configureForm() {
-        userForm = new UserForm(Arrays.stream(Role.values()).toList());
-        userForm.setWidth("25em");
+        editUserForm = new EditUserForm();
+        editUserForm.setWidth("25em");
+        editUserForm.setVisible(false);
+        editUserForm.addListener(UserForm.SaveEvent.class, this::saveUser);
+        editUserForm.addListener(EditUserForm.DeleteEvent.class, this::deleteUser);
+        editUserForm.addListener(UserForm.CloseEvent.class, e -> closeEditor());
 
-        userForm.addListener(UserForm.SaveEvent.class, this::saveUser);
-        userForm.addListener(UserForm.DeleteEvent.class, this::deleteUser);
-        userForm.addListener(UserForm.CloseEvent.class, e -> closeEditor());
+        createNewUserForm = new CreateNewUserForm();
+        createNewUserForm.setWidth("25em");
+        createNewUserForm.setVisible(false);
+        createNewUserForm.addListener(UserForm.SaveEvent.class, this::saveUser);
+        createNewUserForm.addListener(UserForm.CloseEvent.class, e -> closeCreator());
     }
 
-    private void deleteUser(UserForm.DeleteEvent e) {
+    private void deleteUser(EditUserForm.DeleteEvent e) {
         userService.removeUser(e.getUser());
         updateUserList();
         closeEditor();
@@ -88,9 +99,10 @@ public class UserView extends VerticalLayout {
     }
 
     private Component getContent() {
-        HorizontalLayout content = new HorizontalLayout(userGrid, userForm);
+        HorizontalLayout content = new HorizontalLayout(userGrid, editUserForm, createNewUserForm);
         content.setFlexGrow(2, userGrid);
-        content.setFlexGrow(1, userForm);
+        content.setFlexGrow(1, editUserForm);
+        content.setFlexGrow(1, createNewUserForm);
         content.addClassName("content");
         content.setSizeFull();
 
@@ -113,8 +125,9 @@ public class UserView extends VerticalLayout {
     private void editUser(User user) {
         if (user == null) closeEditor();
         else {
-            userForm.setUser(user);
-            userForm.setVisible(true);
+            editUserForm.setUser(user);
+            editUserForm.setVisible(true);
+            createNewUserForm.setVisible(false);
             addClassName("editing");
         }
     }
@@ -137,6 +150,10 @@ public class UserView extends VerticalLayout {
 
     private void addUser() {
         userGrid.asSingleSelect().clear();
-        editUser(new User());
+        editUserForm.setVisible(false);
+        createNewUserForm.setVisible(true);
+        createNewUserForm.setUser(new User());
+        createNewUserForm.setVisible(true);
+        addClassName("creating");
     }
 }
