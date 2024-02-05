@@ -1,12 +1,12 @@
 package com.nva.server.views.user;
 
+import com.nva.server.dtos.ChangePasswordDto;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.services.UserService;
 import com.nva.server.views.MainLayout;
 import com.nva.server.views.components.CustomNotification;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -51,6 +51,7 @@ public class UserView extends VerticalLayout {
 
     private final UserForm editUserForm = new EditUserForm();
     private final UserForm createNewUserForm = new CreateNewUserForm();
+    private final ChangePasswordForm changePasswordForm = new ChangePasswordForm();
 
 
     public UserView(UserService userService) {
@@ -83,37 +84,38 @@ public class UserView extends VerticalLayout {
     }
 
     private void configureChangePasswordDialog() {
-        changePasswordDialog.setHeaderTitle("Change password");
-        changePasswordDialog.add(getDialogLayout());
+        changePasswordDialog.setHeaderTitle("Change Password");
+        changePasswordForm.getSaveBtn().getStyle().setCursor("pointer");
+        changePasswordForm.getSaveBtn().setText("Change password");
+        changePasswordForm.getCancelBtn().getStyle().setCursor("pointer");
 
-        Button saveButton = new Button("Change password");
-        saveButton.getStyle().setCursor("pointer");
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        changePasswordDialog.getFooter().add(changePasswordForm.getSaveBtn(), changePasswordForm.getCancelBtn());
 
-        Button cancelButton = new Button("Cancel", e -> closeChangePasswordDialog());
-        cancelButton.getStyle().setCursor("pointer");
+        add(changePasswordDialog);
+//        changePasswordDialog.setHeaderTitle("Change password");
+//        changePasswordDialog.add(getDialogLayout());
+//        VerticalLayout dialogLayout = new VerticalLayout(changePasswordForm);
+//        dialogLayout.setSpacing(false);
+//        dialogLayout.setPadding(false);
+//        changePasswordDialog.add(dialogLayout);
+//
+//        changePasswordForm.getSaveBtn().setText("Change password");
+//        changePasswordForm.getSaveBtn().getStyle().setCursor("pointer");
+//        changePasswordForm.getSaveBtn().addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+//
+//        changePasswordForm.getCancelBtn().getStyle().setCursor("pointer");
 
-        changePasswordDialog.getFooter().add(saveButton, cancelButton);
-
-        add(editUserDialog);
+//        Button saveButton = new Button("Change password");
+//        saveButton.getStyle().setCursor("pointer");
+//        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+//
+//        Button cancelButton = new Button("Cancel", e -> closeChangePasswordDialog());
+//        cancelButton.getStyle().setCursor("pointer");
+//
+//        changePasswordDialog.getFooter().add(changePasswordForm.getSaveBtn(), changePasswordForm.getCancelBtn());
+//
+//        add(changePasswordDialog);
     }
-
-    private static VerticalLayout getDialogLayout() {
-        TextField oldPassword = new TextField("Old password");
-        oldPassword.setWidth("25em");
-
-        TextField newPassword = new TextField("New password");
-        newPassword.setWidth("25em");
-
-        TextField confirmNewPassword = new TextField("Confirm new password");
-        confirmNewPassword.setWidth("25em");
-
-        VerticalLayout dialogLayout = new VerticalLayout(oldPassword, newPassword, confirmNewPassword);
-        dialogLayout.setPadding(false);
-        dialogLayout.setSpacing(false);
-        return dialogLayout;
-    }
-
 
     private void configureCreateNewUserDialog() {
         createNewUserDialog.setHeaderTitle("Add new user");
@@ -122,7 +124,7 @@ public class UserView extends VerticalLayout {
 
         createNewUserDialog.getFooter().add(createNewUserForm.getSaveBtn(), createNewUserForm.getCancelBtn());
 
-        add(editUserDialog);
+        add(createNewUserDialog);
     }
 
     private void configureEditUserDialog() {
@@ -184,6 +186,23 @@ public class UserView extends VerticalLayout {
         createNewUserForm.setVisible(true);
         createNewUserForm.addListener(UserForm.SaveEvent.class, e -> saveUser(e.getUser()));
         createNewUserForm.addListener(UserForm.CloseEvent.class, e -> closeCreator());
+
+        changePasswordForm.setWidth("25em");
+        changePasswordForm.setVisible(true);
+        changePasswordForm.addListener(ChangePasswordForm.SaveEvent.class, e -> changePassword(e.getChangePasswordDto()));
+        changePasswordForm.addListener(ChangePasswordForm.CloseEvent.class, e -> closeChangePasswordDialog());
+    }
+
+    private void changePassword(ChangePasswordDto changePasswordDto) {
+        try {
+            userService.changePassword(changePasswordForm.getUser().getEmail(), changePasswordDto);
+            updateUserList();
+            CustomNotification.showNotification("Password has been changed successfully!", "success", Notification.Position.TOP_CENTER, 3000);
+
+            closeChangePasswordDialog();
+        } catch (Exception ex) {
+            CustomNotification.showNotification(ex.getMessage(), "error", Notification.Position.TOP_CENTER, 3000);
+        }
     }
 
     private void editUser(User user) {
@@ -271,11 +290,15 @@ public class UserView extends VerticalLayout {
     }
 
     private void openChangePasswordDialog(User user) {
+        changePasswordDialog.add(new HorizontalLayout(changePasswordForm));
         changePasswordDialog.open();
+        changePasswordForm.setChangePasswordData(user, new ChangePasswordDto());
+        addClassName("changing-password");
     }
 
     private void closeChangePasswordDialog() {
         changePasswordDialog.close();
+        removeClassName("changing-password");
     }
 
     private void openConfirmDeleteDialog(User user) {

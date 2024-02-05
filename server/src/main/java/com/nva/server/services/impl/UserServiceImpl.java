@@ -1,12 +1,15 @@
 package com.nva.server.services.impl;
 
+import com.nva.server.dtos.ChangePasswordDto;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
+import com.nva.server.exceptions.PasswordException;
 import com.nva.server.exceptions.UserExistedException;
 import com.nva.server.exceptions.UserNotFoundException;
 import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -86,8 +90,25 @@ public class UserServiceImpl implements UserService {
             if (optionalUser.get().getRole().equals(Role.ROLE_ADMIN))
                 throw new UserNotFoundException("You cannot delete ADMIN account.");
             userRepository.delete(user);
-            return;
+        } else throw new UserNotFoundException("User is not found.");
+    }
+
+    @Override
+    public void changePassword(String email, ChangePasswordDto changePasswordDto) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            if (!passwordEncoder.matches(changePasswordDto.getPassword(), optionalUser.get().getPassword())) {
+                throw new PasswordException("Current password is incorrect.");
+            }
+            if (passwordEncoder.matches(changePasswordDto.getNewPassword(), optionalUser.get().getPassword())) {
+                throw new PasswordException("New password should not be equal to the old password.");
+            } else {
+                User existingUser = optionalUser.get();
+                existingUser.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+                userRepository.save(existingUser);
+            }
+        } else {
+            throw new UserNotFoundException("User is not found.");
         }
-        throw new UserNotFoundException("User is not found.");
     }
 }

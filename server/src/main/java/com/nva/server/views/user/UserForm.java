@@ -37,7 +37,7 @@ public abstract class UserForm extends FormLayout {
         email.setPlaceholder("Enter your email address");
     }
 
-    protected void validation() {
+    protected void validate() {
         userBinder.bindInstanceFields(this);
     }
 

@@ -1,5 +1,6 @@
 package com.nva.server.services;
 
+import com.nva.server.dtos.ChangePasswordDto;
 import com.nva.server.entities.User;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface UserService {
     Optional<User> findByEmail(String email);
     long countUsers();
     void removeUser(User user);
+    void changePassword(String email, ChangePasswordDto changePasswordDto);
 }

@@ -9,20 +9,17 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.PasswordField;
 import lombok.Getter;
 
 @Getter
 public class EditUserForm extends UserForm {
     private final Button deleteBtn = new Button("Delete");
-    private final PasswordField password = new PasswordField("Password");
-    private final PasswordField confirmPassword = new PasswordField("Confirm Password");
     private final Checkbox isEnabled = new Checkbox("Status");
     private final ComboBox<Role> role = new ComboBox<>("Role");
 
     public EditUserForm() {
         addClassName("edit-user-form");
-        super.validation();
+        super.validate();
 
         configureField();
 
