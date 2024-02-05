@@ -1,5 +1,6 @@
 package com.nva.server.views.user;
 
+import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.services.UserService;
 import com.nva.server.views.MainLayout;
@@ -11,6 +12,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -187,7 +189,16 @@ public class UserView extends VerticalLayout {
         /**
          * Column used for foreign keys
          */
-        userGrid.addColumn(User::getRole).setHeader("Role");
+        userGrid.addColumn(user -> user.getRole().equals(Role.ROLE_ADMIN) ? "ADMIN" : "USER").setHeader("Role");
+        userGrid.addColumn(new ComponentRenderer<>(Span::new, (badge, user) -> {
+            if (user.isEnabled()) {
+                badge.add("Active");
+                badge.getElement().getThemeList().add("badge success");
+            } else {
+                badge.add("Locked");
+                badge.getElement().getThemeList().add("badge error");
+            }
+        })).setHeader("Status");
         userGrid.addColumn(
                 new ComponentRenderer<>(MenuBar::new, (menuBar, user) -> {
                     menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
