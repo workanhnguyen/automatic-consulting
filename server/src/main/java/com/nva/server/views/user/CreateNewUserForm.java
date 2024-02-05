@@ -9,7 +9,8 @@ public class CreateNewUserForm extends UserForm {
 
     public CreateNewUserForm() {
         addClassName("create-new-user-form");
-        super.validation();
+        super.validate();
+        password.setPlaceholder("Enter your password");
 
         add(super.getFirstName(), super.getLastName(), super.getEmail(), this.password, super.createButtonLayout());
     }
