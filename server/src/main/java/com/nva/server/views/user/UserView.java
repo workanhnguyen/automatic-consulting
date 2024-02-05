@@ -224,12 +224,10 @@ public class UserView extends VerticalLayout {
 
     private void configureMenuBar(MenuBar menuBar, User user) {
         menuBar.setOpenOnHover(true);
+
+        String text = user.getIsEnabled() ? "Lock user" : "Unlock user";
+
         menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
-
-        Text text = new Text("");
-        if (user.getIsEnabled()) text.setText("Lock user");
-        else text.setText("Unlock user");
-
         menuBar.addItem(text, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
         menuBar.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
     }
