@@ -6,6 +6,7 @@ import com.nva.server.services.UserService;
 import com.nva.server.views.MainLayout;
 import com.nva.server.views.components.CustomNotification;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -108,12 +109,12 @@ public class UserView extends VerticalLayout {
 
         Button deleteButton = new Button("Delete", e -> {
             deleteUser(editUserForm.getUser());
-            confirmDeleteUserDialog.close();
+            closeConfirmDeleteDialog();
         });
         deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
         deleteButton.getStyle().setCursor("pointer");
 
-        Button cancelButton = new Button("Cancel", e -> confirmDeleteUserDialog.close());
+        Button cancelButton = new Button("Cancel", e -> closeConfirmDeleteDialog());
         cancelButton.getStyle().setCursor("pointer");
 
         confirmDeleteUserDialog.getFooter().add(deleteButton, cancelButton);
@@ -206,10 +207,29 @@ public class UserView extends VerticalLayout {
                 new ComponentRenderer<>(MenuBar::new, (menuBar, user) -> {
                     menuBar.setOpenOnHover(true);
                     menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
-                    menuBar.addItem("Change password", e -> {}).getStyle().setCursor("pointer");
+
+                    Text text = new Text("");
+                    if (user.getIsEnabled()) text.setText("Lock user");
+                    else text.setText("Unlock user");
+
+                    menuBar.addItem(text, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
                     menuBar.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
                 })).setHeader("Actions").setTextAlign(ColumnTextAlign.CENTER);
         userGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+    }
+
+    private void toggleLockUser(User user) {
+        try {
+            userService.toggleLockUser(user.getEmail());
+            updateUserList();
+
+            String msg = user.getIsEnabled() ? "Locked successfully!" : "Unlocked successfully!";
+            CustomNotification.showNotification(msg, "success", Notification.Position.TOP_CENTER, 3000);
+
+            closeEditor();
+        } catch (Exception ex) {
+            CustomNotification.showNotification(ex.getMessage(), "error", Notification.Position.TOP_CENTER, 3000);
+        }
     }
 
     private void openConfirmDeleteDialog(User user) {

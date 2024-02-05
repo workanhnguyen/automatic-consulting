@@ -47,9 +47,11 @@ public class UserServiceImpl implements UserService {
     public void toggleLockUser(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
-            User existingUser = optionalUser.get();
-            existingUser.setIsEnabled(!existingUser.isEnabled());
-            userRepository.save(existingUser);
+            if (!optionalUser.get().getRole().equals(Role.ROLE_ADMIN)) {
+                User existingUser = optionalUser.get();
+                existingUser.setIsEnabled(!existingUser.isEnabled());
+                userRepository.save(existingUser);
+            } else throw new UserNotFoundException("You cannot lock ADMIN account.");
         } else throw new UserNotFoundException("User is not found.");
     }
 
