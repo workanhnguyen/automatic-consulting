@@ -17,39 +17,39 @@ public class EditUserForm extends UserForm {
     private final Checkbox isEnabled = new Checkbox("Status");
     private final ComboBox<Role> role = new ComboBox<>("Role");
 
+    private final Span statusBadge = new Span("Status");
+
     public EditUserForm() {
         addClassName("edit-user-form");
         super.validate();
 
         configureField();
+        getStatusBadge();
 
         add(
                 super.getFirstName(),
                 super.getLastName(),
                 super.getEmail(),
                 this.getRole(),
-                this.getStatusBadge(),
+                this.statusBadge,
                 this.createButtonLayout()
         );
     }
 
-    private Component getStatusBadge() {
-        Span statusBadge = new Span();
-
-        isEnabled.addValueChangeListener(event -> {
-            if (event.getValue()) {
-                statusBadge.setText("Active");
-                statusBadge.getElement().getThemeList().add("badge success");
-            } else {
-                statusBadge.setText("Locked");
-                statusBadge.getElement().getThemeList().add("badge error");
-            }
-        });
-
+    private void getStatusBadge() {
+        statusBadge.getElement().getThemeList().clear();
         statusBadge.getStyle().set("padding", "1em");
         statusBadge.getStyle().set("margin-top", "1em");
 
-        return statusBadge;
+        updateStatusBadge();
+
+        isEnabled.addValueChangeListener(event -> updateStatusBadge());
+    }
+
+    private void updateStatusBadge() {
+        statusBadge.setText(isEnabled.getValue() ? "Active" : "Locked");
+        statusBadge.getElement().getThemeList().clear();
+        statusBadge.getElement().getThemeList().add(isEnabled.getValue() ? "badge success" : "badge error");
     }
 
     private void configureField() {
