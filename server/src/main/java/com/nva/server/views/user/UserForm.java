@@ -31,6 +31,12 @@ public abstract class UserForm extends FormLayout {
     private final Button saveBtn = new Button("Save");
     private final Button cancelBtn = new Button("Cancel");
 
+    public UserForm() {
+        firstName.setPlaceholder("Enter your first name");
+        lastName.setPlaceholder("Enter your last name");
+        email.setPlaceholder("Enter your email address");
+    }
+
     protected void validation() {
         userBinder.bindInstanceFields(this);
     }

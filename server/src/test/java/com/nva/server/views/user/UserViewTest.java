@@ -23,7 +23,7 @@ public class UserViewTest {
         Grid<User> userGrid = userView.getUserGrid();
         User firstUser = getFirstItem(userGrid);
 
-        UserForm userForm = userView.getUserForm();
+        UserForm userForm = userView.getEditUserForm();
 
         Assertions.assertFalse(userForm.isVisible());
         userGrid.asSingleSelect().setValue(firstUser);

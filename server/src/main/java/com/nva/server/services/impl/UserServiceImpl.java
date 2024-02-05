@@ -1,6 +1,8 @@
 package com.nva.server.services.impl;
 
 import com.nva.server.entities.User;
+import com.nva.server.exceptions.UserExistedException;
+import com.nva.server.exceptions.UserNotFoundException;
 import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if (optionalUser.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            return userRepository.save(user);
+        }
+        throw new UserExistedException("Email is already taken.");
+    }
+
+    @Override
+    public User editUser(User user) {
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+            existingUser.setFirstName(user.getFirstName());
+            existingUser.setLastName(user.getLastName());
+
+            return userRepository.save(existingUser);
+        }
+        throw new UserNotFoundException("User is not found.");
     }
 
     @Override
@@ -50,6 +69,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeUser(User user) {
-        userRepository.delete(user);
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if (optionalUser.isPresent()) {
+            userRepository.delete(user);
+            return;
+        }
+        throw new UserNotFoundException("User is not found.");
     }
 }

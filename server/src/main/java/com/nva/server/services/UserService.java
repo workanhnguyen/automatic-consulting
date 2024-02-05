@@ -7,8 +7,7 @@ import java.util.Optional;
 
 public interface UserService {
     User saveUser(User user);
-//    Role saveRole(Role role);
-//    void addRoleToUser(String email, String roleName);
+    User editUser(User user);
     Optional<User> getUser(String email);
     List<User> getUsers(String searchTerm);
     Optional<User> findByEmail(String email);
