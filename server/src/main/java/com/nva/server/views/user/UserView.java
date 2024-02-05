@@ -53,25 +53,12 @@ public class UserView extends VerticalLayout {
         addClassName("user-view");
         setSizeFull();
         configureGrid();
-        add(getToolbar(), getContent());
-
         configureForm();
         configureDialog();
 
+        add(getToolbar(), getContent());
+
         updateUserList();
-    }
-
-    private void configureDialog() {
-        configureConfirmDeleteUserDialog();
-        configureEditUserDialog();
-        configureCreateNewUserDialog();
-    }
-
-    private void configureCreateNewUserDialog() {
-        createNewUserDialog.setHeaderTitle("Add new user");
-        createNewUserDialog.getFooter().add(createNewUserForm.getSaveBtn(), createNewUserForm.getCancelBtn());
-
-        add(editUserDialog);
     }
 
     private Component getContent() {
@@ -82,10 +69,30 @@ public class UserView extends VerticalLayout {
         return content;
     }
 
+    private void configureDialog() {
+        configureConfirmDeleteUserDialog();
+        configureEditUserDialog();
+        configureCreateNewUserDialog();
+    }
+
+    private void configureCreateNewUserDialog() {
+        createNewUserDialog.setHeaderTitle("Add new user");
+        createNewUserForm.getSaveBtn().getStyle().setCursor("pointer");
+        createNewUserForm.getCancelBtn().getStyle().setCursor("pointer");
+
+        createNewUserDialog.getFooter().add(createNewUserForm.getSaveBtn(), createNewUserForm.getCancelBtn());
+
+        add(editUserDialog);
+    }
+
     private void configureEditUserDialog() {
         editUserDialog.setHeaderTitle("Edit user");
         EditUserForm tempForm = (EditUserForm) editUserForm;
-        editUserDialog.getFooter().add(editUserForm.getSaveBtn(), tempForm.getDeleteBtn(), editUserForm.getCancelBtn());
+        tempForm.getDeleteBtn().setVisible(false);
+        editUserForm.getSaveBtn().getStyle().setCursor("pointer");
+        editUserForm.getCancelBtn().getStyle().setCursor("pointer");
+
+        editUserDialog.getFooter().add(editUserForm.getSaveBtn(), editUserForm.getCancelBtn());
 
         add(editUserDialog);
     }
@@ -110,17 +117,12 @@ public class UserView extends VerticalLayout {
     }
 
     private void closeEditor() {
-//        editUserForm.setUser(null);
-//        editUserForm.setVisible(false);
         editUserDialog.close();
-        userGrid.asSingleSelect().clear();
         removeClassName("editing");
     }
 
     private void closeCreator() {
         createNewUserDialog.close();
-        createNewUserForm.setUser(null);
-        createNewUserForm.setVisible(false);
         removeClassName("creating");
     }
 
@@ -132,7 +134,7 @@ public class UserView extends VerticalLayout {
         editUserForm.setWidth("25em");
         editUserForm.setVisible(true);
         editUserForm.addListener(UserForm.SaveEvent.class, e -> editUser(e.getUser()));
-        editUserForm.addListener(EditUserForm.DeleteEvent.class, e -> confirmDeleteUserDialog.open());
+        editUserForm.addListener(EditUserForm.DeleteEvent.class, e -> deleteUser(e.getUser()));
         editUserForm.addListener(UserForm.CloseEvent.class, e -> closeEditor());
 
         createNewUserForm.setWidth("25em");
@@ -187,14 +189,21 @@ public class UserView extends VerticalLayout {
          */
         userGrid.addColumn(User::getRole).setHeader("Role");
         userGrid.addColumn(
-                new ComponentRenderer<>(MenuBar::new, (menuBar, person) -> {
-                    menuBar.addItem("Edit", e -> openEditor(editUserForm.getUser())).getStyle().setCursor("pointer");
+                new ComponentRenderer<>(MenuBar::new, (menuBar, user) -> {
+                    menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
                     menuBar.addItem("Change password", e -> {}).getStyle().setCursor("pointer");
-                    menuBar.addItem("Delete", e -> confirmDeleteUserDialog.open()).getStyle().setColor("red").setCursor("pointer");
+                    menuBar.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
                 })).setHeader("Actions").setTextAlign(ColumnTextAlign.CENTER);
-        userGrid.getColumns().forEach(col -> col.setAutoWidth(true)); //Show scrollbar when width turns to small
+        userGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+    }
 
-        userGrid.asSingleSelect().addValueChangeListener(e -> openEditor(e.getValue()));
+    private void openConfirmDeleteDialog(User user) {
+        editUserForm.setUser(user);
+        confirmDeleteUserDialog.open();
+    }
+
+    private void closeConfirmDeleteDialog() {
+        confirmDeleteUserDialog.close();
     }
 
     private void openEditor(User user) {
@@ -227,10 +236,6 @@ public class UserView extends VerticalLayout {
     private void openCreator() {
         createNewUserDialog.add(new HorizontalLayout(createNewUserForm));
         createNewUserDialog.open();
-
-        userGrid.asSingleSelect().clear();
-        editUserForm.setVisible(false);
-        createNewUserForm.setVisible(true);
         createNewUserForm.setUser(new User());
         addClassName("creating");
     }
