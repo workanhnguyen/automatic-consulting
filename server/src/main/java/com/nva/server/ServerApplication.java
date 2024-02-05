@@ -32,7 +32,9 @@ public class ServerApplication implements CommandLineRunner {
             user.setRole(Role.ROLE_ADMIN);
             user.setPassword(new BCryptPasswordEncoder().encode("admin"));
             userRepository.save(user);
+        }
 
+        if (userRepository.findByEmail("anh@gmail.com").isEmpty()) {
             User user2 = new User();
             user2.setEmail("anh@gmail.com");
             user2.setFirstName("Anh");
