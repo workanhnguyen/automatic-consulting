@@ -1,5 +1,6 @@
 package com.nva.server.services.impl;
 
+import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.exceptions.UserExistedException;
 import com.nva.server.exceptions.UserNotFoundException;
@@ -71,6 +72,8 @@ public class UserServiceImpl implements UserService {
     public void removeUser(User user) {
         Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
         if (optionalUser.isPresent()) {
+            if (optionalUser.get().getRole().equals(Role.ROLE_ADMIN))
+                throw new UserNotFoundException("You cannot delete ADMIN account.");
             userRepository.delete(user);
             return;
         }
