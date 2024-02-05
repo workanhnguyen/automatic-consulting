@@ -56,7 +56,7 @@ public class User implements Serializable, UserDetails {
     private Long lastModifiedDate;
 
     @Column(nullable = false)
-    private boolean isEnabled = true;
+    private Boolean isEnabled = true;
 
     @Lob
     private String note;

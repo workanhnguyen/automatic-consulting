@@ -40,8 +40,17 @@ public class UserServiceImpl implements UserService {
             existingUser.setLastName(user.getLastName());
 
             return userRepository.save(existingUser);
-        }
-        throw new UserNotFoundException("User is not found.");
+        } else throw new UserNotFoundException("User is not found.");
+    }
+
+    @Override
+    public void toggleLockUser(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+            existingUser.setIsEnabled(!existingUser.isEnabled());
+            userRepository.save(existingUser);
+        } else throw new UserNotFoundException("User is not found.");
     }
 
     @Override

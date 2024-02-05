@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface UserService {
     User saveUser(User user);
     User editUser(User user);
+    void toggleLockUser(String email);
     Optional<User> getUser(String email);
     List<User> getUsers(String searchTerm);
     Optional<User> findByEmail(String email);

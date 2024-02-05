@@ -40,6 +40,7 @@ public class ServerApplication implements CommandLineRunner {
             user2.setFirstName("Anh");
             user2.setLastName("Nguyen");
             user2.setRole(Role.ROLE_USER);
+            user2.setIsEnabled(false);
             user2.setPassword(new BCryptPasswordEncoder().encode("1234"));
             userRepository.save(user2);
         }
