@@ -92,29 +92,6 @@ public class UserView extends VerticalLayout {
         changePasswordDialog.getFooter().add(changePasswordForm.getSaveBtn(), changePasswordForm.getCancelBtn());
 
         add(changePasswordDialog);
-//        changePasswordDialog.setHeaderTitle("Change password");
-//        changePasswordDialog.add(getDialogLayout());
-//        VerticalLayout dialogLayout = new VerticalLayout(changePasswordForm);
-//        dialogLayout.setSpacing(false);
-//        dialogLayout.setPadding(false);
-//        changePasswordDialog.add(dialogLayout);
-//
-//        changePasswordForm.getSaveBtn().setText("Change password");
-//        changePasswordForm.getSaveBtn().getStyle().setCursor("pointer");
-//        changePasswordForm.getSaveBtn().addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-//
-//        changePasswordForm.getCancelBtn().getStyle().setCursor("pointer");
-
-//        Button saveButton = new Button("Change password");
-//        saveButton.getStyle().setCursor("pointer");
-//        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-//
-//        Button cancelButton = new Button("Cancel", e -> closeChangePasswordDialog());
-//        cancelButton.getStyle().setCursor("pointer");
-//
-//        changePasswordDialog.getFooter().add(changePasswordForm.getSaveBtn(), changePasswordForm.getCancelBtn());
-//
-//        add(changePasswordDialog);
     }
 
     private void configureCreateNewUserDialog() {
@@ -281,10 +258,10 @@ public class UserView extends VerticalLayout {
     private void configureMenuBar(MenuBar menuBar, User user) {
         menuBar.setOpenOnHover(true);
 
-        String text = user.getIsEnabled() ? "Lock user" : "Unlock user";
+        String lockText = user.getIsEnabled() ? "Lock user" : "Unlock user";
 
         menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
-        menuBar.addItem(text, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
+        menuBar.addItem(lockText, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
         menuBar.addItem("Change password", e -> openChangePasswordDialog(user)).getStyle().setCursor("pointer");
         menuBar.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
     }
