@@ -8,12 +8,15 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -38,8 +41,10 @@ public class UserView extends VerticalLayout {
     private final Grid<User> userGrid = new Grid<>(User.class);
     private final TextField filterText = new TextField();
     private final Dialog confirmDeleteUserDialog = new Dialog();
+    private final Dialog editUserDialog = new Dialog();
+    private final Dialog createNewUserDialog = new Dialog();
     private final UserForm editUserForm = new EditUserForm();
-    private final UserForm createNewUserForm = new CreateNewUserForm();
+    private final UserForm createNewUserForm= new CreateNewUserForm();
 
 
     public UserView(UserService userService) {
@@ -47,16 +52,45 @@ public class UserView extends VerticalLayout {
 
         addClassName("user-view");
         setSizeFull();
-
         configureGrid();
-        configureForm();
-        configureConfirmDeleteDialog();
-
         add(getToolbar(), getContent());
+
+        configureForm();
+        configureDialog();
+
         updateUserList();
     }
 
-    private void configureConfirmDeleteDialog() {
+    private void configureDialog() {
+        configureConfirmDeleteUserDialog();
+        configureEditUserDialog();
+        configureCreateNewUserDialog();
+    }
+
+    private void configureCreateNewUserDialog() {
+        createNewUserDialog.setHeaderTitle("Add new user");
+        createNewUserDialog.getFooter().add(createNewUserForm.getSaveBtn(), createNewUserForm.getCancelBtn());
+
+        add(editUserDialog);
+    }
+
+    private Component getContent() {
+        HorizontalLayout content = new HorizontalLayout(userGrid);
+        content.addClassName("content");
+        content.setSizeFull();
+
+        return content;
+    }
+
+    private void configureEditUserDialog() {
+        editUserDialog.setHeaderTitle("Edit user");
+        EditUserForm tempForm = (EditUserForm) editUserForm;
+        editUserDialog.getFooter().add(editUserForm.getSaveBtn(), tempForm.getDeleteBtn(), editUserForm.getCancelBtn());
+
+        add(editUserDialog);
+    }
+
+    private void configureConfirmDeleteUserDialog() {
         confirmDeleteUserDialog.setHeaderTitle("Delete user");
         confirmDeleteUserDialog.add(new Paragraph("Are you sure you want to delete this user?"));
 
@@ -76,13 +110,15 @@ public class UserView extends VerticalLayout {
     }
 
     private void closeEditor() {
-        editUserForm.setUser(null);
-        editUserForm.setVisible(false);
+//        editUserForm.setUser(null);
+//        editUserForm.setVisible(false);
+        editUserDialog.close();
         userGrid.asSingleSelect().clear();
         removeClassName("editing");
     }
 
     private void closeCreator() {
+        createNewUserDialog.close();
         createNewUserForm.setUser(null);
         createNewUserForm.setVisible(false);
         removeClassName("creating");
@@ -94,20 +130,20 @@ public class UserView extends VerticalLayout {
 
     private void configureForm() {
         editUserForm.setWidth("25em");
-        editUserForm.setVisible(false);
-        editUserForm.addListener(UserForm.SaveEvent.class, this::editUser);
+        editUserForm.setVisible(true);
+        editUserForm.addListener(UserForm.SaveEvent.class, e -> editUser(e.getUser()));
         editUserForm.addListener(EditUserForm.DeleteEvent.class, e -> confirmDeleteUserDialog.open());
         editUserForm.addListener(UserForm.CloseEvent.class, e -> closeEditor());
 
         createNewUserForm.setWidth("25em");
-        createNewUserForm.setVisible(false);
-        createNewUserForm.addListener(UserForm.SaveEvent.class, this::saveUser);
+        createNewUserForm.setVisible(true);
+        createNewUserForm.addListener(UserForm.SaveEvent.class, e -> saveUser(e.getUser()));
         createNewUserForm.addListener(UserForm.CloseEvent.class, e -> closeCreator());
     }
 
-    private void editUser(UserForm.SaveEvent e) {
+    private void editUser(User user) {
         try {
-            userService.editUser(e.getUser());
+            userService.editUser(user);
             updateUserList();
             CustomNotification.showNotification("Updated successfully!", "success", Notification.Position.TOP_CENTER, 3000);
 
@@ -129,9 +165,9 @@ public class UserView extends VerticalLayout {
         }
     }
 
-    private void saveUser(UserForm.SaveEvent e) {
+    private void saveUser(User user) {
         try {
-            userService.saveUser(e.getUser());
+            userService.saveUser(user);
             updateUserList();
             CustomNotification.showNotification("Created successfully!", "success", Notification.Position.TOP_CENTER, 3000);
 
@@ -141,16 +177,6 @@ public class UserView extends VerticalLayout {
         }
     }
 
-    private Component getContent() {
-        HorizontalLayout content = new HorizontalLayout(userGrid, editUserForm, createNewUserForm);
-        content.setFlexGrow(2, userGrid);
-        content.setFlexGrow(1, editUserForm);
-        content.setFlexGrow(1, createNewUserForm);
-        content.addClassName("content");
-        content.setSizeFull();
-
-        return content;
-    }
 
     private void configureGrid() {
         userGrid.addClassNames("user-grid");
@@ -160,6 +186,12 @@ public class UserView extends VerticalLayout {
          * Column used for foreign keys
          */
         userGrid.addColumn(User::getRole).setHeader("Role");
+        userGrid.addColumn(
+                new ComponentRenderer<>(MenuBar::new, (menuBar, person) -> {
+                    menuBar.addItem("Edit", e -> openEditor(editUserForm.getUser())).getStyle().setCursor("pointer");
+                    menuBar.addItem("Change password", e -> {}).getStyle().setCursor("pointer");
+                    menuBar.addItem("Delete", e -> confirmDeleteUserDialog.open()).getStyle().setColor("red").setCursor("pointer");
+                })).setHeader("Actions").setTextAlign(ColumnTextAlign.CENTER);
         userGrid.getColumns().forEach(col -> col.setAutoWidth(true)); //Show scrollbar when width turns to small
 
         userGrid.asSingleSelect().addValueChangeListener(e -> openEditor(e.getValue()));
@@ -169,9 +201,10 @@ public class UserView extends VerticalLayout {
         if (user == null) closeEditor();
         else {
             editUserForm.setUser(user);
-            editUserForm.setVisible(true);
-            createNewUserForm.setVisible(false);
+            editUserDialog.add(new HorizontalLayout(editUserForm));
+            editUserDialog.open();
             addClassName("editing");
+            log.error(user.toString());
         }
     }
 
@@ -192,11 +225,13 @@ public class UserView extends VerticalLayout {
     }
 
     private void openCreator() {
+        createNewUserDialog.add(new HorizontalLayout(createNewUserForm));
+        createNewUserDialog.open();
+
         userGrid.asSingleSelect().clear();
         editUserForm.setVisible(false);
         createNewUserForm.setVisible(true);
         createNewUserForm.setUser(new User());
-        createNewUserForm.setVisible(true);
         addClassName("creating");
     }
 }

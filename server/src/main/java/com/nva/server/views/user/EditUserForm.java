@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 public class EditUserForm extends UserForm {
-    private final Button deleteBtn = new Button("Delete");
+    public final Button deleteBtn = new Button("Delete");
     private final PasswordField password = new PasswordField("Password");
     private final PasswordField confirmPassword = new PasswordField("Confirm Password");
 
