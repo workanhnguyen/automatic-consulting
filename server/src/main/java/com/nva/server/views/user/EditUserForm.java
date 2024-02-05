@@ -17,7 +17,7 @@ public class EditUserForm extends UserForm {
     private final Button deleteBtn = new Button("Delete");
     private final PasswordField password = new PasswordField("Password");
     private final PasswordField confirmPassword = new PasswordField("Confirm Password");
-    private final Checkbox isEnabled = new Checkbox();
+    private final Checkbox isEnabled = new Checkbox("Status");
     private final ComboBox<Role> role = new ComboBox<>("Role");
 
     public EditUserForm() {
@@ -39,15 +39,17 @@ public class EditUserForm extends UserForm {
     private Component getStatusBadge() {
         Span statusBadge = new Span();
 
-        if (isEnabled.getValue()) {
-            statusBadge.add("Active");
-            statusBadge.getElement().getThemeList().add("badge success");
-        } else {
-            statusBadge.add("Locked");
-            statusBadge.getElement().getThemeList().add("badge error");
-        }
+        isEnabled.addValueChangeListener(event -> {
+            if (event.getValue()) {
+                statusBadge.setText("Active");
+                statusBadge.getElement().getThemeList().add("badge success");
+            } else {
+                statusBadge.setText("Locked");
+                statusBadge.getElement().getThemeList().add("badge error");
+            }
+        });
 
-        statusBadge.getStyle().set("padding", "1em");  // Adjust the value as needed
+        statusBadge.getStyle().set("padding", "1em");
         statusBadge.getStyle().set("margin-top", "1em");
 
         return statusBadge;

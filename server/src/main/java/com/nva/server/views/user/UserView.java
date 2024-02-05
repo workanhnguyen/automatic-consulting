@@ -43,9 +43,12 @@ public class UserView extends VerticalLayout {
 
     private final Grid<User> userGrid = new Grid<>(User.class);
     private final TextField filterText = new TextField();
+
     private final Dialog confirmDeleteUserDialog = new Dialog();
     private final Dialog editUserDialog = new Dialog();
     private final Dialog createNewUserDialog = new Dialog();
+    private final Dialog changePasswordDialog = new Dialog();
+
     private final UserForm editUserForm = new EditUserForm();
     private final UserForm createNewUserForm = new CreateNewUserForm();
 
@@ -76,7 +79,41 @@ public class UserView extends VerticalLayout {
         configureConfirmDeleteUserDialog();
         configureEditUserDialog();
         configureCreateNewUserDialog();
+        configureChangePasswordDialog();
     }
+
+    private void configureChangePasswordDialog() {
+        changePasswordDialog.setHeaderTitle("Change password");
+        changePasswordDialog.add(getDialogLayout());
+
+        Button saveButton = new Button("Change password");
+        saveButton.getStyle().setCursor("pointer");
+        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        Button cancelButton = new Button("Cancel", e -> closeChangePasswordDialog());
+        cancelButton.getStyle().setCursor("pointer");
+
+        changePasswordDialog.getFooter().add(saveButton, cancelButton);
+
+        add(editUserDialog);
+    }
+
+    private static VerticalLayout getDialogLayout() {
+        TextField oldPassword = new TextField("Old password");
+        oldPassword.setWidth("25em");
+
+        TextField newPassword = new TextField("New password");
+        newPassword.setWidth("25em");
+
+        TextField confirmNewPassword = new TextField("Confirm new password");
+        confirmNewPassword.setWidth("25em");
+
+        VerticalLayout dialogLayout = new VerticalLayout(oldPassword, newPassword, confirmNewPassword);
+        dialogLayout.setPadding(false);
+        dialogLayout.setSpacing(false);
+        return dialogLayout;
+    }
+
 
     private void configureCreateNewUserDialog() {
         createNewUserDialog.setHeaderTitle("Add new user");
@@ -229,7 +266,16 @@ public class UserView extends VerticalLayout {
 
         menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
         menuBar.addItem(text, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
+        menuBar.addItem("Change password", e -> openChangePasswordDialog(user)).getStyle().setCursor("pointer");
         menuBar.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
+    }
+
+    private void openChangePasswordDialog(User user) {
+        changePasswordDialog.open();
+    }
+
+    private void closeChangePasswordDialog() {
+        changePasswordDialog.close();
     }
 
     private void openConfirmDeleteDialog(User user) {
