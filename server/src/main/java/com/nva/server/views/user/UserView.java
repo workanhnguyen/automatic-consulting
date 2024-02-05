@@ -47,7 +47,7 @@ public class UserView extends VerticalLayout {
     private final Dialog editUserDialog = new Dialog();
     private final Dialog createNewUserDialog = new Dialog();
     private final UserForm editUserForm = new EditUserForm();
-    private final UserForm createNewUserForm= new CreateNewUserForm();
+    private final UserForm createNewUserForm = new CreateNewUserForm();
 
 
     public UserView(UserService userService) {
@@ -173,6 +173,20 @@ public class UserView extends VerticalLayout {
         }
     }
 
+    private void toggleLockUser(User user) {
+        try {
+            userService.toggleLockUser(user.getEmail());
+            updateUserList();
+
+            String msg = user.getIsEnabled() ? "Locked successfully!" : "Unlocked successfully!";
+            CustomNotification.showNotification(msg, "success", Notification.Position.TOP_CENTER, 3000);
+
+            closeEditor();
+        } catch (Exception ex) {
+            CustomNotification.showNotification(ex.getMessage(), "error", Notification.Position.TOP_CENTER, 3000);
+        }
+    }
+
     private void saveUser(User user) {
         try {
             userService.saveUser(user);
@@ -204,32 +218,20 @@ public class UserView extends VerticalLayout {
             }
         })).setHeader("Status");
         userGrid.addColumn(
-                new ComponentRenderer<>(MenuBar::new, (menuBar, user) -> {
-                    menuBar.setOpenOnHover(true);
-                    menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
-
-                    Text text = new Text("");
-                    if (user.getIsEnabled()) text.setText("Lock user");
-                    else text.setText("Unlock user");
-
-                    menuBar.addItem(text, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
-                    menuBar.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
-                })).setHeader("Actions").setTextAlign(ColumnTextAlign.CENTER);
+                new ComponentRenderer<>(MenuBar::new, this::configureMenuBar)).setHeader("Actions").setTextAlign(ColumnTextAlign.CENTER);
         userGrid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
-    private void toggleLockUser(User user) {
-        try {
-            userService.toggleLockUser(user.getEmail());
-            updateUserList();
+    private void configureMenuBar(MenuBar menuBar, User user) {
+        menuBar.setOpenOnHover(true);
+        menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
 
-            String msg = user.getIsEnabled() ? "Locked successfully!" : "Unlocked successfully!";
-            CustomNotification.showNotification(msg, "success", Notification.Position.TOP_CENTER, 3000);
+        Text text = new Text("");
+        if (user.getIsEnabled()) text.setText("Lock user");
+        else text.setText("Unlock user");
 
-            closeEditor();
-        } catch (Exception ex) {
-            CustomNotification.showNotification(ex.getMessage(), "error", Notification.Position.TOP_CENTER, 3000);
-        }
+        menuBar.addItem(text, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
+        menuBar.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
     }
 
     private void openConfirmDeleteDialog(User user) {
