@@ -1,5 +1,6 @@
 package com.nva.server.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nva.server.exceptions.UserNotFoundException;
 import com.nva.server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;

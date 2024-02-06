@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Khoa học máy tính",
+    "faculty": {
+      "id": 1
+    }
+  },
+  {
+    "name": "Công nghệ thông tin",
+    "faculty": {
+      "id": 1
+    }
+  },
+  {
+    "name": "Hệ thống thông tin quản lý",
+    "faculty": {
+      "id": 1
+    }
+  }
+]

@@ -1,0 +1,79 @@
+[
+  {
+    "firstName": "Admin",
+    "lastName": "Account",
+    "email": "admin@gmail.com",
+    "password": "admin",
+    "role": "ROLE_ADMIN"
+  },
+  {
+    "firstName": "Anh",
+    "lastName": "Nguyen",
+    "email": "anh@gmail.com",
+    "password": "1234",
+    "isEnabled": true
+  },
+  {
+    "firstName": "Duy",
+    "lastName": "Le",
+    "email": "duy@gmail.com",
+    "password": "1234",
+    "isEnabled": true
+  },
+  {
+    "firstName": "Dat",
+    "lastName": "Luong",
+    "email": "dat@gmail.com",
+    "password": "1234",
+    "isEnabled": true
+  },
+  {
+    "firstName": "Linh",
+    "lastName": "Vu",
+    "email": "linh@gmail.com",
+    "password": "1234",
+    "isEnabled": true
+  },
+  {
+    "firstName": "Tien",
+    "lastName": "Sinh",
+    "email": "tien@gmail.com",
+    "password": "1234",
+    "isEnabled": false
+  },
+  {
+    "firstName": "Mai",
+    "lastName": "Dang",
+    "email": "mai@gmail.com",
+    "password": "1234",
+    "isEnabled": true
+  },
+  {
+    "firstName": "Nhung",
+    "lastName": "Trang",
+    "email": "nhung@gmail.com",
+    "password": "1234",
+    "isEnabled": false
+  },
+  {
+    "firstName": "Binh",
+    "lastName": "Nhu",
+    "email": "binh@gmail.com",
+    "password": "1234",
+    "isEnabled": true
+  },
+  {
+    "firstName": "Huong",
+    "lastName": "Pham",
+    "email": "huong@gmail.com",
+    "password": "1234",
+    "isEnabled": true
+  },
+  {
+    "firstName": "Thinh",
+    "lastName": "Dinh",
+    "email": "thinh@gmail.com",
+    "password": "1234",
+    "isEnabled": false
+  }
+]
