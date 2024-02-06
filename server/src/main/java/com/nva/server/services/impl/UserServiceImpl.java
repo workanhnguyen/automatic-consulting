@@ -129,6 +129,7 @@ public class UserServiceImpl implements UserService {
             } else {
                 User existingUser = optionalUser.get();
                 existingUser.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+                existingUser.setLastModifiedDate(new Date().getTime());
                 userRepository.save(existingUser);
             }
         } else {
