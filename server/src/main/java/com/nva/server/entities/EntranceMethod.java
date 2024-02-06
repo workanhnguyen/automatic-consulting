@@ -18,8 +18,7 @@ public class EntranceMethod implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false)
-    @Lob
+    @Column(nullable = false, length = 500)
     private String name;
     @CreatedDate
     @Column(nullable = false)

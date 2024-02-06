@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Xét tuyển thẳng, ưu tiên xét tuyển theo quy chế tuyển sinh của Trường Đại học Mở thành phố Hồ Chí Minh và Bộ Giáo dục và Đào tạo",
+    "entranceMethodGroup": {
+      "id": 1
+    }
+  },
+  {
+    "name": "Xét tuyển theo kết quả thi tốt nghiệp Trung học Phổ thông",
+    "entranceMethodGroup": {
+      "id": 1
+    }
+  },
+  {
+    "name": "Ưu tiên xét tuyển đối với thí sinh có:\n\n+ Bằng tú tài quốc tế (IB) điểm từ 26;\n\n+ Chứng chỉ quốc tế A-Level của Trung tâm khảo thí ĐH Cambridge (Anh) theo điểm 3 môn thi (trở lên) đảm bảo mức điểm mỗi môn thi đạt từ C trở lên+ Kết quả trong kỳ thi chuẩn hóa SAT (Scholastic Assessment Test, Hoa kỳ) đạt điểm từ 1100/1600.",
+    "entranceMethodGroup": {
+      "id": 2
+    }
+  },
+  {
+    "name": "Ưu tiên xét tuyển học sinh Giỏi THPT (nhóm 1 và nhóm 2) có chứng chỉ Ngoại ngữ quốc tế theo quy định.",
+    "entranceMethodGroup": {
+      "id": 2
+    }
+  },
+  {
+    "name": "Ưu tiên xét tuyển học sinh Giỏi THPT (nhóm 1 và nhóm 2).",
+    "entranceMethodGroup": {
+      "id": 2
+    }
+  },
+  {
+    "name": "Ưu tiên xét tuyển kết quả học bạ THPT có chứng chỉ quốc tế.",
+    "entranceMethodGroup": {
+      "id": 2
+    }
+  },
+  {
+    "name": "Xét tuyển học bạ THPT.",
+    "entranceMethodGroup": {
+      "id": 2
+    }
+  }
+]

@@ -2,18 +2,15 @@ package com.nva.server;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nva.server.entities.Role;
-import com.nva.server.entities.User;
-import com.nva.server.repositories.UserRepository;
+import com.nva.server.entities.*;
+import com.nva.server.repositories.*;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
@@ -28,6 +25,14 @@ public class ServerApplication {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private FacultyRepository facultyRepository;
+    @Autowired
+    private MajorRepository majorRepository;
+    @Autowired
+    private EntranceMethodGroupRepository entranceMethodGroupRepository;
+    @Autowired
+    private EntranceMethodRepository entranceMethodRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
@@ -38,7 +43,59 @@ public class ServerApplication {
     public CommandLineRunner loadData() {
         return args -> {
             loadUserData();
+            loadFacultyData();
+            loadMajorData();
+            loadEntranceMethodGroupData();
+            loadEntranceMethodData();
         };
+    }
+
+    private void loadEntranceMethodData() {
+        if (entranceMethodRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/entrance-methods.json");
+            try {
+                List<EntranceMethod> entranceMethods = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (EntranceMethod entranceMethod : entranceMethods) {
+                    entranceMethodRepository.save(entranceMethod);
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
+    private void loadEntranceMethodGroupData() {
+        if (entranceMethodGroupRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/entrance-method-groups.json");
+            try {
+                List<EntranceMethodGroup> entranceMethodGroups = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (EntranceMethodGroup entranceMethodGroup : entranceMethodGroups) {
+                    entranceMethodGroupRepository.save(entranceMethodGroup);
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
+    private void loadMajorData() {
+        if (majorRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/majors.json");
+            try {
+                List<Major> majors = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Major major : majors) {
+                    majorRepository.save(major);
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
+    private void loadFacultyData() {
+        if (facultyRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/faculties.json");
+            try {
+                List<Faculty> faculties = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Faculty faculty : faculties) {
+                    facultyRepository.save(faculty);
+                }
+            } catch (IOException ignored) {}
+        }
     }
 
     private void loadUserData() {
