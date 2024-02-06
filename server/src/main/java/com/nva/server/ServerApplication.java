@@ -1,50 +1,56 @@
 package com.nva.server;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.repositories.UserRepository;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 @SpringBootApplication
 @EnableVaadin
 @RequiredArgsConstructor
-public class ServerApplication implements CommandLineRunner {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+public class ServerApplication {
+    private final ObjectMapper objectMapper;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        User adminAccount = userRepository.findByRole(Role.ROLE_ADMIN);
+    @Bean
+    public CommandLineRunner loadData() {
+        return args -> {
+            loadUserData();
+        };
+    }
 
-        if (adminAccount == null) {
-            User user = new User();
-            user.setEmail("admin@gmail.com");
-            user.setFirstName("Admin");
-            user.setLastName("Account");
-            user.setRole(Role.ROLE_ADMIN);
-            user.setPassword(new BCryptPasswordEncoder().encode("admin"));
-            userRepository.save(user);
-        }
-
-        if (userRepository.findByEmail("anh@gmail.com").isEmpty()) {
-            User user2 = new User();
-            user2.setEmail("anh@gmail.com");
-            user2.setFirstName("Anh");
-            user2.setLastName("Nguyen");
-            user2.setRole(Role.ROLE_USER);
-            user2.setIsEnabled(false);
-            user2.setPassword(passwordEncoder.encode("1234"));
-            userRepository.save(user2);
+    private void loadUserData() {
+        if (userRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/users.json");
+            try {
+                List<User> users = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (User user : users) {
+                    user.setPassword(passwordEncoder.encode(user.getPassword()));
+                    userRepository.save(user);
+                }
+            } catch (IOException ignored) {}
         }
     }
 }
