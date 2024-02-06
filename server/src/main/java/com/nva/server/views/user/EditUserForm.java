@@ -93,7 +93,7 @@ public class EditUserForm extends UserForm {
                     CustomUtils.convertMillisecondsToDate(
                             Long.parseLong(lastModifiedDate.getValue().replaceAll(",", "")),
                             CustomConstants.DATE_FORMAT_HH_MM_SS_DD_MM_YYYY));
-        } else showedLastModifiedDate.setValue("Not edited");
+        } else showedLastModifiedDate.setValue("--");
 
         lastModifiedDate.addValueChangeListener(e -> {
             if (!e.getValue().isEmpty())
@@ -101,7 +101,7 @@ public class EditUserForm extends UserForm {
                         CustomUtils.convertMillisecondsToDate(
                                 Long.parseLong(e.getValue().replaceAll(",", "")),
                                 CustomConstants.DATE_FORMAT_HH_MM_SS_DD_MM_YYYY));
-            else showedLastModifiedDate.setValue("Not edited");
+            else showedLastModifiedDate.setValue("--");
         });
     }
 
