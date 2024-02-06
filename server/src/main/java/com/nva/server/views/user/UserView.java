@@ -1,5 +1,6 @@
 package com.nva.server.views.user;
 
+import com.nva.server.constants.CustomConstants;
 import com.nva.server.dtos.ChangePasswordDto;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
@@ -9,11 +10,14 @@ import com.nva.server.views.components.CustomNotification;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.charts.model.Cursor;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -29,6 +33,10 @@ import jakarta.annotation.security.RolesAllowed;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SpringComponent
 @Scope("prototype")
@@ -53,6 +61,12 @@ public class UserView extends VerticalLayout {
     private final UserForm createNewUserForm = new CreateNewUserForm();
     private final ChangePasswordForm changePasswordForm = new ChangePasswordForm();
 
+    // Pagination variables
+    private int pageNumber = 0;
+    private final Button prevPageButton = new Button(new Icon(VaadinIcon.ANGLE_LEFT));
+    private final Button nextPageButton = new Button(new Icon(VaadinIcon.ANGLE_RIGHT));
+    private final Paragraph paginationLabel = new Paragraph();
+    private final Map<String, Object> params = new HashMap<>();
 
     public UserView(UserService userService) {
         this.userService = userService;
@@ -149,7 +163,36 @@ public class UserView extends VerticalLayout {
     }
 
     private void updateUserList() {
-        userGrid.setItems(userService.getUsers(filterText.getValue()));
+        String keyword = filterText.getValue();
+        params.put("pageNumber", pageNumber);
+        params.put("pageSize", CustomConstants.USER_PAGE_SIZE);
+        params.put("keyword", keyword);
+
+        List<User> users = userService.getUsers(params);
+        long totalUsers = userService.getUserCount(params);
+
+        userGrid.setItems(users);
+
+        updatePaginationButtons();
+        updatePaginationLabel(totalUsers);
+    }
+
+    private void updatePaginationButtons() {
+        // Enable/disable "Previous" button
+        prevPageButton.setEnabled(pageNumber > 0);
+
+        // Enable/disable "Next" button
+        long totalUsersCount = userService.countUsers();
+        int totalPages = (int) Math.ceil((double) totalUsersCount / CustomConstants.USER_PAGE_SIZE);
+        nextPageButton.setEnabled(pageNumber < totalPages - 1);
+    }
+
+    private void updatePaginationLabel(long totalUsers) {
+        int startUser =  pageNumber * CustomConstants.USER_PAGE_SIZE + 1;
+        int endUser = (int) Math.min((long) (pageNumber + 1) * CustomConstants.USER_PAGE_SIZE, totalUsers);
+
+        // Update label with the current range of users being displayed
+        paginationLabel.setText(startUser + " - " + endUser + " out of " + totalUsers);
     }
 
     private void configureForm() {
@@ -232,14 +275,12 @@ public class UserView extends VerticalLayout {
         }
     }
 
-
     private void configureGrid() {
         userGrid.addClassNames("user-grid");
         userGrid.setSizeFull();
         userGrid.setColumns("firstName", "lastName", "email"); // These properties must be similar to entity properties
-        /**
-         * Column used for foreign keys
-         */
+
+        // Column used for foreign keys
         userGrid.addColumn(user -> user.getRole().equals(Role.ROLE_ADMIN) ? "ADMIN" : "USER").setHeader("Role");
         userGrid.addColumn(new ComponentRenderer<>(Span::new, (badge, user) -> {
             if (user.isEnabled()) {
@@ -294,7 +335,6 @@ public class UserView extends VerticalLayout {
             editUserDialog.add(new HorizontalLayout(editUserForm));
             editUserDialog.open();
             addClassName("editing");
-            log.error(user.toString());
         }
     }
 
@@ -308,7 +348,38 @@ public class UserView extends VerticalLayout {
         addUserBtn.getStyle().setCursor("pointer");
         addUserBtn.addClickListener(e -> openCreator());
 
-        var toolbar = new HorizontalLayout(filterText, addUserBtn);
+        prevPageButton.addThemeVariants(ButtonVariant.LUMO_ICON);
+        prevPageButton.getStyle().setCursor(Cursor.POINTER.name());
+        prevPageButton.setTooltipText("Previous page");
+        prevPageButton.addClickListener(e -> {
+            if (pageNumber > 0) {
+                pageNumber--;
+                updateUserList();
+            }
+        });
+
+        nextPageButton.addThemeVariants(ButtonVariant.LUMO_ICON);
+        nextPageButton.getStyle().setCursor(Cursor.POINTER.name());
+        nextPageButton.setTooltipText("Next page");
+        nextPageButton.addClickListener(e -> {
+            long totalUsersCount = (int) userService.countUsers(); // Implement this method in your service
+            int totalPages = (int) Math.ceil((double) totalUsersCount / CustomConstants.USER_PAGE_SIZE);
+            if (pageNumber < totalPages - 1) {
+                pageNumber++;
+                updateUserList();
+            }
+        });
+
+        HorizontalLayout paginationController = new HorizontalLayout(paginationLabel, prevPageButton, nextPageButton);
+        paginationController.setSpacing(true);
+
+        HorizontalLayout toolbar = new HorizontalLayout(
+                new HorizontalLayout(filterText, addUserBtn),
+                paginationController
+        );
+        toolbar.setWidthFull();
+        toolbar.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
         toolbar.addClassName("toolbar");
 
         return toolbar;

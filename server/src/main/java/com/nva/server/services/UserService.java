@@ -4,6 +4,7 @@ import com.nva.server.dtos.ChangePasswordDto;
 import com.nva.server.entities.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
@@ -11,7 +12,8 @@ public interface UserService {
     User editUser(User user);
     void toggleLockUser(String email);
     Optional<User> getUser(String email);
-    List<User> getUsers(String searchTerm);
+    List<User> getUsers(Map<String, Object> params);
+    long getUserCount(Map<String, Object> params);
     Optional<User> findByEmail(String email);
     long countUsers();
     void removeUser(User user);
