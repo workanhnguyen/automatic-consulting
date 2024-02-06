@@ -2,6 +2,8 @@ package com.nva.server.repositories;
 
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,8 +17,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     User findByRole(Role role);
 
-    @Query("select u from User u " +
-        "where lower(u.firstName) like lower(concat('%', :searchTerm, '%')) " +
-        "or lower(u.lastName) like lower(concat('%', :searchTerm, '%'))")
-    List<User> search(@Param("searchTerm") String searchTerm);
+    @Query("SELECT u FROM User u WHERE LOWER(u.firstName) LIKE LOWER(concat('%', :keyword, '%')) " +
+            "OR LOWER(u.lastName) LIKE LOWER(concat('%', :keyword, '%')) " +
+            "OR LOWER(u.email) LIKE LOWER(concat('%', :keyword, '%'))")
+    Page<User> search(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT COUNT(u) FROM User u WHERE LOWER(u.firstName) LIKE LOWER(concat('%', :keyword, '%')) " +
+            "OR LOWER(u.lastName) LIKE LOWER(concat('%', :keyword, '%')) " +
+            "OR LOWER(u.email) LIKE LOWER(concat('%', :keyword, '%'))")
+    long countByKeyword(@Param("keyword") String keyword);
 }

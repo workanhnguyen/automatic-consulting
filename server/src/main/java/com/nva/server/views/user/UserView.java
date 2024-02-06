@@ -11,6 +11,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.model.Cursor;
+import com.vaadin.flow.component.charts.model.Label;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
@@ -62,6 +63,12 @@ public class UserView extends VerticalLayout {
     private final UserForm createNewUserForm = new CreateNewUserForm();
     private final ChangePasswordForm changePasswordForm = new ChangePasswordForm();
 
+    // Pagination variables
+    private int pageNumber = 0;
+    private final Button prevPageButton = new Button(new Icon(VaadinIcon.ANGLE_LEFT));
+    private final Button nextPageButton = new Button(new Icon(VaadinIcon.ANGLE_RIGHT));
+    private final Paragraph paginationLabel = new Paragraph();
+    private final Map<String, Object> params = new HashMap<>();
 
     public UserView(UserService userService) {
         this.userService = userService;
@@ -158,13 +165,9 @@ public class UserView extends VerticalLayout {
     }
 
     private void updateUserList() {
-        int pageNumber = 0; // Initial page number
-        int pageSize = CustomConstants.PAGE_SIZE; // Initial page size
-
         String keyword = filterText.getValue();
-        Map<String, Object> params = new HashMap<>();
         params.put("pageNumber", pageNumber);
-        params.put("pageSize", pageSize);
+        params.put("pageSize", CustomConstants.USER_PAGE_SIZE);
         params.put("keyword", keyword);
 
         List<User> users = userService.getUsers(params);
@@ -172,13 +175,27 @@ public class UserView extends VerticalLayout {
 
         userGrid.setItems(users);
 
-        // Update the pagination component
-//        updatePaginationComponent(totalUsers, pageNumber, pageSize);
+        updatePaginationButtons();
+        updatePaginationLabel(totalUsers);
     }
 
-//    private void updateUserList() {
-//        userGrid.setItems(userService.getUsers(filterText.getValue()));
-//    }
+    private void updatePaginationButtons() {
+        // Enable/disable "Previous" button
+        prevPageButton.setEnabled(pageNumber > 0);
+
+        // Enable/disable "Next" button
+        long totalUsersCount = userService.countUsers();
+        int totalPages = (int) Math.ceil((double) totalUsersCount / CustomConstants.USER_PAGE_SIZE);
+        nextPageButton.setEnabled(pageNumber < totalPages - 1);
+    }
+
+    private void updatePaginationLabel(long totalUsers) {
+        int startUser =  pageNumber * CustomConstants.USER_PAGE_SIZE + 1;
+        int endUser = (int) Math.min((long) (pageNumber + 1) * CustomConstants.USER_PAGE_SIZE, totalUsers);
+
+        // Update label with the current range of users being displayed
+        paginationLabel.setText(startUser + " - " + endUser + " out of " + totalUsers);
+    }
 
     private void configureForm() {
         editUserForm.setWidth("25em");
@@ -260,14 +277,12 @@ public class UserView extends VerticalLayout {
         }
     }
 
-
     private void configureGrid() {
         userGrid.addClassNames("user-grid");
         userGrid.setSizeFull();
         userGrid.setColumns("firstName", "lastName", "email"); // These properties must be similar to entity properties
-        /**
-         * Column used for foreign keys
-         */
+
+        // Column used for foreign keys
         userGrid.addColumn(user -> user.getRole().equals(Role.ROLE_ADMIN) ? "ADMIN" : "USER").setHeader("Role");
         userGrid.addColumn(new ComponentRenderer<>(Span::new, (badge, user) -> {
             if (user.isEnabled()) {
@@ -281,15 +296,6 @@ public class UserView extends VerticalLayout {
         userGrid.addColumn(
                 new ComponentRenderer<>(MenuBar::new, this::configureMenuBar)).setHeader("Actions").setTextAlign(ColumnTextAlign.CENTER);
         userGrid.getColumns().forEach(col -> col.setAutoWidth(true));
-
-        // Set pagination
-        userGrid.setPageSize(CustomConstants.PAGE_SIZE);
-        userGrid.addThemeVariants(GridVariant.LUMO_COMPACT, GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_NO_ROW_BORDERS);
-
-        // Add a pagination component
-//        Div pagination = new Div();
-//        pagination.getElement().getThemeList().add("pagination");
-//        userGrid.addComponentColumn(user -> pagination).setHeader("Page").setTextAlign(ColumnTextAlign.CENTER);
     }
 
     private void configureMenuBar(MenuBar menuBar, User user) {
@@ -345,19 +351,30 @@ public class UserView extends VerticalLayout {
         addUserBtn.getStyle().setCursor("pointer");
         addUserBtn.addClickListener(e -> openCreator());
 
-        Button prevPageButton = new Button(new Icon(VaadinIcon.ANGLE_LEFT));
         prevPageButton.addThemeVariants(ButtonVariant.LUMO_ICON);
         prevPageButton.getStyle().setCursor(Cursor.POINTER.name());
         prevPageButton.setTooltipText("Previous page");
+        prevPageButton.addClickListener(e -> {
+            if (pageNumber > 0) {
+                pageNumber--;
+                updateUserList();
+            }
+        });
 
-        Button nextPageButton = new Button(new Icon(VaadinIcon.ANGLE_RIGHT));
         nextPageButton.addThemeVariants(ButtonVariant.LUMO_ICON);
         nextPageButton.getStyle().setCursor(Cursor.POINTER.name());
         nextPageButton.setTooltipText("Next page");
+        nextPageButton.addClickListener(e -> {
+            long totalUsersCount = (int) userService.countUsers(); // Implement this method in your service
+            int totalPages = (int) Math.ceil((double) totalUsersCount / CustomConstants.USER_PAGE_SIZE);
+            if (pageNumber < totalPages - 1) {
+                pageNumber++;
+                updateUserList();
+            }
+        });
 
-        HorizontalLayout paginationController = new HorizontalLayout(prevPageButton, nextPageButton);
+        HorizontalLayout paginationController = new HorizontalLayout(paginationLabel, prevPageButton, nextPageButton);
         paginationController.setSpacing(true);
-        paginationController.add();
 
         HorizontalLayout toolbar = new HorizontalLayout(
                 new HorizontalLayout(filterText, addUserBtn),

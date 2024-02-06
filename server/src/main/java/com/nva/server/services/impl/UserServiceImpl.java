@@ -1,5 +1,6 @@
 package com.nva.server.services.impl;
 
+import com.nva.server.constants.CustomConstants;
 import com.nva.server.dtos.ChangePasswordDto;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
@@ -10,11 +11,15 @@ import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -65,11 +70,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers(String searchTerm) {
-        if (searchTerm == null || searchTerm.isEmpty()) {
-            return userRepository.findAll();
+    public List<User> getUsers(Map<String, Object> params) {
+        String keyword = (String) params.get("keyword");
+        int pageNumber = (int) params.getOrDefault("pageNumber", 0);
+        int pageSize = (int) params.getOrDefault("pageSize", CustomConstants.USER_PAGE_SIZE);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        if (keyword == null) {
+            return userRepository.findAll(pageable).getContent();
         } else {
-            return userRepository.search(searchTerm);
+            return userRepository.search(keyword, pageable).getContent();
+        }
+    }
+
+    @Override
+    public long getUserCount(Map<String, Object> params) {
+        String keyword = (String) params.get("keyword");
+
+        if (keyword == null) {
+            return userRepository.count();
+        } else {
+            return userRepository.countByKeyword(keyword);
         }
     }
 
