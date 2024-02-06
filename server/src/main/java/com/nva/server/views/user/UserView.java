@@ -11,11 +11,9 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.model.Cursor;
-import com.vaadin.flow.component.charts.model.Label;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -337,7 +335,6 @@ public class UserView extends VerticalLayout {
             editUserDialog.add(new HorizontalLayout(editUserForm));
             editUserDialog.open();
             addClassName("editing");
-            log.error(user.toString());
         }
     }
 

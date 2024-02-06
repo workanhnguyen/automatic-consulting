@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
             User existingUser = optionalUser.get();
             existingUser.setFirstName(user.getFirstName());
             existingUser.setLastName(user.getLastName());
+            existingUser.setLastModifiedDate(new Date().getTime());
 
             return userRepository.save(existingUser);
         } else throw new UserNotFoundException("User is not found.");
