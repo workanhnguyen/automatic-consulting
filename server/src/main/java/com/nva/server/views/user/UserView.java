@@ -297,8 +297,6 @@ public class UserView extends VerticalLayout {
     }
 
     private void configureMenuBar(MenuBar menuBar, User user) {
-        menuBar.setOpenOnHover(true);
-
         String lockText = user.getIsEnabled() ? "Lock user" : "Unlock user";
 
         menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
