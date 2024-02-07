@@ -33,6 +33,8 @@ public class ServerApplication {
     @Autowired
     private EntranceMethodRepository entranceMethodRepository;
     @Autowired
+    private TopicRepository topicRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
@@ -47,7 +49,20 @@ public class ServerApplication {
             loadMajorData();
             loadEntranceMethodGroupData();
             loadEntranceMethodData();
+            loadTopicData();
         };
+    }
+
+    private void loadTopicData() {
+        if (topicRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/topics.json");
+            try {
+                List<Topic> topics = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Topic topic : topics) {
+                    topicRepository.save(topic);
+                }
+            } catch (IOException ignored) {}
+        }
     }
 
     private void loadEntranceMethodData() {

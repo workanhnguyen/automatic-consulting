@@ -1,0 +1,58 @@
+[
+  {
+    "name": "contact-info",
+    "description": "Thông tin liên hệ"
+  },
+  {
+    "name": "diploma",
+    "description": "Văn bằng tốt nghiệp"
+  },
+  {
+    "name": "higher-study-chance",
+    "description": "Thông tin cao học (Thạc sĩ, Tiến sĩ)"
+  },
+  {
+    "name": "links",
+    "description": "Liên kết"
+  },
+  {
+    "name": "majors",
+    "description": "Thông tin về các ngành của khoa"
+  },
+  {
+    "name": "prerequisite-admission",
+    "description": "Thông tin về điều kiện tuyển sinh đầu vào"
+  },
+  {
+    "name": "student-activity",
+    "description": "Thông tin về các hoạt động sinh viên"
+  },
+  {
+    "name": "study-place",
+    "description": "Thông tin về cơ sở học tập"
+  },
+  {
+    "name": "study-program",
+    "description": "Thông tin về chương trình đào tạo"
+  },
+  {
+    "name": "work-chance",
+    "description": "Thông tin về chương trình đào tạo"
+  },
+  {
+    "name": "entrance-score",
+    "description": "Điểm tuyển sinh đầu vào"
+  },
+  {
+    "name": "general-info",
+    "description": "Thông tin tổng quát"
+  },
+  {
+    "name": "subject-combination",
+    "description": "Thông tin về tổ hợp xét tuyển"
+  },
+  {
+    "name": "entrance-method",
+    "description": "Thông tin phương thức tuyển sinh"
+  }
+]
