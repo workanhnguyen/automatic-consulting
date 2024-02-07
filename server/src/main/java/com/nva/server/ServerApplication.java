@@ -39,6 +39,10 @@ public class ServerApplication {
     @Autowired
     private ScopeRepository scopeRepository;
     @Autowired
+    private InformationRepository informationRepository;
+    @Autowired
+    private EntranceScoreInformationRepository entranceScoreInformationRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
@@ -56,7 +60,33 @@ public class ServerApplication {
             loadTopicData();
             loadActionData();
             loadScopeData();
+            loadInformationData();
+            loadEntranceScoreInformationData();
         };
+    }
+
+    private void loadEntranceScoreInformationData() {
+        if (entranceScoreInformationRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/entrance-score-information.json");
+            try {
+                List<EntranceScoreInformation> entranceScoreInformation = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (EntranceScoreInformation info : entranceScoreInformation) {
+                    entranceScoreInformationRepository.save(info);
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
+    private void loadInformationData() {
+        if (informationRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/general-information.json");
+            try {
+                List<Information> information = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Information info : information) {
+                    informationRepository.save(info);
+                }
+            } catch (IOException ignored) {}
+        }
     }
 
     private void loadScopeData() {
