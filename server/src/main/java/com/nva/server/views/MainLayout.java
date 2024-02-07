@@ -1,6 +1,7 @@
 package com.nva.server.views;
 
 import com.nva.server.security.SecurityService;
+import com.nva.server.views.faculty.FacultyView;
 import com.nva.server.views.home.HomeView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -75,6 +76,7 @@ public class MainLayout extends AppLayout {
 
         nav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
         nav.addItem(new SideNavItem("User Management", UserView.class, LineAwesomeIcon.USER.create()));
+        nav.addItem(new SideNavItem("Faculty Management", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create()));
 
         return nav;
     }
