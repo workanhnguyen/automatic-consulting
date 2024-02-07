@@ -37,6 +37,8 @@ public class ServerApplication {
     @Autowired
     private ActionRepository actionRepository;
     @Autowired
+    private ScopeRepository scopeRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
@@ -53,7 +55,20 @@ public class ServerApplication {
             loadEntranceMethodData();
             loadTopicData();
             loadActionData();
+            loadScopeData();
         };
+    }
+
+    private void loadScopeData() {
+        if (scopeRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/scopes.json");
+            try {
+                List<Scope> scopes = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Scope scope : scopes) {
+                    scopeRepository.save(scope);
+                }
+            } catch (IOException ignored) {}
+        }
     }
 
     private void loadActionData() {
