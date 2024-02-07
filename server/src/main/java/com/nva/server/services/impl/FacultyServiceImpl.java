@@ -2,12 +2,8 @@ package com.nva.server.services.impl;
 
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.entities.Faculty;
-import com.nva.server.entities.Role;
-import com.nva.server.entities.User;
 import com.nva.server.exceptions.EntityExistedException;
 import com.nva.server.exceptions.EntityNotFoundException;
-import com.nva.server.exceptions.UserExistedException;
-import com.nva.server.exceptions.UserNotFoundException;
 import com.nva.server.repositories.FacultyRepository;
 import com.nva.server.services.FacultyService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package com.nva.server.services;
 
 import com.nva.server.entities.Faculty;
-import com.nva.server.entities.User;
 
 import java.util.List;
 import java.util.Map;

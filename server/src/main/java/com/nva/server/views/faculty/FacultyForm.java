@@ -2,10 +2,7 @@ package com.nva.server.views.faculty;
 
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.entities.Faculty;
-import com.nva.server.entities.User;
 import com.nva.server.utils.CustomUtils;
-import com.nva.server.views.user.EditUserForm;
-import com.nva.server.views.user.UserForm;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
