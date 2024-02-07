@@ -21,7 +21,6 @@ public class Action implements Serializable {
     @Column(nullable = false, length = 50)
     private String name;
     @Column(nullable = false)
-    @Lob
     private String description;
     @CreatedDate
     @Column(nullable = false)

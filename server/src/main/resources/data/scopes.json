@@ -1,0 +1,14 @@
+[
+  {
+    "name": "university",
+    "description": "Phạm vi trường đại học"
+  },
+  {
+    "name": "faculty",
+    "description": "Phạm vi khoa"
+  },
+  {
+    "name": "major",
+    "description": "Phạm vi ngành"
+  }
+]

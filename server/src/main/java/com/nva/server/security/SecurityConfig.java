@@ -34,9 +34,7 @@ public class SecurityConfig extends VaadinWebSecurity {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/api/v1/auth/**").permitAll();
-                    request.requestMatchers("/api/v1/users/**").hasAnyAuthority(Role.ROLE_USER.name());
                     request.requestMatchers("/api/v1/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name());
-                    request.requestMatchers("/api/v1/dialogflow/**").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,0 +1,21 @@
+[
+  {
+    "action": {
+      "id": 1
+    },
+    "scope": {
+      "id": 2
+    },
+    "topic": {
+      "id": 1
+    },
+    "content": "24.00",
+    "entranceMethod": {
+      "id": 2
+    },
+    "major": {
+      "id": 1
+    },
+    "year": "2023"
+  }
+]

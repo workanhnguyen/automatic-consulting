@@ -33,6 +33,16 @@ public class ServerApplication {
     @Autowired
     private EntranceMethodRepository entranceMethodRepository;
     @Autowired
+    private TopicRepository topicRepository;
+    @Autowired
+    private ActionRepository actionRepository;
+    @Autowired
+    private ScopeRepository scopeRepository;
+    @Autowired
+    private InformationRepository informationRepository;
+    @Autowired
+    private EntranceScoreInformationRepository entranceScoreInformationRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
@@ -47,7 +57,72 @@ public class ServerApplication {
             loadMajorData();
             loadEntranceMethodGroupData();
             loadEntranceMethodData();
+            loadTopicData();
+            loadActionData();
+            loadScopeData();
+            loadInformationData();
+            loadEntranceScoreInformationData();
         };
+    }
+
+    private void loadEntranceScoreInformationData() {
+        if (entranceScoreInformationRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/entrance-score-information.json");
+            try {
+                List<EntranceScoreInformation> entranceScoreInformation = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (EntranceScoreInformation info : entranceScoreInformation) {
+                    entranceScoreInformationRepository.save(info);
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
+    private void loadInformationData() {
+        if (informationRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/general-information.json");
+            try {
+                List<Information> information = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Information info : information) {
+                    informationRepository.save(info);
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
+    private void loadScopeData() {
+        if (scopeRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/scopes.json");
+            try {
+                List<Scope> scopes = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Scope scope : scopes) {
+                    scopeRepository.save(scope);
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
+    private void loadActionData() {
+        if (actionRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/actions.json");
+            try {
+                List<Action> actions = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Action action : actions) {
+                    actionRepository.save(action);
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
+    private void loadTopicData() {
+        if (topicRepository.count() == 0) {
+            InputStream inputStream = getClass().getResourceAsStream("/data/topics.json");
+            try {
+                List<Topic> topics = objectMapper.readValue(inputStream, new TypeReference<>() {});
+                for (Topic topic : topics) {
+                    topicRepository.save(topic);
+                }
+            } catch (IOException ignored) {}
+        }
     }
 
     private void loadEntranceMethodData() {

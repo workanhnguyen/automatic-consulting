@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(name = "information")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Information implements Serializable {
+public class Information implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,8 +28,7 @@ public abstract class Information implements Serializable {
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10000)
     private String content;
     @CreatedDate
     @Column(nullable = false)
