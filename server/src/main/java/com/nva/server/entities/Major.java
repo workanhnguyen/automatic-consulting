@@ -1,6 +1,8 @@
 package com.nva.server.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ public class Major implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false, length = 100)
+    @NotEmpty(message = "Must not be empty")
     private String name;
     @CreatedDate
     @Column(nullable = false)
@@ -29,6 +32,7 @@ public class Major implements Serializable {
     private String note;
     @ManyToOne
     @JoinColumn(name = "faculty_id", nullable = false)
+    @NotNull(message = "Must choose 1 option")
     private Faculty faculty;
 
     @PrePersist

@@ -181,10 +181,10 @@ public class FacultyView extends VerticalLayout {
         facultyGrid.addClassName("faculty-grid");
         facultyGrid.setSizeFull();
         facultyGrid.setColumns("name");
-        facultyGrid.addColumn(faculty -> (faculty.getNote() == null || faculty.getNote().isEmpty()) ? "--" : faculty.getNote()).setHeader("Note");
         facultyGrid.addColumn(faculty -> CustomUtils.convertMillisecondsToDate(faculty.getCreatedDate(), "HH:mm:ss dd-MM-yyyy")).setHeader("Created date");
         facultyGrid.addColumn(faculty -> (faculty.getLastModifiedDate() == null) ? "--" :
                 CustomUtils.convertMillisecondsToDate(faculty.getLastModifiedDate(), "HH:mm:ss dd-MM-yyyy")).setHeader("Last modified date");
+        facultyGrid.addColumn(faculty -> (faculty.getNote() == null || faculty.getNote().isEmpty()) ? "--" : faculty.getNote()).setHeader("Note");
         facultyGrid.addColumn(
                 new ComponentRenderer<>(MenuBar::new, this::configureMenuBar)).setHeader("Actions").setTextAlign(ColumnTextAlign.CENTER);
 
