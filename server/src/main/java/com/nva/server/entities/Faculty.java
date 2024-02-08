@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,6 +30,8 @@ public class Faculty implements Serializable {
     private Long lastModifiedDate;
     @Lob
     private String note;
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.REMOVE)
+    private List<Major> majors;
     @PrePersist
     protected void onCreate() {
         this.createdDate = System.currentTimeMillis();

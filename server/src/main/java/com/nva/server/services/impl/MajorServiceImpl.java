@@ -96,30 +96,25 @@ public class MajorServiceImpl implements MajorService {
                 .getResultList();
     }
 
-//    @Override
-//    public List<Major> getMajors(Map<String, Object> params) {
-//        String keyword = (String) params.get("keyword");
-//        String facultyName = (String) params.get("facultyName");
-//        int pageNumber = (int) params.getOrDefault("pageNumber", 0);
-//        int pageSize = (int) params.getOrDefault("pageSize", CustomConstants.MAJOR_PAGE_SIZE);
-//
-//        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
-//
-//        if (keyword == null || keyword.isEmpty()) {
-//            return majorRepository.findAll(pageable).getContent();
-//        } else {
-//            return majorRepository.search(keyword, pageable).getContent();
-//        }
-//    }
-
-    @Override
     public long getMajorCount(Map<String, Object> params) {
         String keyword = (String) params.get("keyword");
+        String facultyId = (String) params.get("facultyId");
 
-        if (keyword == null || keyword.isEmpty()) {
-            return majorRepository.count();
-        } else {
-            return majorRepository.countByKeyword(keyword);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Major> root = query.from(Major.class);
+
+        Predicate predicate = cb.conjunction();
+        if (keyword != null && !keyword.isEmpty()) {
+            predicate = cb.and(predicate, cb.like(root.get("name"), "%" + keyword + "%"));
         }
+        if (facultyId != null && !facultyId.isEmpty()) {
+            Join<Major, Faculty> facultyJoin = root.join("faculty", JoinType.INNER);
+            predicate = cb.and(predicate, cb.equal(facultyJoin.get("id"), Long.parseLong(facultyId)));
+        }
+
+        query.select(cb.count(root)).where(predicate);
+
+        return entityManager.createQuery(query).getSingleResult();
     }
 }

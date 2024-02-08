@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Data
@@ -34,7 +35,8 @@ public class Major implements Serializable {
     @JoinColumn(name = "faculty_id", nullable = false)
     @NotNull(message = "Must choose 1 option")
     private Faculty faculty;
-
+    @OneToMany(mappedBy = "major", cascade = CascadeType.REMOVE)
+    private List<EntranceScoreInformation> entranceScoreInformation;
     @PrePersist
     protected void onCreate() {
         this.createdDate = System.currentTimeMillis();
