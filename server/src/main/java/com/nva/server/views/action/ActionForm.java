@@ -1,7 +1,7 @@
-package com.nva.server.views.faculty;
+package com.nva.server.views.action;
 
 import com.nva.server.constants.CustomConstants;
-import com.nva.server.entities.Faculty;
+import com.nva.server.entities.Action;
 import com.nva.server.utils.CustomUtils;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -20,12 +20,13 @@ import com.vaadin.flow.shared.Registration;
 import lombok.Getter;
 
 @Getter
-public class FacultyForm extends FormLayout {
-    private final Binder<Faculty> facultyBinder = new BeanValidationBinder<>(Faculty.class);
-    private Faculty faculty;
+public class ActionForm extends FormLayout {
+    private final Binder<Action> majorBinder = new BeanValidationBinder<>(Action.class);
+    private Action action;
 
     // These fields must be similar to the entity fields
-    private final TextField name = new TextField("Faculty name");
+    private final TextField name = new TextField("Action name");
+    private final TextField description = new TextField("Description");
     private final TextArea note = new TextArea("Note");
     private final TextField createdDate = new TextField("Created date");
     private final TextField lastModifiedDate = new TextField("Last modified date");
@@ -36,22 +37,23 @@ public class FacultyForm extends FormLayout {
     private TextField showedCreatedDate;
     private TextField showedLastModifiedDate;
 
-    public FacultyForm() {
-        addClassName("faculty-form");
+    public ActionForm() {
+        addClassName("action-form");
         validate();
         configureFields();
 
         add(
                 this.getName(),
+                this.getDescription(),
                 this.getNote(),
                 this.getShowedCreatedDate(),
                 this.getShowedLastModifiedDate(),
                 createButtonLayout()
         );
     }
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-        facultyBinder.readBean(faculty);
+    public void setAction(Action action) {
+        this.action = action;
+        majorBinder.readBean(action);
     }
 
 
@@ -63,7 +65,7 @@ public class FacultyForm extends FormLayout {
 
         this.deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         this.deleteButton.getStyle().setCursor("pointer");
-        this.deleteButton.addClickListener(e -> fireEvent(new DeleteEvent(this, getFaculty())));
+        this.deleteButton.addClickListener(e -> fireEvent(new DeleteEvent(this, getAction())));
 
         this.cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         this.cancelButton.getStyle().setCursor("pointer");
@@ -75,16 +77,17 @@ public class FacultyForm extends FormLayout {
 
     private void validateAndSave() {
         try {
-            facultyBinder.writeBean(faculty);
-            fireEvent(new SaveEvent(this, faculty));
+            majorBinder.writeBean(action);
+            fireEvent(new SaveEvent(this, action));
         } catch (ValidationException e) {
             // log.error(e.getMessage());
         }
     }
 
     private void configureFields() {
-        name.setRequired(true);
-        name.setPlaceholder("Enter faculty name");
+        name.setPlaceholder("Enter major name");
+
+        description.setPlaceholder("Enter description");
 
         note.setMaxHeight("10em");
         note.setPlaceholder("Enter note");
@@ -125,35 +128,35 @@ public class FacultyForm extends FormLayout {
     }
 
     private void validate() {
-        facultyBinder.bindInstanceFields(this);
+        majorBinder.bindInstanceFields(this);
     }
 
     // ---------------------- Events -------------------------
     @Getter
-    public static abstract class FacultyFormEvent extends ComponentEvent<FacultyForm> {
-        private final Faculty faculty;
+    public static abstract class ActionFormEvent extends ComponentEvent<ActionForm> {
+        private final Action action;
 
-        protected FacultyFormEvent(FacultyForm source, Faculty faculty) {
+        protected ActionFormEvent(ActionForm source, Action action) {
             super(source, false);
-            this.faculty = faculty;
+            this.action = action;
         }
     }
 
-    public static class SaveEvent extends FacultyForm.FacultyFormEvent {
-        SaveEvent(FacultyForm source, Faculty faculty) {
-            super(source, faculty);
+    public static class SaveEvent extends ActionFormEvent {
+        SaveEvent(ActionForm source, Action action) {
+            super(source, action);
         }
     }
 
-    public static class CloseEvent extends FacultyForm.FacultyFormEvent {
-        CloseEvent(FacultyForm source) {
+    public static class CloseEvent extends ActionFormEvent {
+        CloseEvent(ActionForm source) {
             super(source, null);
         }
     }
 
-    public static class DeleteEvent extends FacultyForm.FacultyFormEvent {
-        DeleteEvent(FacultyForm source, Faculty faculty) {
-            super(source, faculty);
+    public static class DeleteEvent extends ActionFormEvent {
+        DeleteEvent(ActionForm source, Action action) {
+            super(source, action);
         }
     }
 

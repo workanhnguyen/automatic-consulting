@@ -1,6 +1,7 @@
 package com.nva.server.views;
 
 import com.nva.server.security.SecurityService;
+import com.nva.server.views.action.ActionView;
 import com.nva.server.views.faculty.FacultyView;
 import com.nva.server.views.home.HomeView;
 import com.nva.server.views.major.MajorView;
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
@@ -72,14 +74,23 @@ public class MainLayout extends AppLayout {
         addToDrawer(header, scroller, createFooter());
     }
 
-    private SideNav createNavigation() {
-        SideNav nav = new SideNav();
+    private VerticalLayout createNavigation() {
+        VerticalLayout nav = new VerticalLayout();
+        nav.setPadding(false);
 
-        nav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
-        nav.addItem(new SideNavItem("User Management", UserView.class, LineAwesomeIcon.USER.create()));
-        nav.addItem(new SideNavItem("Faculty Management", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create()));
-        nav.addItem(new SideNavItem("Major Management", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
+        SideNav primaryNav = new SideNav();
+        primaryNav.setLabel("Primary management");
+        primaryNav.setCollapsible(true);
+        primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
+        primaryNav.addItem(new SideNavItem("User Management", UserView.class, LineAwesomeIcon.USER.create()));
+        primaryNav.addItem(new SideNavItem("Faculty Management", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create()));
+        primaryNav.addItem(new SideNavItem("Major Management", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
 
+        SideNav dialogflowNav = new SideNav();
+        dialogflowNav.setLabel("Dialogflow management");
+        dialogflowNav.setCollapsible(true);
+        dialogflowNav.addItem(new SideNavItem("Action management", ActionView.class, LineAwesomeIcon.SPLOTCH_SOLID.create()));
+        nav.add(primaryNav, dialogflowNav);
         return nav;
     }
 
