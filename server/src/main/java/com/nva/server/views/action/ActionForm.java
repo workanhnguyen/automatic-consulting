@@ -2,11 +2,6 @@ package com.nva.server.views.action;
 
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.entities.Action;
-import com.nva.server.entities.Faculty;
-import com.nva.server.entities.Major;
-import com.nva.server.services.ActionService;
-import com.nva.server.services.FacultyService;
-import com.nva.server.services.impl.FacultyServiceImpl;
 import com.nva.server.utils.CustomUtils;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -14,7 +9,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -24,8 +18,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 public class ActionForm extends FormLayout {

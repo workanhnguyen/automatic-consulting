@@ -2,10 +2,7 @@ package com.nva.server.views.action;
 
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.entities.Action;
-import com.nva.server.entities.Major;
 import com.nva.server.services.ActionService;
-import com.nva.server.services.FacultyService;
-import com.nva.server.services.MajorService;
 import com.nva.server.utils.CustomUtils;
 import com.nva.server.views.MainLayout;
 import com.nva.server.views.components.CustomNotification;

@@ -2,20 +2,16 @@ package com.nva.server.services.impl;
 
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.entities.Action;
-import com.nva.server.entities.Faculty;
-import com.nva.server.entities.Major;
 import com.nva.server.exceptions.EntityExistedException;
 import com.nva.server.exceptions.EntityNotFoundException;
 import com.nva.server.repositories.ActionRepository;
-import com.nva.server.repositories.FacultyRepository;
-import com.nva.server.repositories.MajorRepository;
 import com.nva.server.services.ActionService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
