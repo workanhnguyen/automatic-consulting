@@ -95,7 +95,7 @@ public class FacultyView extends VerticalLayout {
     private void configureDeleteFacultyDialog() {
         confirmDeleteFacultyDialog.setHeaderTitle("Delete faculty");
 
-        Button deleteButton = new Button("Delete", e -> {
+        Button deleteButton = new Button("Delete all", e -> {
             deleteFaculty(editFacultyForm.getFaculty());
             closeConfirmDeleteFacultyDialog();
         });
@@ -200,7 +200,7 @@ public class FacultyView extends VerticalLayout {
         // Major of faculty grid
         majorGrid.addClassName("majors-of-faculty-grid");
         majorGrid.setWidthFull();
-        majorGrid.setHeight("300px");
+        majorGrid.setHeight("450px");
         majorGrid.setColumns("name");
         majorGrid.addColumn(major -> CustomUtils.convertMillisecondsToDate(major.getCreatedDate(), "HH:mm:ss dd-MM-yyyy")).setHeader("Created date");
         majorGrid.addColumn(major -> (major.getLastModifiedDate() == null) ? "--" :
