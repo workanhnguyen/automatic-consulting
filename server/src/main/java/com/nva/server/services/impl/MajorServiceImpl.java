@@ -42,17 +42,28 @@ public class MajorServiceImpl implements MajorService {
     public Major editMajor(Major major) {
         Optional<Major> optionalMajor = majorRepository.findById(major.getId());
         if (optionalMajor.isPresent()) {
-            List<Major> majorsByFaculty = majorRepository.findByFaculty(major.getFaculty());
-            // Major has the same name but different from faculty still can be added
-            boolean isMajorExistedInFaculty = majorsByFaculty.stream().anyMatch(item -> item.getName().equalsIgnoreCase(major.getName()));
-            if (!isMajorExistedInFaculty || major.getFaculty().equals(optionalMajor.get().getFaculty())) {
+            if (major.getFaculty().getId().equals(optionalMajor.get().getFaculty().getId())) {
                 Major existingMajor = optionalMajor.get();
                 existingMajor.setName(major.getName());
                 existingMajor.setNote(major.getNote());
+                existingMajor.setFaculty(major.getFaculty());
                 existingMajor.setLastModifiedDate(new Date().getTime());
 
                 return majorRepository.save(existingMajor);
-            } else throw new EntityExistedException("This major is already existed in faculty");
+            } else {
+                List<Major> majorsByFaculty = majorRepository.findByFaculty(major.getFaculty());
+                // Major has the same name but different from faculty still can be added
+                boolean isMajorExistedInFaculty = majorsByFaculty.stream().anyMatch(item -> item.getName().equalsIgnoreCase(major.getName()));
+                if (!isMajorExistedInFaculty) {
+                    Major existingMajor = optionalMajor.get();
+                    existingMajor.setName(major.getName());
+                    existingMajor.setNote(major.getNote());
+                    existingMajor.setFaculty(major.getFaculty());
+                    existingMajor.setLastModifiedDate(new Date().getTime());
+
+                    return majorRepository.save(existingMajor);
+                } else throw new EntityExistedException("This major is already existed in faculty");
+            }
         } else throw new EntityNotFoundException("Major is not found.");
     }
 
