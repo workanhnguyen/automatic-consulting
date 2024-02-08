@@ -32,7 +32,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty editFaculty(Faculty faculty) {
-        Optional<Faculty> optionalFaculty = facultyRepository.findByName(faculty.getName());
+        Optional<Faculty> optionalFaculty = facultyRepository.findById(faculty.getId());
         if (optionalFaculty.isPresent()) {
             Faculty existingFaculty = optionalFaculty.get();
             existingFaculty.setName(faculty.getName());
