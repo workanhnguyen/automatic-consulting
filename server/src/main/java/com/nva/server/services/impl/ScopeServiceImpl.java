@@ -28,17 +28,18 @@ public class ScopeServiceImpl implements ScopeService {
 
     @Override
     public Scope saveScope(Scope scope) {
-        Optional<Scope> optionalScope = scopeRepository.findByName(scope.getName());
-        if (optionalScope.isEmpty())
+        try {
             return scopeRepository.save(scope);
-        throw new EntityExistedException("Scope is already existed.");
+        } catch (Exception e) {
+            throw new EntityExistedException("Scope is already existed.");
+        }
     }
 
     @Override
     public Scope editScope(Scope scope) {
         Optional<Scope> optionalScope = scopeRepository.findById(scope.getId());
         if (optionalScope.isPresent()) {
-            if (scopeRepository.findByName(scope.getName()).isEmpty()) {
+            try {
                 Scope existingScope = optionalScope.get();
                 existingScope.setName(scope.getName());
                 existingScope.setDescription(scope.getDescription());
@@ -46,7 +47,9 @@ public class ScopeServiceImpl implements ScopeService {
                 existingScope.setLastModifiedDate(new Date().getTime());
 
                 return scopeRepository.save(existingScope);
-            } else throw new EntityExistedException("Scope name is already existed.");
+            } catch (Exception e) {
+                throw new EntityExistedException("Scope name is already existed.");
+            }
         } else throw new EntityNotFoundException("Scope is not found.");
     }
 
