@@ -34,12 +34,14 @@ public class FacultyServiceImpl implements FacultyService {
     public Faculty editFaculty(Faculty faculty) {
         Optional<Faculty> optionalFaculty = facultyRepository.findById(faculty.getId());
         if (optionalFaculty.isPresent()) {
-            Faculty existingFaculty = optionalFaculty.get();
-            existingFaculty.setName(faculty.getName());
-            existingFaculty.setNote(faculty.getNote());
-            existingFaculty.setLastModifiedDate(new Date().getTime());
+            if (facultyRepository.findByName(faculty.getName()).isEmpty()) {
+                Faculty existingFaculty = optionalFaculty.get();
+                existingFaculty.setName(faculty.getName());
+                existingFaculty.setNote(faculty.getNote());
+                existingFaculty.setLastModifiedDate(new Date().getTime());
 
-            return facultyRepository.save(existingFaculty);
+                return facultyRepository.save(existingFaculty);
+            } else throw new EntityExistedException("Faculty name is already existed.");
         } else throw new EntityNotFoundException("Faculty is not found.");
     }
 
