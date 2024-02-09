@@ -5,6 +5,7 @@ import com.nva.server.views.action.ActionView;
 import com.nva.server.views.faculty.FacultyView;
 import com.nva.server.views.home.HomeView;
 import com.nva.server.views.major.MajorView;
+import com.nva.server.views.scope.ScopeView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -89,7 +90,9 @@ public class MainLayout extends AppLayout {
         SideNav dialogflowNav = new SideNav();
         dialogflowNav.setLabel("Dialogflow management");
         dialogflowNav.setCollapsible(true);
-        dialogflowNav.addItem(new SideNavItem("Action management", ActionView.class, LineAwesomeIcon.SPLOTCH_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Action management", ActionView.class, LineAwesomeIcon.SHAPES_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Scope management", ScopeView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
+
         nav.add(primaryNav, dialogflowNav);
         return nav;
     }
