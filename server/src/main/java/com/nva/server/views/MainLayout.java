@@ -2,6 +2,7 @@ package com.nva.server.views;
 
 import com.nva.server.security.SecurityService;
 import com.nva.server.views.action.ActionView;
+import com.nva.server.views.entrance_method_group.EntranceMethodGroupView;
 import com.nva.server.views.faculty.FacultyView;
 import com.nva.server.views.home.HomeView;
 import com.nva.server.views.major.MajorView;
@@ -88,6 +89,7 @@ public class MainLayout extends AppLayout {
         primaryNav.addItem(new SideNavItem("User", UserView.class, LineAwesomeIcon.USER.create()));
         primaryNav.addItem(new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create()));
         primaryNav.addItem(new SideNavItem("Major", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
+        primaryNav.addItem(new SideNavItem("Entrance method group", EntranceMethodGroupView.class, LineAwesomeIcon.OBJECT_GROUP_SOLID.create()));
 
         SideNav dialogflowNav = new SideNav();
         dialogflowNav.setLabel("Dialogflow management");
