@@ -1,6 +1,5 @@
 package com.nva.server.services;
 
-import com.nva.server.entities.Scope;
 import com.nva.server.entities.Topic;
 
 import java.util.List;

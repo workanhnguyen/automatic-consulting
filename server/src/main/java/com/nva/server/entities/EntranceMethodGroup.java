@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,6 +30,8 @@ public class EntranceMethodGroup implements Serializable {
     private Long lastModifiedDate;
     @Lob
     private String note;
+    @OneToMany(mappedBy = "entranceMethodGroup", cascade = CascadeType.REMOVE)
+    private List<EntranceMethod> entranceMethods;
 
     @PrePersist
     protected void onCreate() {

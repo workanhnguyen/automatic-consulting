@@ -3,12 +3,12 @@ package com.nva.server.views;
 import com.nva.server.entities.User;
 import com.nva.server.security.SecurityService;
 import com.nva.server.views.action.ActionView;
+import com.nva.server.views.entrance_method.EntranceMethodView;
 import com.nva.server.views.entrance_method_group.EntranceMethodGroupView;
 import com.nva.server.views.faculty.FacultyView;
 import com.nva.server.views.home.HomeView;
 import com.nva.server.views.major.MajorView;
 import com.nva.server.views.scope.ScopeView;
-import com.nva.server.views.topic.TopicForm;
 import com.nva.server.views.topic.TopicView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -79,18 +79,26 @@ public class MainLayout extends AppLayout {
 
     private VerticalLayout createNavigation() {
         VerticalLayout nav = new VerticalLayout();
+        nav.setWidthFull();
         nav.setPadding(false);
 
         SideNav primaryNav = new SideNav();
+        primaryNav.setWidthFull();
         primaryNav.setLabel("Primary management");
         primaryNav.setCollapsible(true);
         primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
         primaryNav.addItem(new SideNavItem("User", UserView.class, LineAwesomeIcon.USER.create()));
-        primaryNav.addItem(new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create()));
-        primaryNav.addItem(new SideNavItem("Major", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
-        primaryNav.addItem(new SideNavItem("Entrance method group", EntranceMethodGroupView.class, LineAwesomeIcon.OBJECT_GROUP_SOLID.create()));
+
+        SideNavItem facultyNav = new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create());
+        facultyNav.addItem(new SideNavItem("Major", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
+        primaryNav.addItem(facultyNav);
+
+        SideNavItem entranceMethodGroupeNav = new SideNavItem("Entrance group", EntranceMethodGroupView.class, LineAwesomeIcon.OBJECT_GROUP_SOLID.create());
+        entranceMethodGroupeNav.addItem(new SideNavItem("Entrance method", EntranceMethodView.class, LineAwesomeIcon.WINDOW_RESTORE_SOLID.create()));
+        primaryNav.addItem(entranceMethodGroupeNav);
 
         SideNav dialogflowNav = new SideNav();
+        dialogflowNav.setWidthFull();
         dialogflowNav.setLabel("Dialogflow management");
         dialogflowNav.setCollapsible(true);
         dialogflowNav.addItem(new SideNavItem("Action", ActionView.class, LineAwesomeIcon.SHAPES_SOLID.create()));

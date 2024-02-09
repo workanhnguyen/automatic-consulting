@@ -1,6 +1,5 @@
 package com.nva.server.repositories;
 
-import com.nva.server.entities.Scope;
 import com.nva.server.entities.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

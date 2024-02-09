@@ -1,9 +1,7 @@
 package com.nva.server.views.topic;
 
 import com.nva.server.constants.CustomConstants;
-import com.nva.server.entities.Scope;
 import com.nva.server.entities.Topic;
-import com.nva.server.services.ScopeService;
 import com.nva.server.services.TopicService;
 import com.nva.server.utils.CustomUtils;
 import com.nva.server.views.MainLayout;

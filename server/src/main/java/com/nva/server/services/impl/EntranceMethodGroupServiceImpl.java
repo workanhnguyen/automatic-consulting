@@ -1,12 +1,9 @@
 package com.nva.server.services.impl;
 
 import com.nva.server.constants.CustomConstants;
-import com.nva.server.entities.Action;
 import com.nva.server.entities.EntranceMethodGroup;
 import com.nva.server.exceptions.DatabaseException;
-import com.nva.server.exceptions.EntityExistedException;
 import com.nva.server.exceptions.EntityNotFoundException;
-import com.nva.server.repositories.ActionRepository;
 import com.nva.server.repositories.EntranceMethodGroupRepository;
 import com.nva.server.services.EntranceMethodGroupService;
 import jakarta.persistence.EntityManager;

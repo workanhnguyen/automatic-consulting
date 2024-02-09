@@ -2,9 +2,7 @@ package com.nva.server.views.entrance_method_group;
 
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.entities.EntranceMethodGroup;
-import com.nva.server.entities.Topic;
 import com.nva.server.services.EntranceMethodGroupService;
-import com.nva.server.services.TopicService;
 import com.nva.server.utils.CustomUtils;
 import com.nva.server.views.MainLayout;
 import com.nva.server.views.components.CustomNotification;

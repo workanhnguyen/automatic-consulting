@@ -1,7 +1,9 @@
-package com.nva.server.views.entrance_method_group;
+package com.nva.server.views.entrance_method;
 
 import com.nva.server.constants.CustomConstants;
+import com.nva.server.entities.EntranceMethod;
 import com.nva.server.entities.EntranceMethodGroup;
+import com.nva.server.services.EntranceMethodGroupService;
 import com.nva.server.utils.CustomUtils;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -9,6 +11,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -19,14 +22,18 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 import lombok.Getter;
 
+import java.util.HashMap;
+
 @Getter
-public class EntranceMethodGroupForm extends FormLayout {
-    private final Binder<EntranceMethodGroup> entranceMethodGroupBinder = new BeanValidationBinder<>(EntranceMethodGroup.class);
-    private EntranceMethodGroup entranceMethodGroup;
+public class EntranceMethodForm extends FormLayout {
+    private final EntranceMethodGroupService entranceMethodGroupService;
+    private final Binder<EntranceMethod> entranceMethodBinder = new BeanValidationBinder<>(EntranceMethod.class);
+    private EntranceMethod entranceMethod;
 
     // These fields must be similar to the entity fields
-    private final TextField name = new TextField("Entrance method group name");
+    private final TextArea name = new TextArea("Entrance method name");
     private final TextArea note = new TextArea("Note");
+    private final ComboBox<EntranceMethodGroup> entranceMethodGroup = new ComboBox<>("Group belongs");
     private final TextField createdDate = new TextField("Created date");
     private final TextField lastModifiedDate = new TextField("Last modified date");
     private final Button saveButton = new Button("Save");
@@ -36,22 +43,24 @@ public class EntranceMethodGroupForm extends FormLayout {
     private TextField showedCreatedDate;
     private TextField showedLastModifiedDate;
 
-    public EntranceMethodGroupForm() {
-        addClassName("entrance-method-group-form");
+    public EntranceMethodForm(EntranceMethodGroupService entranceMethodGroupService) {
+        this.entranceMethodGroupService = entranceMethodGroupService;
+        addClassName("entrance-method-form");
         validate();
         configureFields();
 
         add(
                 this.getName(),
+                this.getEntranceMethodGroup(),
                 this.getNote(),
                 this.getShowedCreatedDate(),
                 this.getShowedLastModifiedDate(),
                 createButtonLayout()
         );
     }
-    public void setEntranceMethodGroup(EntranceMethodGroup entranceMethodGroup) {
-        this.entranceMethodGroup = entranceMethodGroup;
-        entranceMethodGroupBinder.readBean(entranceMethodGroup);
+    public void setEntranceMethod(EntranceMethod entranceMethod) {
+        this.entranceMethod = entranceMethod;
+        entranceMethodBinder.readBean(entranceMethod);
     }
 
 
@@ -63,7 +72,7 @@ public class EntranceMethodGroupForm extends FormLayout {
 
         this.deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         this.deleteButton.getStyle().setCursor("pointer");
-        this.deleteButton.addClickListener(e -> fireEvent(new DeleteEvent(this, getEntranceMethodGroup())));
+        this.deleteButton.addClickListener(e -> fireEvent(new DeleteEvent(this, getEntranceMethod())));
 
         this.cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         this.cancelButton.getStyle().setCursor("pointer");
@@ -75,18 +84,24 @@ public class EntranceMethodGroupForm extends FormLayout {
 
     private void validateAndSave() {
         try {
-            entranceMethodGroupBinder.writeBean(entranceMethodGroup);
-            fireEvent(new SaveEvent(this, entranceMethodGroup));
+            entranceMethodBinder.writeBean(entranceMethod);
+            fireEvent(new SaveEvent(this, entranceMethod));
         } catch (ValidationException e) {
             // log.error(e.getMessage());
         }
     }
 
     private void configureFields() {
-        name.setPlaceholder("Enter entrance method group name");
+        name.setPlaceholder("Enter entrance method name");
+        name.setMaxHeight("10em");
 
         note.setMaxHeight("10em");
         note.setPlaceholder("Enter note");
+
+        entranceMethodGroup.setItems(entranceMethodGroupService.getEntranceMethodGroups(new HashMap<>()));
+        entranceMethodGroup.setItemLabelGenerator(EntranceMethodGroup::getName);
+        entranceMethodGroup.setRequired(true);
+        entranceMethodGroup.setPlaceholder("Choose 1 group");
 
         showedCreatedDate = new TextField("Created date");
         showedCreatedDate.setReadOnly(true);
@@ -124,35 +139,35 @@ public class EntranceMethodGroupForm extends FormLayout {
     }
 
     private void validate() {
-        entranceMethodGroupBinder.bindInstanceFields(this);
+        entranceMethodBinder.bindInstanceFields(this);
     }
 
     // ---------------------- Events -------------------------
     @Getter
-    public static abstract class EntranceMethodGroupFormEvent extends ComponentEvent<EntranceMethodGroupForm> {
-        private final EntranceMethodGroup entranceMethodGroup;
+    public static abstract class EntranceMethodFormEvent extends ComponentEvent<EntranceMethodForm> {
+        private final EntranceMethod entranceMethod;
 
-        protected EntranceMethodGroupFormEvent(EntranceMethodGroupForm source, EntranceMethodGroup entranceMethodGroup) {
+        protected EntranceMethodFormEvent(EntranceMethodForm source, EntranceMethod entranceMethod) {
             super(source, false);
-            this.entranceMethodGroup = entranceMethodGroup;
+            this.entranceMethod = entranceMethod;
         }
     }
 
-    public static class SaveEvent extends EntranceMethodGroupFormEvent {
-        SaveEvent(EntranceMethodGroupForm source, EntranceMethodGroup entranceMethodGroup) {
-            super(source, entranceMethodGroup);
+    public static class SaveEvent extends EntranceMethodFormEvent {
+        SaveEvent(EntranceMethodForm source, EntranceMethod entranceMethod) {
+            super(source, entranceMethod);
         }
     }
 
-    public static class CloseEvent extends EntranceMethodGroupFormEvent {
-        CloseEvent(EntranceMethodGroupForm source) {
+    public static class CloseEvent extends EntranceMethodFormEvent {
+        CloseEvent(EntranceMethodForm source) {
             super(source, null);
         }
     }
 
-    public static class DeleteEvent extends EntranceMethodGroupFormEvent {
-        DeleteEvent(EntranceMethodGroupForm source, EntranceMethodGroup entranceMethodGroup) {
-            super(source, entranceMethodGroup);
+    public static class DeleteEvent extends EntranceMethodFormEvent {
+        DeleteEvent(EntranceMethodForm source, EntranceMethod entranceMethod) {
+            super(source, entranceMethod);
         }
     }
 
