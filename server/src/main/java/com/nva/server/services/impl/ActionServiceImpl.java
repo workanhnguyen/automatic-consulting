@@ -28,17 +28,18 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public Action saveAction(Action action) {
-        Optional<Action> optionalAction = actionRepository.findByName(action.getName());
-        if (optionalAction.isEmpty())
+        try {
             return actionRepository.save(action);
-        throw new EntityExistedException("Action is already existed.");
+        } catch (Exception e) {
+            throw new EntityExistedException("Action is already existed.");
+        }
     }
 
     @Override
     public Action editAction(Action action) {
         Optional<Action> optionalAction = actionRepository.findById(action.getId());
         if (optionalAction.isPresent()) {
-            if (actionRepository.findByName(action.getName()).isEmpty()) {
+            try {
                 Action existingAction = optionalAction.get();
                 existingAction.setName(action.getName());
                 existingAction.setDescription(action.getDescription());
@@ -46,7 +47,9 @@ public class ActionServiceImpl implements ActionService {
                 existingAction.setLastModifiedDate(new Date().getTime());
 
                 return actionRepository.save(existingAction);
-            } else throw new EntityExistedException("Action name is already existed.");
+            } catch (Exception ex) {
+                throw new EntityExistedException("Action name is already existed");
+            }
         } else throw new EntityNotFoundException("Action is not found.");
     }
 
