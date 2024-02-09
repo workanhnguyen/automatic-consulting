@@ -93,9 +93,9 @@ public class MainLayout extends AppLayout {
         facultyNav.addItem(new SideNavItem("Major", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
         primaryNav.addItem(facultyNav);
 
-        SideNavItem entranceMethodGroupeNav = new SideNavItem("Entrance group", EntranceMethodGroupView.class, LineAwesomeIcon.OBJECT_GROUP_SOLID.create());
-        entranceMethodGroupeNav.addItem(new SideNavItem("Entrance method", EntranceMethodView.class, LineAwesomeIcon.WINDOW_RESTORE_SOLID.create()));
-        primaryNav.addItem(entranceMethodGroupeNav);
+        SideNavItem entranceMethodGroupNav = new SideNavItem("Entrance group", EntranceMethodGroupView.class, LineAwesomeIcon.OBJECT_GROUP_SOLID.create());
+        entranceMethodGroupNav.addItem(new SideNavItem("Entrance method", EntranceMethodView.class, LineAwesomeIcon.WINDOW_RESTORE_SOLID.create()));
+        primaryNav.addItem(entranceMethodGroupNav);
 
         SideNav dialogflowNav = new SideNav();
         dialogflowNav.setWidthFull();
