@@ -1,11 +1,9 @@
 package com.nva.server.services.impl;
 
 import com.nva.server.constants.CustomConstants;
-import com.nva.server.entities.Scope;
 import com.nva.server.entities.Topic;
 import com.nva.server.exceptions.EntityExistedException;
 import com.nva.server.exceptions.EntityNotFoundException;
-import com.nva.server.repositories.ScopeRepository;
 import com.nva.server.repositories.TopicRepository;
 import com.nva.server.services.TopicService;
 import jakarta.persistence.EntityManager;
@@ -30,17 +28,18 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Topic saveTopic(Topic topic) {
-        Optional<Topic> optionalTopic = topicRepository.findByName(topic.getName());
-        if (optionalTopic.isEmpty())
+        try {
             return topicRepository.save(topic);
-        throw new EntityExistedException("Topic name is already existed.");
+        } catch (Exception e) {
+            throw new EntityExistedException("Topic name is already existed.");
+        }
     }
 
     @Override
     public Topic editTopic(Topic topic) {
         Optional<Topic> optionalTopic = topicRepository.findById(topic.getId());
         if (optionalTopic.isPresent()) {
-            if (topicRepository.findByName(topic.getName()).isEmpty()) {
+            try {
                 Topic existingTopic = optionalTopic.get();
                 existingTopic.setName(topic.getName());
                 existingTopic.setDescription(topic.getDescription());
@@ -48,7 +47,9 @@ public class TopicServiceImpl implements TopicService {
                 existingTopic.setLastModifiedDate(new Date().getTime());
 
                 return topicRepository.save(existingTopic);
-            } else throw new EntityExistedException("Topic name is already existed.");
+            } catch (Exception e) {
+                throw new EntityExistedException("Topic name is already existed.");
+            }
         } else throw new EntityNotFoundException("Topic is not found.");
     }
 
