@@ -6,6 +6,8 @@ import com.nva.server.views.faculty.FacultyView;
 import com.nva.server.views.home.HomeView;
 import com.nva.server.views.major.MajorView;
 import com.nva.server.views.scope.ScopeView;
+import com.nva.server.views.topic.TopicForm;
+import com.nva.server.views.topic.TopicView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -83,15 +85,16 @@ public class MainLayout extends AppLayout {
         primaryNav.setLabel("Primary management");
         primaryNav.setCollapsible(true);
         primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
-        primaryNav.addItem(new SideNavItem("User Management", UserView.class, LineAwesomeIcon.USER.create()));
-        primaryNav.addItem(new SideNavItem("Faculty Management", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create()));
-        primaryNav.addItem(new SideNavItem("Major Management", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
+        primaryNav.addItem(new SideNavItem("User", UserView.class, LineAwesomeIcon.USER.create()));
+        primaryNav.addItem(new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create()));
+        primaryNav.addItem(new SideNavItem("Major", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
 
         SideNav dialogflowNav = new SideNav();
         dialogflowNav.setLabel("Dialogflow management");
         dialogflowNav.setCollapsible(true);
-        dialogflowNav.addItem(new SideNavItem("Action management", ActionView.class, LineAwesomeIcon.SHAPES_SOLID.create()));
-        dialogflowNav.addItem(new SideNavItem("Scope management", ScopeView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Action", ActionView.class, LineAwesomeIcon.SHAPES_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Scope", ScopeView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Topic", TopicView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
 
         nav.add(primaryNav, dialogflowNav);
         return nav;

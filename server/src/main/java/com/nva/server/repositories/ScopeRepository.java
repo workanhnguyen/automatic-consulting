@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ScopeRepository extends JpaRepository<Scope, Long> {
     Optional<Scope> findByName(String name);
-    @Query("SELECT s FROM Scope s WHERE LOWER(s.name) LIKE LOWER(concat('%', :keyword, '%'))")
+    @Query("SELECT s FROM Scope s WHERE LOWER(s.name) LIKE LOWER(concat('%', :keyword, '%')) OR LOWER(s.description) LIKE LOWER(concat('%', :keyword, '%'))")
     Page<Scope> search(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT COUNT(s) FROM Scope s WHERE LOWER(s.name) LIKE LOWER(concat('%', :keyword, '%')) OR LOWER(s.description) LIKE LOWER(concat('%', :keyword, '%'))")

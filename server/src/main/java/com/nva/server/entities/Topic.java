@@ -1,6 +1,7 @@
 package com.nva.server.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,10 @@ public class Topic implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
+    @NotEmpty(message = "Must not be empty")
     private String name;
     @Column(nullable = false)
-    @Lob
+    @NotEmpty(message = "Must not be empty")
     private String description;
     @CreatedDate
     @Column(nullable = false)
