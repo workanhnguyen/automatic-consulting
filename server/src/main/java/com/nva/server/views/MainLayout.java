@@ -94,7 +94,7 @@ public class MainLayout extends AppLayout {
         dialogflowNav.setCollapsible(true);
         dialogflowNav.addItem(new SideNavItem("Action", ActionView.class, LineAwesomeIcon.SHAPES_SOLID.create()));
         dialogflowNav.addItem(new SideNavItem("Scope", ScopeView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
-        dialogflowNav.addItem(new SideNavItem("Topic", TopicView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Topic", TopicView.class, LineAwesomeIcon.TAG_SOLID.create()));
 
         nav.add(primaryNav, dialogflowNav);
         return nav;
