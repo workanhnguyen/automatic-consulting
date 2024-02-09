@@ -95,7 +95,7 @@ public class FacultyView extends VerticalLayout {
     private void configureDeleteFacultyDialog() {
         confirmDeleteFacultyDialog.setHeaderTitle("Delete faculty");
 
-        Button deleteButton = new Button("Delete all", e -> {
+        Button deleteButton = new Button("Delete", e -> {
             deleteFaculty(editFacultyForm.getFaculty());
             closeConfirmDeleteFacultyDialog();
         });
