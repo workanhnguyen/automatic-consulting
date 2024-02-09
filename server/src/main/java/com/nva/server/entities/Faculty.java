@@ -20,7 +20,7 @@ public class Faculty implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     @NotEmpty(message = "Must not be empty")
     private String name;
     @CreatedDate

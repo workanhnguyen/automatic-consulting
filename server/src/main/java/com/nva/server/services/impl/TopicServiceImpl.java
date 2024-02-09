@@ -1,11 +1,11 @@
 package com.nva.server.services.impl;
 
 import com.nva.server.constants.CustomConstants;
-import com.nva.server.entities.Action;
+import com.nva.server.entities.Topic;
 import com.nva.server.exceptions.EntityExistedException;
 import com.nva.server.exceptions.EntityNotFoundException;
-import com.nva.server.repositories.ActionRepository;
-import com.nva.server.services.ActionService;
+import com.nva.server.repositories.TopicRepository;
+import com.nva.server.services.TopicService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -20,54 +20,54 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class ActionServiceImpl implements ActionService {
+public class TopicServiceImpl implements TopicService {
     @Autowired
-    private ActionRepository actionRepository;
+    private TopicRepository topicRepository;
     @Autowired
     private EntityManager entityManager;
 
     @Override
-    public Action saveAction(Action action) {
+    public Topic saveTopic(Topic topic) {
         try {
-            return actionRepository.save(action);
+            return topicRepository.save(topic);
         } catch (Exception e) {
-            throw new EntityExistedException("Action is already existed.");
+            throw new EntityExistedException("Topic name is already existed.");
         }
     }
 
     @Override
-    public Action editAction(Action action) {
-        Optional<Action> optionalAction = actionRepository.findById(action.getId());
-        if (optionalAction.isPresent()) {
+    public Topic editTopic(Topic topic) {
+        Optional<Topic> optionalTopic = topicRepository.findById(topic.getId());
+        if (optionalTopic.isPresent()) {
             try {
-                Action existingAction = optionalAction.get();
-                existingAction.setName(action.getName());
-                existingAction.setDescription(action.getDescription());
-                existingAction.setNote(action.getNote());
-                existingAction.setLastModifiedDate(new Date().getTime());
+                Topic existingTopic = optionalTopic.get();
+                existingTopic.setName(topic.getName());
+                existingTopic.setDescription(topic.getDescription());
+                existingTopic.setNote(topic.getNote());
+                existingTopic.setLastModifiedDate(new Date().getTime());
 
-                return actionRepository.save(existingAction);
-            } catch (Exception ex) {
-                throw new EntityExistedException("Action name is already existed");
+                return topicRepository.save(existingTopic);
+            } catch (Exception e) {
+                throw new EntityExistedException("Topic name is already existed.");
             }
-        } else throw new EntityNotFoundException("Action is not found.");
+        } else throw new EntityNotFoundException("Topic is not found.");
     }
 
     @Override
-    public void removeAction(Action action) {
-        Optional<Action> optionalAction = actionRepository.findById(action.getId());
-        if (optionalAction.isPresent()) {
-            actionRepository.delete(action);
-        } else throw new EntityNotFoundException("Action is not found.");
+    public void removeTopic(Topic topic) {
+        Optional<Topic> optionalTopic = topicRepository.findById(topic.getId());
+        if (optionalTopic.isPresent()) {
+            topicRepository.delete(topic);
+        } else throw new EntityNotFoundException("Topic is not found.");
     }
 
     @Override
-    public List<Action> getActions(Map<String, Object> params) {
+    public List<Topic> getTopics(Map<String, Object> params) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Action> criteriaQuery = criteriaBuilder.createQuery(Action.class);
-        Root<Action> root = criteriaQuery.from(Action.class);
+        CriteriaQuery<Topic> criteriaQuery = criteriaBuilder.createQuery(Topic.class);
+        Root<Topic> root = criteriaQuery.from(Topic.class);
 
-        Predicate predicate = criteriaBuilder.conjunction();
+        Predicate predicate = criteriaBuilder.conjunction(); // Or can use List<Predicate> instead.
 
         String keyword = (String) params.get("keyword");
         if (keyword != null && !keyword.isEmpty()) {
@@ -80,7 +80,7 @@ public class ActionServiceImpl implements ActionService {
         criteriaQuery.where(predicate);
 
         int pageNumber = (int) params.getOrDefault("pageNumber", 0);
-        int pageSize = (int) params.getOrDefault("pageSize", CustomConstants.ACTION_PAGE_SIZE);
+        int pageSize = (int) params.getOrDefault("pageSize", CustomConstants.SCOPE_PAGE_SIZE);
 
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdDate")));
 
@@ -91,13 +91,13 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
-    public long getActionCount(Map<String, Object> params) {
+    public long getTopicCount(Map<String, Object> params) {
         String keyword = (String) params.get("keyword");
 
         if (keyword == null || keyword.isEmpty()) {
-            return actionRepository.count();
+            return topicRepository.count();
         } else {
-            return actionRepository.countByKeyword(keyword);
+            return topicRepository.countByKeyword(keyword);
         }
     }
 }

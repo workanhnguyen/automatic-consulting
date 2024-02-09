@@ -24,22 +24,27 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty saveFaculty(Faculty faculty) {
-        Optional<Faculty> optionalFaculty = facultyRepository.findByName(faculty.getName());
-        if (optionalFaculty.isEmpty())
+        try {
             return facultyRepository.save(faculty);
-        throw new EntityExistedException("Faculty is already existed.");
+        } catch (Exception e) {
+            throw new EntityExistedException("Faculty is already existed.");
+        }
     }
 
     @Override
     public Faculty editFaculty(Faculty faculty) {
         Optional<Faculty> optionalFaculty = facultyRepository.findById(faculty.getId());
         if (optionalFaculty.isPresent()) {
-            Faculty existingFaculty = optionalFaculty.get();
-            existingFaculty.setName(faculty.getName());
-            existingFaculty.setNote(faculty.getNote());
-            existingFaculty.setLastModifiedDate(new Date().getTime());
+            try {
+                Faculty existingFaculty = optionalFaculty.get();
+                existingFaculty.setName(faculty.getName());
+                existingFaculty.setNote(faculty.getNote());
+                existingFaculty.setLastModifiedDate(new Date().getTime());
 
-            return facultyRepository.save(existingFaculty);
+                return facultyRepository.save(existingFaculty);
+            } catch (Exception e) {
+                throw new EntityExistedException("Faculty name is already existed.");
+            }
         } else throw new EntityNotFoundException("Faculty is not found.");
     }
 

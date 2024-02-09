@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class MajorServiceImpl implements MajorService {
     @Autowired
     private MajorRepository majorRepository;
@@ -42,19 +44,10 @@ public class MajorServiceImpl implements MajorService {
     public Major editMajor(Major major) {
         Optional<Major> optionalMajor = majorRepository.findById(major.getId());
         if (optionalMajor.isPresent()) {
+            // CASE: Faculty of major does not change
             if (major.getFaculty().getId().equals(optionalMajor.get().getFaculty().getId())) {
-                Major existingMajor = optionalMajor.get();
-                existingMajor.setName(major.getName());
-                existingMajor.setNote(major.getNote());
-                existingMajor.setFaculty(major.getFaculty());
-                existingMajor.setLastModifiedDate(new Date().getTime());
-
-                return majorRepository.save(existingMajor);
-            } else {
-                List<Major> majorsByFaculty = majorRepository.findByFaculty(major.getFaculty());
-                // Major has the same name but different from faculty still can be added
-                boolean isMajorExistedInFaculty = majorsByFaculty.stream().anyMatch(item -> item.getName().equalsIgnoreCase(major.getName()));
-                if (!isMajorExistedInFaculty) {
+                boolean isMajorNameExisted = optionalMajor.get().getFaculty().getMajors().stream().anyMatch(m -> m.getName().equalsIgnoreCase(major.getName()));
+                if (!isMajorNameExisted) {
                     Major existingMajor = optionalMajor.get();
                     existingMajor.setName(major.getName());
                     existingMajor.setNote(major.getNote());
@@ -62,7 +55,21 @@ public class MajorServiceImpl implements MajorService {
                     existingMajor.setLastModifiedDate(new Date().getTime());
 
                     return majorRepository.save(existingMajor);
-                } else throw new EntityExistedException("This major is already existed in faculty");
+                } else throw new EntityExistedException("This major is already existed in current faculty.");
+            } else {
+                // Major has the same name but different from faculty still can be added
+                List<Major> majorsByFaculty = majorRepository.findByFaculty(major.getFaculty());
+                boolean isMajorNameExisted = majorsByFaculty.stream().anyMatch(m -> m.getName().equalsIgnoreCase(major.getName()));
+
+                if (!isMajorNameExisted) {
+                    Major existingMajor = optionalMajor.get();
+                    existingMajor.setName(major.getName());
+                    existingMajor.setNote(major.getNote());
+                    existingMajor.setFaculty(major.getFaculty());
+                    existingMajor.setLastModifiedDate(new Date().getTime());
+
+                    return majorRepository.save(existingMajor);
+                } else throw new EntityExistedException(String.format("This major is already existed in %s faculty", major.getFaculty().getName()));
             }
         } else throw new EntityNotFoundException("Major is not found.");
     }

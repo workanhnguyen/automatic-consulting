@@ -19,7 +19,7 @@ public class Action implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     @NotEmpty(message = "Must not be empty")
     private String name;
     @Column(nullable = false)

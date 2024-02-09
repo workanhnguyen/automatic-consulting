@@ -1,6 +1,7 @@
 package com.nva.server.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,7 +21,7 @@ public class EntranceMethodGroup implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    @Lob
+    @NotEmpty(message = "Must be not empty")
     private String name;
     @CreatedDate
     @Column(nullable = false)
@@ -28,6 +30,8 @@ public class EntranceMethodGroup implements Serializable {
     private Long lastModifiedDate;
     @Lob
     private String note;
+    @OneToMany(mappedBy = "entranceMethodGroup", cascade = CascadeType.REMOVE)
+    private List<EntranceMethod> entranceMethods;
 
     @PrePersist
     protected void onCreate() {

@@ -1,19 +1,21 @@
 package com.nva.server.views;
 
+import com.nva.server.entities.User;
 import com.nva.server.security.SecurityService;
 import com.nva.server.views.action.ActionView;
+import com.nva.server.views.entrance_method.EntranceMethodView;
+import com.nva.server.views.entrance_method_group.EntranceMethodGroupView;
 import com.nva.server.views.faculty.FacultyView;
 import com.nva.server.views.home.HomeView;
 import com.nva.server.views.major.MajorView;
+import com.nva.server.views.scope.ScopeView;
+import com.nva.server.views.topic.TopicView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -23,6 +25,7 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
@@ -76,28 +79,48 @@ public class MainLayout extends AppLayout {
 
     private VerticalLayout createNavigation() {
         VerticalLayout nav = new VerticalLayout();
+        nav.setWidthFull();
         nav.setPadding(false);
 
         SideNav primaryNav = new SideNav();
+        primaryNav.setWidthFull();
         primaryNav.setLabel("Primary management");
         primaryNav.setCollapsible(true);
         primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
-        primaryNav.addItem(new SideNavItem("User Management", UserView.class, LineAwesomeIcon.USER.create()));
-        primaryNav.addItem(new SideNavItem("Faculty Management", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create()));
-        primaryNav.addItem(new SideNavItem("Major Management", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
+        primaryNav.addItem(new SideNavItem("User", UserView.class, LineAwesomeIcon.USER.create()));
+
+        SideNavItem facultyNav = new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create());
+        facultyNav.addItem(new SideNavItem("Major", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
+        primaryNav.addItem(facultyNav);
+
+        SideNavItem entranceMethodGroupeNav = new SideNavItem("Entrance group", EntranceMethodGroupView.class, LineAwesomeIcon.OBJECT_GROUP_SOLID.create());
+        entranceMethodGroupeNav.addItem(new SideNavItem("Entrance method", EntranceMethodView.class, LineAwesomeIcon.WINDOW_RESTORE_SOLID.create()));
+        primaryNav.addItem(entranceMethodGroupeNav);
 
         SideNav dialogflowNav = new SideNav();
+        dialogflowNav.setWidthFull();
         dialogflowNav.setLabel("Dialogflow management");
         dialogflowNav.setCollapsible(true);
-        dialogflowNav.addItem(new SideNavItem("Action management", ActionView.class, LineAwesomeIcon.SPLOTCH_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Action", ActionView.class, LineAwesomeIcon.SHAPES_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Scope", ScopeView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Topic", TopicView.class, LineAwesomeIcon.TAG_SOLID.create()));
+
         nav.add(primaryNav, dialogflowNav);
         return nav;
     }
 
     private Footer createFooter() {
-        Footer layout = new Footer();
+        Footer footer = new Footer();
+        User adminAccount = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(new H6(String.format("%s %s", adminAccount.getLastName(), adminAccount.getFirstName())));
+        layout.add(new Paragraph(adminAccount.getEmail()));
+        layout.setPadding(false);
+        layout.setSpacing(false);
 
-        return layout;
+        footer.add(layout);
+
+        return footer;
     }
 
     @Override

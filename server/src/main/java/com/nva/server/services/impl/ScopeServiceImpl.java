@@ -1,11 +1,11 @@
 package com.nva.server.services.impl;
 
 import com.nva.server.constants.CustomConstants;
-import com.nva.server.entities.Action;
+import com.nva.server.entities.Scope;
 import com.nva.server.exceptions.EntityExistedException;
 import com.nva.server.exceptions.EntityNotFoundException;
-import com.nva.server.repositories.ActionRepository;
-import com.nva.server.services.ActionService;
+import com.nva.server.repositories.ScopeRepository;
+import com.nva.server.services.ScopeService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -20,54 +20,54 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class ActionServiceImpl implements ActionService {
+public class ScopeServiceImpl implements ScopeService {
     @Autowired
-    private ActionRepository actionRepository;
+    private ScopeRepository scopeRepository;
     @Autowired
     private EntityManager entityManager;
 
     @Override
-    public Action saveAction(Action action) {
+    public Scope saveScope(Scope scope) {
         try {
-            return actionRepository.save(action);
+            return scopeRepository.save(scope);
         } catch (Exception e) {
-            throw new EntityExistedException("Action is already existed.");
+            throw new EntityExistedException("Scope is already existed.");
         }
     }
 
     @Override
-    public Action editAction(Action action) {
-        Optional<Action> optionalAction = actionRepository.findById(action.getId());
-        if (optionalAction.isPresent()) {
+    public Scope editScope(Scope scope) {
+        Optional<Scope> optionalScope = scopeRepository.findById(scope.getId());
+        if (optionalScope.isPresent()) {
             try {
-                Action existingAction = optionalAction.get();
-                existingAction.setName(action.getName());
-                existingAction.setDescription(action.getDescription());
-                existingAction.setNote(action.getNote());
-                existingAction.setLastModifiedDate(new Date().getTime());
+                Scope existingScope = optionalScope.get();
+                existingScope.setName(scope.getName());
+                existingScope.setDescription(scope.getDescription());
+                existingScope.setNote(scope.getNote());
+                existingScope.setLastModifiedDate(new Date().getTime());
 
-                return actionRepository.save(existingAction);
-            } catch (Exception ex) {
-                throw new EntityExistedException("Action name is already existed");
+                return scopeRepository.save(existingScope);
+            } catch (Exception e) {
+                throw new EntityExistedException("Scope name is already existed.");
             }
-        } else throw new EntityNotFoundException("Action is not found.");
+        } else throw new EntityNotFoundException("Scope is not found.");
     }
 
     @Override
-    public void removeAction(Action action) {
-        Optional<Action> optionalAction = actionRepository.findById(action.getId());
-        if (optionalAction.isPresent()) {
-            actionRepository.delete(action);
-        } else throw new EntityNotFoundException("Action is not found.");
+    public void removeScope(Scope scope) {
+        Optional<Scope> optionalScope = scopeRepository.findById(scope.getId());
+        if (optionalScope.isPresent()) {
+            scopeRepository.delete(scope);
+        } else throw new EntityNotFoundException("Scope is not found.");
     }
 
     @Override
-    public List<Action> getActions(Map<String, Object> params) {
+    public List<Scope> getScopes(Map<String, Object> params) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Action> criteriaQuery = criteriaBuilder.createQuery(Action.class);
-        Root<Action> root = criteriaQuery.from(Action.class);
+        CriteriaQuery<Scope> criteriaQuery = criteriaBuilder.createQuery(Scope.class);
+        Root<Scope> root = criteriaQuery.from(Scope.class);
 
-        Predicate predicate = criteriaBuilder.conjunction();
+        Predicate predicate = criteriaBuilder.conjunction(); // Or can use List<Predicate> instead.
 
         String keyword = (String) params.get("keyword");
         if (keyword != null && !keyword.isEmpty()) {
@@ -80,7 +80,7 @@ public class ActionServiceImpl implements ActionService {
         criteriaQuery.where(predicate);
 
         int pageNumber = (int) params.getOrDefault("pageNumber", 0);
-        int pageSize = (int) params.getOrDefault("pageSize", CustomConstants.ACTION_PAGE_SIZE);
+        int pageSize = (int) params.getOrDefault("pageSize", CustomConstants.SCOPE_PAGE_SIZE);
 
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdDate")));
 
@@ -91,13 +91,13 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
-    public long getActionCount(Map<String, Object> params) {
+    public long getScopeCount(Map<String, Object> params) {
         String keyword = (String) params.get("keyword");
 
         if (keyword == null || keyword.isEmpty()) {
-            return actionRepository.count();
+            return scopeRepository.count();
         } else {
-            return actionRepository.countByKeyword(keyword);
+            return scopeRepository.countByKeyword(keyword);
         }
     }
 }

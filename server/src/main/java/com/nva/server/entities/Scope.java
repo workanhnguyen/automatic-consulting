@@ -1,6 +1,7 @@
 package com.nva.server.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,11 @@ public class Scope implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
+    @NotEmpty(message = "Must not be empty")
     private String name;
     @Column(nullable = false)
+    @NotEmpty(message = "Must not be empty")
     private String description;
     @CreatedDate
     @Column(nullable = false)
