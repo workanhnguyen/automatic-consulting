@@ -1,5 +1,6 @@
 package com.nva.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -63,6 +65,12 @@ public class User implements Serializable, UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Conversation> conversation;
+
+    private String avatarLink;
+
+    @Transient
+    @JsonIgnore
+    private MultipartFile avatarFile;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
