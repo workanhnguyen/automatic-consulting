@@ -61,6 +61,9 @@ public class User implements Serializable, UserDetails {
     @Lob
     private String note;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Conversation> conversation;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

@@ -11,3 +11,20 @@ a[highlight] {
     font-weight: bold;
     text-decoration: underline;
 }
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  border-radius: 180px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #abb0b0; /* Color of the scrollbar thumb */
+  border-radius: 180px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent; /* Color of the scrollbar track */
+}

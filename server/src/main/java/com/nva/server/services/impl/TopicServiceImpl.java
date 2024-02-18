@@ -12,6 +12,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -88,6 +89,13 @@ public class TopicServiceImpl implements TopicService {
                 .setFirstResult(pageNumber * pageSize)
                 .setMaxResults(pageSize)
                 .getResultList();
+    }
+
+    @Override
+    public List<Topic> getAllTopics(Sort sort) {
+        if (sort != null)
+            return topicRepository.findAll(sort);
+        return topicRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
     }
 
     @Override

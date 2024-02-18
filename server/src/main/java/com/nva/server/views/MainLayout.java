@@ -3,11 +3,9 @@ package com.nva.server.views;
 import com.nva.server.entities.User;
 import com.nva.server.security.SecurityService;
 import com.nva.server.views.action.ActionView;
-import com.nva.server.views.entrance_method.EntranceMethodView;
-import com.nva.server.views.entrance_method_group.EntranceMethodGroupView;
-import com.nva.server.views.faculty.FacultyView;
+import com.nva.server.views.chat_conversation.ConversationView;
 import com.nva.server.views.home.HomeView;
-import com.nva.server.views.major.MajorView;
+import com.nva.server.views.information.InformationView;
 import com.nva.server.views.scope.ScopeView;
 import com.nva.server.views.topic.TopicView;
 import com.nva.server.views.user.UserView;
@@ -88,14 +86,14 @@ public class MainLayout extends AppLayout {
         primaryNav.setCollapsible(true);
         primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
         primaryNav.addItem(new SideNavItem("User", UserView.class, LineAwesomeIcon.USER.create()));
-
-        SideNavItem facultyNav = new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create());
-        facultyNav.addItem(new SideNavItem("Major", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
-        primaryNav.addItem(facultyNav);
-
-        SideNavItem entranceMethodGroupNav = new SideNavItem("Entrance group", EntranceMethodGroupView.class, LineAwesomeIcon.OBJECT_GROUP_SOLID.create());
-        entranceMethodGroupNav.addItem(new SideNavItem("Entrance method", EntranceMethodView.class, LineAwesomeIcon.WINDOW_RESTORE_SOLID.create()));
-        primaryNav.addItem(entranceMethodGroupNav);
+//
+//        SideNavItem facultyNav = new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create());
+//        facultyNav.addItem(new SideNavItem("Major", MajorView.class, LineAwesomeIcon.SITEMAP_SOLID.create()));
+//        primaryNav.addItem(facultyNav);
+//
+//        SideNavItem entranceMethodGroupNav = new SideNavItem("Entrance group", EntranceMethodGroupView.class, LineAwesomeIcon.OBJECT_GROUP_SOLID.create());
+//        entranceMethodGroupNav.addItem(new SideNavItem("Entrance method", EntranceMethodView.class, LineAwesomeIcon.WINDOW_RESTORE_SOLID.create()));
+//        primaryNav.addItem(entranceMethodGroupNav);
 
         SideNav dialogflowNav = new SideNav();
         dialogflowNav.setWidthFull();
@@ -104,6 +102,8 @@ public class MainLayout extends AppLayout {
         dialogflowNav.addItem(new SideNavItem("Action", ActionView.class, LineAwesomeIcon.SHAPES_SOLID.create()));
         dialogflowNav.addItem(new SideNavItem("Scope", ScopeView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
         dialogflowNav.addItem(new SideNavItem("Topic", TopicView.class, LineAwesomeIcon.TAG_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Information", InformationView.class, LineAwesomeIcon.INFO_CIRCLE_SOLID.create()));
+        dialogflowNav.addItem(new SideNavItem("Conversation", ConversationView.class, LineAwesomeIcon.CHESS_SOLID.create()));
 
         nav.add(primaryNav, dialogflowNav);
         return nav;
