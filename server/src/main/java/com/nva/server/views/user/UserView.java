@@ -133,7 +133,7 @@ public class UserView extends VerticalLayout {
     private void configureConfirmDeleteUserDialog() {
         confirmDeleteUserDialog.setHeaderTitle("Delete user");
         confirmDeleteUserDialog.add(new Paragraph("Are you sure you want to delete this user?"));
-        Paragraph subtitle = new Paragraph("It cannot be restored after deleting.");
+        Paragraph subtitle = new Paragraph("All data related to this user are also deleted! Do you want to continue?");
         subtitle.getStyle().setFontWeight(800);
         confirmDeleteUserDialog.add(subtitle);
 
@@ -154,6 +154,7 @@ public class UserView extends VerticalLayout {
 
     private void closeEditor() {
         editUserDialog.close();
+        editUserForm.clearForm();
         removeClassName("editing");
     }
 
@@ -196,7 +197,7 @@ public class UserView extends VerticalLayout {
     }
 
     private void configureForm() {
-        editUserForm.setWidth("25em");
+        editUserForm.setWidthFull();
         editUserForm.setVisible(true);
         editUserForm.addListener(UserForm.SaveEvent.class, e -> editUser(e.getUser()));
         editUserForm.addListener(EditUserForm.DeleteEvent.class, e -> deleteUser(e.getUser()));
@@ -326,7 +327,7 @@ public class UserView extends VerticalLayout {
         confirmDeleteUserDialog.close();
     }
 
-    private void openEditor(User user) {
+    public void openEditor(User user) {
         if (user == null) closeEditor();
         else {
             editUserForm.setUser(user);
