@@ -1,16 +1,16 @@
 package com.nva.server.services.impl;
 
 import com.nva.server.constants.CustomConstants;
+import com.nva.server.entities.Action;
 import com.nva.server.entities.Information;
+import com.nva.server.entities.Scope;
+import com.nva.server.entities.Topic;
 import com.nva.server.exceptions.EntityExistedException;
 import com.nva.server.exceptions.EntityNotFoundException;
 import com.nva.server.repositories.InformationRepository;
 import com.nva.server.services.InformationService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,17 +73,31 @@ public class InformationServiceImpl implements InformationService {
 
         String keyword = (String) params.get("keyword");
         if (keyword != null && !keyword.isEmpty()) {
-            // Adding condition to search in the content field
             predicate = criteriaBuilder.like(root.get("content"), "%" + keyword + "%");
         }
 
-        // Adding condition to exclude EntranceScoreInformation
-//        predicate = criteriaBuilder.and(predicate, criteriaBuilder.notEqual(root.type(), EntranceScoreInformation.class));
+        Long actionId = (Long) params.get("actionId");
+        if (actionId != null) {
+            Join<Information, Action> actionJoin = root.join("action");
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(actionJoin.get("id"), actionId));
+        }
+
+        Long scopeId = (Long) params.get("scopeId");
+        if (scopeId != null) {
+            Join<Information, Scope> scopeJoin = root.join("scope");
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(scopeJoin.get("id"), scopeId));
+        }
+
+        Long topicId = (Long) params.get("topicId");
+        if (topicId != null) {
+            Join<Information, Topic> topicJoin = root.join("topic");
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(topicJoin.get("id"), topicId));
+        }
 
         criteriaQuery.where(predicate);
 
         int pageNumber = (int) params.getOrDefault("pageNumber", 0);
-        int pageSize = (int) params.getOrDefault("pageSize", CustomConstants.ACTION_PAGE_SIZE);
+        int pageSize = (int) params.getOrDefault("pageSize", CustomConstants.INFORMATION_PAGE_SIZE);
 
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdDate")));
 

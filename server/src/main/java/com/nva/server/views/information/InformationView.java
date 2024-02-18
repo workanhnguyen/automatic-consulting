@@ -1,7 +1,10 @@
 package com.nva.server.views.information;
 
 import com.nva.server.constants.CustomConstants;
+import com.nva.server.entities.Action;
 import com.nva.server.entities.Information;
+import com.nva.server.entities.Scope;
+import com.nva.server.entities.Topic;
 import com.nva.server.services.ActionService;
 import com.nva.server.services.InformationService;
 import com.nva.server.services.ScopeService;
@@ -30,6 +33,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AccessDeniedErrorRouter;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.data.domain.Sort;
+import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,19 +52,24 @@ public class InformationView extends VerticalLayout {
 
     private final Grid<Information> informationGrid = new Grid<>(Information.class);
     private final TextField filterText = new TextField();
-    private final ComboBox<String> filterInformationType = new ComboBox<>();
     private final Dialog editInformationDialog = new Dialog();
     private final Dialog createNewInformationDialog = new Dialog();
     private final Dialog confirmDeleteInformationDialog = new Dialog();
     private InformationForm editInformationForm;
     private InformationForm createNewInformationForm;
 
+    // Additional filter variables
+    private final Dialog additionalFilterDialog = new Dialog();
+    private final ComboBox<Action> actionComboBox = new ComboBox<>();
+    private final ComboBox<Scope> scopeComboBox = new ComboBox<>();
+    private final ComboBox<Topic> topicComboBox = new ComboBox<>();
+
     // Pagination variables
     private int pageNumber = 0;
     private final Button prevPageButton = new Button(new Icon(VaadinIcon.ANGLE_LEFT));
     private final Button nextPageButton = new Button(new Icon(VaadinIcon.ANGLE_RIGHT));
     private final Paragraph paginationLabel = new Paragraph();
-    private final Map<String, Object> params = new HashMap<>();
+    private Map<String, Object> params = new HashMap<>();
 
     public InformationView(InformationService informationService, ActionService actionService, ScopeService scopeService, TopicService topicService) {
         this.actionService = actionService;
@@ -90,6 +100,58 @@ public class InformationView extends VerticalLayout {
         configureEditInformationDialog();
         configureCreateNewInformationDialog();
         configureDeleteInformationDialog();
+        configureAdditionalFilterDialog();
+    }
+
+    private void configureAdditionalFilterDialog() {
+        actionComboBox.setPlaceholder("Choose action");
+        actionComboBox.setWidthFull();
+        actionComboBox.setItems(actionService.getActions(new HashMap<>()));
+        actionComboBox.setItemLabelGenerator(a -> String.format("%s - %s", a.getName(), a.getDescription()));
+
+        scopeComboBox.setPlaceholder("Choose scope");
+        scopeComboBox.setWidthFull();
+        scopeComboBox.setItems(scopeService.getScopes(new HashMap<>()));
+        scopeComboBox.setItemLabelGenerator(s -> String.format("%s - %s", s.getName(), s.getDescription()));
+
+        topicComboBox.setPlaceholder("Choose topic");
+        topicComboBox.setWidthFull();
+        topicComboBox.setItems(topicService.getAllTopics(Sort.by(Sort.Direction.ASC, "name")));
+        topicComboBox.setItemLabelGenerator(t -> String.format("%s - %s", t.getName(), t.getDescription()));
+
+        VerticalLayout filterGroupLayout = new VerticalLayout(actionComboBox, scopeComboBox, topicComboBox);
+        filterGroupLayout.setWidth("25em");
+        filterGroupLayout.setPadding(false);
+
+        additionalFilterDialog.setHeaderTitle("Additional Filter");
+        additionalFilterDialog.add(filterGroupLayout);
+        Button applyButton = new Button("Apply", e -> applyInformationFilter());
+        applyButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        applyButton.getStyle().setCursor(Cursor.POINTER.name());
+
+        Button cancelButton = new Button("Cancel", e -> closeAdditionalFilterDialog());
+        cancelButton.getStyle().setCursor(Cursor.POINTER.name());
+
+        additionalFilterDialog.getFooter().add(applyButton, cancelButton);
+    }
+
+    private void applyInformationFilter() {
+        filterText.setValue("");
+
+        params = new HashMap<>();
+
+        if (actionComboBox.getValue() != null) {
+            params.put("actionId", actionComboBox.getValue().getId());
+        }
+        if (scopeComboBox.getValue() != null) {
+            params.put("scopeId", scopeComboBox.getValue().getId());
+        }
+        if (topicComboBox.getValue() != null) {
+            params.put("topicId", topicComboBox.getValue().getId());
+        }
+
+        updateInformationList();
+        additionalFilterDialog.close();
     }
 
     private void configureDeleteInformationDialog() {
@@ -234,20 +296,19 @@ public class InformationView extends VerticalLayout {
     }
 
     private HorizontalLayout getToolbar() {
-        filterInformationType.setPlaceholder("Filter by type...");
-        filterInformationType.getStyle().set("--vaadin-combo-box-overlay-width", "300px");
-        filterInformationType.setItems(CustomUtils.getSubclassNamesOf(Information.class));
-        filterInformationType.setItemLabelGenerator(item -> item.replaceAll("(\\p{Lu})", " $1").replaceFirst(" Information$", ""));
-        filterInformationType.addValueChangeListener(e -> updateInformationList());
 
         filterText.setPlaceholder("Filter by content...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY); // LAZY: wait user stop typing --> do filter
         filterText.addValueChangeListener(e -> updateInformationList());
 
-        Button addMajorButton = new Button("Add new");
-        addMajorButton.getStyle().setCursor("pointer");
-        addMajorButton.addClickListener(e -> openCreateNewInformationDialog());
+        Button additionalFilterButton = new Button(LineAwesomeIcon.FILTER_SOLID.create());
+        additionalFilterButton.getStyle().setCursor(Cursor.POINTER.name());
+        additionalFilterButton.addClickListener(e -> openAdditionalFilterDialog());
+
+        Button addInformationButton = new Button("Add new");
+        addInformationButton.getStyle().setCursor("pointer");
+        addInformationButton.addClickListener(e -> openCreateNewInformationDialog());
 
         prevPageButton.addThemeVariants(ButtonVariant.LUMO_ICON);
         prevPageButton.getStyle().setCursor(Cursor.POINTER.name());
@@ -271,19 +332,28 @@ public class InformationView extends VerticalLayout {
             }
         });
 
-        HorizontalLayout paginationController = new HorizontalLayout(paginationLabel, prevPageButton, nextPageButton);
-        paginationController.setSpacing(true);
+        HorizontalLayout filterLayout = new HorizontalLayout(additionalFilterButton, filterText, addInformationButton);
 
-        HorizontalLayout toolbar = new HorizontalLayout(
-                new HorizontalLayout(filterText, addMajorButton),
-                paginationController
-        );
+        HorizontalLayout paginationController = new HorizontalLayout(paginationLabel, prevPageButton, nextPageButton);
+
+        HorizontalLayout toolbar = new HorizontalLayout(filterLayout, paginationController);
         toolbar.setWidthFull();
         toolbar.setJustifyContentMode(JustifyContentMode.BETWEEN);
-
         toolbar.addClassName("toolbar");
 
         return toolbar;
+    }
+
+    private void openAdditionalFilterDialog() {
+        additionalFilterDialog.open();
+    }
+
+    private void closeAdditionalFilterDialog() {
+        additionalFilterDialog.close();
+
+        actionComboBox.setValue(null);
+        scopeComboBox.setValue(null);
+        topicComboBox.setValue(null);
     }
 
     private void openCreateNewInformationDialog() {
@@ -295,11 +365,9 @@ public class InformationView extends VerticalLayout {
 
     private void updateInformationList() {
         String keyword = filterText.getValue();
-        String infoType = filterInformationType.getValue();
         params.put("pageNumber", pageNumber);
         params.put("pageSize", CustomConstants.INFORMATION_PAGE_SIZE);
         params.put("keyword", keyword);
-        params.put("infoType", infoType);
 
         List<Information> information = informationService.getInformation(params);
         long totalInformation = informationService.getInformationCount(params);
