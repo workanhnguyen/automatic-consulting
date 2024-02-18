@@ -133,7 +133,7 @@ public class UserView extends VerticalLayout {
     private void configureConfirmDeleteUserDialog() {
         confirmDeleteUserDialog.setHeaderTitle("Delete user");
         confirmDeleteUserDialog.add(new Paragraph("Are you sure you want to delete this user?"));
-        Paragraph subtitle = new Paragraph("It cannot be restored after deleting.");
+        Paragraph subtitle = new Paragraph("All data related to this user are also deleted! Do you want to continue?");
         subtitle.getStyle().setFontWeight(800);
         confirmDeleteUserDialog.add(subtitle);
 

@@ -87,7 +87,7 @@ public class ConversationForm extends FormLayout {
         requestText.setPlaceholder("Enter question");
         requestText.setMaxHeight("10em");
 
-        responseText.setMaxHeight("10em");
+        responseText.setMaxHeight("16em");
         responseText.setPlaceholder("Enter answer");
 
         showedCreatedDate = new TextField("Created date");

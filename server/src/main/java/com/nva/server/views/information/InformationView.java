@@ -275,7 +275,7 @@ public class InformationView extends VerticalLayout {
         paginationController.setSpacing(true);
 
         HorizontalLayout toolbar = new HorizontalLayout(
-                new HorizontalLayout(filterInformationType, filterText, addMajorButton),
+                new HorizontalLayout(filterText, addMajorButton),
                 paginationController
         );
         toolbar.setWidthFull();

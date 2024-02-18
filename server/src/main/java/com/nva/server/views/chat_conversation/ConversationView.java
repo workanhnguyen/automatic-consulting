@@ -191,7 +191,7 @@ public class ConversationView extends VerticalLayout {
     }
 
     private void configureMenuBar(MenuBar menuBar, Conversation conversation) {
-        menuBar.addItem("Edit", e -> openEditConversationDialog(conversation)).getStyle().setCursor("pointer");
+        menuBar.addItem("Detail", e -> openEditConversationDialog(conversation)).getStyle().setCursor("pointer");
         menuBar.addItem("Delete", e -> openConfirmDeleteConversationDialog(conversation)).getStyle().setCursor("pointer").setColor("red");
     }
 
@@ -221,7 +221,7 @@ public class ConversationView extends VerticalLayout {
     }
 
     private HorizontalLayout getToolbar() {
-        filterText.setPlaceholder("Enter keyword...");
+        filterText.setPlaceholder("Filter by keyword...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY); // LAZY: wait user stop typing --> do filter
         filterText.addValueChangeListener(e -> updateConversationList());
