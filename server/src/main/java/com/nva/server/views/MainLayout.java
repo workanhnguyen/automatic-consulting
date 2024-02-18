@@ -2,6 +2,7 @@ package com.nva.server.views;
 
 import com.nva.server.entities.User;
 import com.nva.server.security.SecurityService;
+import com.nva.server.services.UserService;
 import com.nva.server.views.action.ActionView;
 import com.nva.server.views.chat_conversation.ConversationView;
 import com.nva.server.views.home.HomeView;
@@ -11,6 +12,7 @@ import com.nva.server.views.topic.TopicView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.*;
@@ -26,15 +28,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
+import java.util.Optional;
+
 /**
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
     private final SecurityService securityService;
+    private final UserService userService;
     private H2 viewTitle;
 
-    public MainLayout(@Autowired SecurityService securityService) {
+    public MainLayout(@Autowired SecurityService securityService, @Autowired UserService userService) {
         this.securityService = securityService;
+        this.userService = userService;
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -111,14 +117,25 @@ public class MainLayout extends AppLayout {
 
     private Footer createFooter() {
         Footer footer = new Footer();
-        User adminAccount = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        VerticalLayout layout = new VerticalLayout();
-        layout.add(new H6(String.format("%s %s", adminAccount.getLastName(), adminAccount.getFirstName())));
-        layout.add(new Paragraph(adminAccount.getEmail()));
-        layout.setPadding(false);
-        layout.setSpacing(false);
+        Optional<User> adminAccount = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        footer.add(layout);
+        HorizontalLayout footerLayout = new HorizontalLayout();
+
+        Avatar adminAvatar = new Avatar();
+        adminAvatar.setImage(adminAccount.get().getAvatarLink());
+
+        VerticalLayout adminInfo = new VerticalLayout();
+        H6 adminFullName = new H6(String.format("%s %s", adminAccount.get().getLastName(), adminAccount.get().getFirstName()));
+        Paragraph adminEmail = new Paragraph(adminAccount.get().getEmail());
+        adminEmail.getStyle().setMargin("0px");
+        adminInfo.add(adminFullName, adminEmail);
+        adminInfo.setPadding(false);
+        adminInfo.setSpacing(false);
+
+        footerLayout.add(adminAvatar, adminInfo);
+        footerLayout.setPadding(false);
+
+        footer.add(footerLayout);
 
         return footer;
     }

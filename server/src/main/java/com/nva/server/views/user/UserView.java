@@ -154,6 +154,7 @@ public class UserView extends VerticalLayout {
 
     private void closeEditor() {
         editUserDialog.close();
+        editUserForm.clearForm();
         removeClassName("editing");
     }
 
@@ -196,7 +197,7 @@ public class UserView extends VerticalLayout {
     }
 
     private void configureForm() {
-        editUserForm.setWidth("25em");
+        editUserForm.setWidthFull();
         editUserForm.setVisible(true);
         editUserForm.addListener(UserForm.SaveEvent.class, e -> editUser(e.getUser()));
         editUserForm.addListener(EditUserForm.DeleteEvent.class, e -> deleteUser(e.getUser()));
@@ -326,7 +327,7 @@ public class UserView extends VerticalLayout {
         confirmDeleteUserDialog.close();
     }
 
-    private void openEditor(User user) {
+    public void openEditor(User user) {
         if (user == null) closeEditor();
         else {
             editUserForm.setUser(user);
