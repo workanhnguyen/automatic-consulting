@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface UserService {
     User saveUser(User user);
     User editUser(User user);
+    User updateAvatar(User user);
     void toggleLockUser(String email);
     Optional<User> getUser(String email);
     List<User> getUsers(Map<String, Object> params);

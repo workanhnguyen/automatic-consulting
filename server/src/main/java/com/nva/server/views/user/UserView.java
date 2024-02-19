@@ -5,14 +5,16 @@ import com.nva.server.dtos.ChangePasswordDto;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.services.UserService;
+import com.nva.server.utils.CustomUtils;
 import com.nva.server.views.MainLayout;
 import com.nva.server.views.components.CustomNotification;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.model.Cursor;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
@@ -20,20 +22,30 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.SucceededEvent;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AccessDeniedErrorRouter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import elemental.json.Json;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
+import org.vaadin.lineawesome.LineAwesomeIcon;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +61,7 @@ import java.util.Map;
 public class UserView extends VerticalLayout {
     private final UserService userService;
 
-    private final Grid<User> userGrid = new Grid<>(User.class);
+    private final Grid<User> userGrid = new Grid<>(User.class, false);
     private final TextField filterText = new TextField();
 
     private final Dialog confirmDeleteUserDialog = new Dialog();
@@ -68,6 +80,9 @@ public class UserView extends VerticalLayout {
     private final Paragraph paginationLabel = new Paragraph();
     private final Map<String, Object> params = new HashMap<>();
 
+    MemoryBuffer buffer = new MemoryBuffer();
+    private final Upload avatarUpload = new Upload(buffer);
+
     public UserView(UserService userService) {
         this.userService = userService;
 
@@ -76,6 +91,7 @@ public class UserView extends VerticalLayout {
         configureGrid();
         configureForm();
         configureDialog();
+        configureAvatarUpload();
 
         add(getToolbar(), getContent());
 
@@ -88,6 +104,31 @@ public class UserView extends VerticalLayout {
         content.setSizeFull();
 
         return content;
+    }
+
+    private void configureAvatarUpload() {
+        avatarUpload.setAcceptedFileTypes(".jpg", ".png", ".jpeg");
+        avatarUpload.setMaxFileSize(CustomConstants.MAX_SIZE_FILE_UPLOAD);
+        avatarUpload.addSucceededListener(this::updateUploadedAvatar);
+
+        avatarUpload.addFileRejectedListener(event -> {
+            String errorMessage = event.getErrorMessage();
+            CustomNotification.showNotification(errorMessage, "error", Notification.Position.TOP_CENTER, 3000);
+        });
+    }
+
+    protected void updateUploadedAvatar(SucceededEvent event) {
+        InputStream fileData = buffer.getInputStream();
+        try {
+            String fileType = event.getMIMEType().split("/")[1]; // Extracting file type from MIME type
+            String base64Image = "data:image/" + fileType + ";base64," + CustomUtils.encodeInputStreamToBase64Binary(fileData);
+            editUserForm.getShowedAvatar().setImage(base64Image);
+            editUserForm.getUser().setAvatarBase64(base64Image);
+
+            fileData.close();
+        } catch (IOException ex) {
+            CustomNotification.showNotification(ex.getMessage(), "error", Notification.Position.TOP_CENTER, 3000);
+        }
     }
 
     private void configureDialog() {
@@ -122,9 +163,18 @@ public class UserView extends VerticalLayout {
         editUserDialog.setHeaderTitle("Edit user");
         EditUserForm tempForm = (EditUserForm) editUserForm;
         tempForm.getDeleteBtn().setVisible(false);
-        editUserForm.getSaveBtn().getStyle().setCursor("pointer");
-        editUserForm.getCancelBtn().getStyle().setCursor("pointer");
+        editUserForm.getStyle().setWidth("25em");
 
+        VerticalLayout avatarLayout = new VerticalLayout(editUserForm.getShowedAvatar(), avatarUpload);
+        avatarLayout.setPadding(false);
+        avatarLayout.getStyle().setPaddingTop("16px");
+        avatarLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        HorizontalLayout dialogLayout = new HorizontalLayout();
+        dialogLayout.add(avatarLayout, editUserForm);
+        dialogLayout.setPadding(false);
+
+        editUserDialog.add(dialogLayout);
         editUserDialog.getFooter().add(editUserForm.getSaveBtn(), editUserForm.getCancelBtn());
 
         add(editUserDialog);
@@ -155,6 +205,7 @@ public class UserView extends VerticalLayout {
     private void closeEditor() {
         editUserDialog.close();
         editUserForm.clearForm();
+        avatarUpload.getElement().setPropertyJson("files", Json.createArray());
         removeClassName("editing");
     }
 
@@ -189,7 +240,7 @@ public class UserView extends VerticalLayout {
     }
 
     private void updatePaginationLabel(long totalUsers) {
-        int startUser =  pageNumber * CustomConstants.USER_PAGE_SIZE + 1;
+        int startUser = pageNumber * CustomConstants.USER_PAGE_SIZE + 1;
         int endUser = (int) Math.min((long) (pageNumber + 1) * CustomConstants.USER_PAGE_SIZE, totalUsers);
 
         // Update label with the current range of users being displayed
@@ -197,7 +248,6 @@ public class UserView extends VerticalLayout {
     }
 
     private void configureForm() {
-        editUserForm.setWidthFull();
         editUserForm.setVisible(true);
         editUserForm.addListener(UserForm.SaveEvent.class, e -> editUser(e.getUser()));
         editUserForm.addListener(EditUserForm.DeleteEvent.class, e -> deleteUser(e.getUser()));
@@ -279,11 +329,31 @@ public class UserView extends VerticalLayout {
     private void configureGrid() {
         userGrid.addClassNames("user-grid");
         userGrid.setSizeFull();
-        userGrid.setColumns("firstName", "lastName", "email"); // These properties must be similar to entity properties
+        userGrid.addColumn(createUserRenderer()).setHeader("User");
 
         // Column used for foreign keys
         userGrid.addColumn(user -> user.getRole().equals(Role.ROLE_ADMIN) ? "ADMIN" : "USER").setHeader("Role");
-        userGrid.addColumn(new ComponentRenderer<>(Span::new, (badge, user) -> {
+        userGrid.addColumn(createStatusComponentRenderer()).setHeader("Status");
+        userGrid.addColumn(createMenubarComponentRenderer()).setHeader("Actions");
+        userGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+    }
+
+    private ComponentRenderer<MenuBar, User> createMenubarComponentRenderer() {
+        return new ComponentRenderer<>(MenuBar::new, (menuBar, user) -> {
+            String lockText = user.getIsEnabled() ? "Lock user" : "Unlock user";
+            MenuItem menuItem = menuBar.addItem(LineAwesomeIcon.ELLIPSIS_H_SOLID.create());
+
+            SubMenu subMenu = menuItem.getSubMenu();
+
+            subMenu.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
+            subMenu.addItem(lockText, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
+            subMenu.addItem("Change password", e -> openChangePasswordDialog(user)).getStyle().setCursor("pointer");
+            subMenu.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
+        });
+    }
+
+    private ComponentRenderer<Span, User> createStatusComponentRenderer() {
+        return new ComponentRenderer<>(Span::new, (badge, user) -> {
             if (user.isEnabled()) {
                 badge.add("Active");
                 badge.getElement().getThemeList().add("badge success");
@@ -291,19 +361,23 @@ public class UserView extends VerticalLayout {
                 badge.add("Locked");
                 badge.getElement().getThemeList().add("badge error");
             }
-        })).setHeader("Status");
-        userGrid.addColumn(
-                new ComponentRenderer<>(MenuBar::new, this::configureMenuBar)).setHeader("Actions").setTextAlign(ColumnTextAlign.CENTER);
-        userGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+        });
     }
 
-    private void configureMenuBar(MenuBar menuBar, User user) {
-        String lockText = user.getIsEnabled() ? "Lock user" : "Unlock user";
-
-        menuBar.addItem("Edit", e -> openEditor(user)).getStyle().setCursor("pointer");
-        menuBar.addItem(lockText, e -> toggleLockUser(user)).getStyle().setCursor("pointer");
-        menuBar.addItem("Change password", e -> openChangePasswordDialog(user)).getStyle().setCursor("pointer");
-        menuBar.addItem("Delete", e -> openConfirmDeleteDialog(user)).getStyle().setColor("red").setCursor("pointer");
+    private Renderer<User> createUserRenderer() {
+        return LitRenderer.<User>of(
+                        "<vaadin-horizontal-layout style=\"align-items: center;\" theme=\"spacing\">"
+                                + "<vaadin-avatar img=\"${item.avatarLink}\" name=\"${item.email}\" alt=\"${item.email}-avatar\"></vaadin-avatar>"
+                                + "  <vaadin-vertical-layout style=\"line-height: var(--lumo-line-height-m);\">"
+                                + "    <span> ${item.lastName} ${item.firstName}</span>"
+                                + "    <span style=\"font-size: var(--lumo-font-size-s); color: var(--lumo-secondary-text-color);\">"
+                                + "      ${item.email}" + "    </span>"
+                                + "  </vaadin-vertical-layout>"
+                                + "</vaadin-horizontal-layout>")
+                .withProperty("avatarLink", User::getAvatarLink)
+                .withProperty("firstName", User::getFirstName)
+                .withProperty("lastName", User::getLastName)
+                .withProperty("email", User::getEmail);
     }
 
     private void openChangePasswordDialog(User user) {

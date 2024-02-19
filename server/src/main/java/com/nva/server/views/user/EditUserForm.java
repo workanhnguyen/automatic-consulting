@@ -10,9 +10,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,15 +39,7 @@ public class EditUserForm extends UserForm {
     }
 
     private void initializeLayout() {
-        HorizontalLayout formLayout = new HorizontalLayout();
-
-        VerticalLayout avatarLayout = new VerticalLayout(super.getShowedAvatar(), super.getAvatarUpload());
-        avatarLayout.setWidth("25em");
-        avatarLayout.setPadding(false);
-        avatarLayout.getStyle().setPaddingTop("16px");
-        avatarLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-
-        VerticalLayout infoLayout = new VerticalLayout(super.getFirstName(),
+        add(super.getFirstName(),
                 super.getLastName(),
                 super.getEmail(),
                 this.getShowedCreatedDate(),
@@ -57,14 +47,6 @@ public class EditUserForm extends UserForm {
                 this.getRole(),
                 this.statusBadge,
                 this.createButtonLayout());
-        infoLayout.setSpacing(false);
-        infoLayout.setPadding(false);
-        infoLayout.setWidth("100%");
-
-        formLayout.add(avatarLayout, infoLayout);
-        formLayout.setPadding(false);
-
-        add(formLayout);
     }
 
     private void getStatusBadge() {
