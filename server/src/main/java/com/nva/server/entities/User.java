@@ -72,6 +72,10 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     private MultipartFile avatarFile;
 
+    @Transient
+    @JsonIgnore
+    private String avatarBase64;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

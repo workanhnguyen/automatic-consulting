@@ -1,9 +1,11 @@
 package com.nva.server.services.impl;
 
+import com.cloudinary.Cloudinary;
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.dtos.ChangePasswordDto;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
+import com.nva.server.exceptions.DatabaseException;
 import com.nva.server.exceptions.PasswordException;
 import com.nva.server.exceptions.UserExistedException;
 import com.nva.server.exceptions.UserNotFoundException;
@@ -11,6 +13,7 @@ import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,18 +21,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private Cloudinary cloudinary;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User saveUser(User user) {
@@ -48,11 +52,67 @@ public class UserServiceImpl implements UserService {
             User existingUser = optionalUser.get();
             existingUser.setFirstName(user.getFirstName());
             existingUser.setLastName(user.getLastName());
+            existingUser.setAvatarFile(user.getAvatarFile());
+            existingUser.setAvatarBase64(user.getAvatarBase64());
             existingUser.setLastModifiedDate(new Date().getTime());
 
-            return userRepository.save(existingUser);
+            existingUser = updateAvatar(existingUser);
+
+            return existingUser;
         } else throw new UserNotFoundException("User is not found.");
     }
+
+    @Override
+    public User updateAvatar(User user) {
+        if (user.getAvatarFile() != null && !user.getAvatarFile().isEmpty()) {
+            try {
+                String publicId = "user_avatar_" + user.getEmail();
+
+                Map<String, Object> params = new HashMap<>();
+                params.put("resource_type", "image");
+                params.put("folder", "user");
+                params.put("public_id", publicId);
+                Map<?, ?> uploadResult = this.cloudinary.uploader().upload(user.getAvatarFile().getBytes(), params);
+
+                // Extract the secure URL of the uploaded image
+                user.setAvatarLink(uploadResult.get("secure_url").toString());
+                user.setLastModifiedDate(new Date().getTime());
+
+                // Delete old avatar only if upload was successful
+                if (!uploadResult.isEmpty()) {
+                    this.cloudinary.uploader().destroy(publicId, null);
+                }
+            } catch (Exception e) {
+                throw new DatabaseException("Edit user failed");
+            }
+        }
+
+        if (user.getAvatarBase64() != null && !user.getAvatarBase64().isEmpty()) {
+            try {
+                String publicId = "user_avatar_" + user.getEmail();
+
+                Map<String, Object> params = new HashMap<>();
+                params.put("resource_type", "image");
+                params.put("folder", "user"); // Optional folder to organize your images
+                params.put("public_id", publicId);
+                Map<?, ?> uploadResult = this.cloudinary.uploader().upload(user.getAvatarBase64(), params);
+
+                // Extract the secure URL of the uploaded image
+                user.setAvatarLink(uploadResult.get("secure_url").toString());
+                user.setLastModifiedDate(new Date().getTime());
+
+                // Delete old avatar only if upload was successful
+                if (!uploadResult.isEmpty()) {
+                    this.cloudinary.uploader().destroy(publicId, null);
+                }
+            } catch (Exception e) {
+                throw new DatabaseException("Edit user failed");
+            }
+        }
+
+        return user;
+    }
+
 
     @Override
     public void toggleLockUser(String email) {
