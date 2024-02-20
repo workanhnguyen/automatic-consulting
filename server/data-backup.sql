@@ -92,7 +92,7 @@ CREATE TABLE `conversations` (
 
 LOCK TABLES `conversations` WRITE;
 /*!40000 ALTER TABLE `conversations` DISABLE KEYS */;
-INSERT INTO `conversations` VALUES (1708226591769,2,NULL,52,'điểm tuyển sinh ngành khmt năm 2024 năm 2023','Điểm xét tuyển của ngành Khoa học máy tính - Trường Đại học Mở TP. HCM như sau:\n1. Theo phương thức thi tốt nghiệp THPT của Bộ Giáo dục và Đào tạo:\n+ Năm 2023: 24.00\n+ Năm 2022: 24.50\n+ Năm 2021: 25.55\n+ Năm 2020: 23.00\n+ Năm 2019: 19.20\n+ Năm 2018: 17.00\n+ Năm 2017: 20.75\n+ Năm 2016: 20.00\n2. Theo phương thức xét tuyển học bạ THPT:\n+ Năm 2023: Nhận hết HSG + Học bạ có CCNN + Học bạ: 28.00\n+ Năm 2022: 27.25 (HSG)\n+ Năm 2021: 25.25\n+ Năm 2020: 23.80\n+ Năm 2019: 25.50'),(1708226883079,52,NULL,52,'Các phương thức xét tuyển','Về các phương thức tuyển sinh của Trường Đại học Mở thành phố Hồ Chí Minh, vui lòng xem thêm tại đường dẫn sau: \n1. Chương trình đại trà: https://tuyensinh.ou.edu.vn/thong-tin-tuyen-sinh-nam-2023-truong-dai-hoc-mo-tp-hcm-ma-truong-mbs\n2. Chương trình chất lượng cao: https://tuyensinh.ou.edu.vn/gioi-thieu-khoa-dao-tao-dac-biet-chuong-trinh-chat-luong-cao'),(1708227426061,53,NULL,52,'Tổ hợp xét tuyển ngành khmt clc','Các môn xét tuyển của ngành Khoa học máy tính (Chất lượng cao) - Trường Đại học Mở TP. Hồ Chí Minh bao gồm:\n1. Khối A00: Toán, Lý, Hóa.\n2. Khối A01: Toán, Lý, Anh.\n3. Khối D01: Toán, Văn, Anh.\n4. Khối D07: Toán, Hóa, Anh.\n\nMôn Toán ở tất cả tổ hợp trên đều được nhân hệ số 2.');
+INSERT INTO `conversations` VALUES (1708226591769,2,NULL,52,'điểm tuyển sinh ngành khmt năm 2024 năm 2023','Điểm xét tuyển của ngành Khoa học máy tính - Trường Đại học Mở TP. HCM như sau:\n1. Theo phương thức thi tốt nghiệp THPT của Bộ Giáo dục và Đào tạo:\n+ Năm 2023: 24.00\n+ Năm 2022: 24.50\n+ Năm 2021: 25.55\n+ Năm 2020: 23.00\n+ Năm 2019: 19.20\n+ Năm 2018: 17.00\n+ Năm 2017: 20.75\n+ Năm 2016: 20.00\n2. Theo phương thức xét tuyển học bạ THPT:\n+ Năm 2023: Nhận hết HSG + Học bạ có CCNN + Học bạ: 28.00\n+ Năm 2022: 27.25 (HSG)\n+ Năm 2021: 25.25\n+ Năm 2020: 23.80\n+ Năm 2019: 25.50'),(1708226883079,52,NULL,52,'Các phương thức xét tuyển','Về các phương thức tuyển sinh của Trường Đại học Mở thành phố Hồ Chí Minh, vui lòng xem thêm tại đường dẫn sau: \n1. Chương trình đại trà: https://tuyensinh.ou.edu.vn/thong-tin-tuyen-sinh-nam-2023-truong-dai-hoc-mo-tp-hcm-ma-truong-mbs\n2. Chương trình chất lượng cao: https://tuyensinh.ou.edu.vn/gioi-thieu-khoa-dao-tao-dac-biet-chuong-trinh-chat-luong-cao'),(1708227426061,53,NULL,52,'Tổ hợp xét tuyển ngành khmt clc','Các môn xét tuyển của ngành Khoa học máy tính (Chất lượng cao) - Trường Đại học Mở TP. Hồ Chí Minh bao gồm:\n1. Khối A00: Toán, Lý, Hóa.\n2. Khối A01: Toán, Lý, Anh.\n3. Khối D01: Toán, Văn, Anh.\n4. Khối D07: Toán, Hóa, Anh.\n\nMôn Toán ở tất cả tổ hợp trên đều được nhân hệ số 2.'),(1708392813418,102,NULL,52,'Tổ hợp xét tuyển ngành khmt clc','Các môn xét tuyển của ngành Khoa học máy tính (Chất lượng cao) - Trường Đại học Mở TP. Hồ Chí Minh bao gồm:\n1. Khối A00: Toán, Lý, Hóa.\n2. Khối A01: Toán, Lý, Anh.\n3. Khối D01: Toán, Văn, Anh.\n4. Khối D07: Toán, Hóa, Anh.\n\nMôn Toán ở tất cả tổ hợp trên đều được nhân hệ số 2.'),(1708393050210,152,NULL,1,'Thông tin liên hệ khoa cntt','Liên hệ văn phòng Khoa Công nghệ thông tin:\nPhòng 604 (Lầu 6), số 35-37 Hồ Hảo Hớn, Phường Cô Giang, Quận 1, Thành phố Hồ Chí Minh, Việt Nam\nĐiện thoại: (84-028) 3838.6603\nWebsite: www.it.ou.edu.vn\nEmail: fcs@ou.edu.vn'),(1708396127260,202,NULL,52,'Thông tin liên hệ khoa cntt','Liên hệ văn phòng Khoa Công nghệ thông tin:\nPhòng 604 (Lầu 6), số 35-37 Hồ Hảo Hớn, Phường Cô Giang, Quận 1, Thành phố Hồ Chí Minh, Việt Nam\nĐiện thoại: (84-028) 3838.6603\nWebsite: www.it.ou.edu.vn\nEmail: fcs@ou.edu.vn'),(1708396493892,252,NULL,52,'Thông tin liên hệ khoa cntt','Liên hệ văn phòng Khoa Công nghệ thông tin:\nPhòng 604 (Lầu 6), số 35-37 Hồ Hảo Hớn, Phường Cô Giang, Quận 1, Thành phố Hồ Chí Minh, Việt Nam\nĐiện thoại: (84-028) 3838.6603\nWebsite: www.it.ou.edu.vn\nEmail: fcs@ou.edu.vn');
 /*!40000 ALTER TABLE `conversations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,7 +114,7 @@ CREATE TABLE `conversations_seq` (
 
 LOCK TABLES `conversations_seq` WRITE;
 /*!40000 ALTER TABLE `conversations_seq` DISABLE KEYS */;
-INSERT INTO `conversations_seq` VALUES (151);
+INSERT INTO `conversations_seq` VALUES (351);
 /*!40000 ALTER TABLE `conversations_seq` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -581,6 +581,7 @@ CREATE TABLE `users` (
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `note` tinytext COLLATE utf8mb4_unicode_ci,
   `role` enum('ROLE_USER','ROLE_ADMIN') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `avatar_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_6dotkott2kjsp8vw4d0m25fb7` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -592,7 +593,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (_binary '',1708160302186,1,NULL,'Admin','admin@gmail.com','Account','$2a$10$ASqVO7Vbt34.NNvUJbSxQ.x9EqU2relLB70GGOLIckuGmIArQQAaO',NULL,'ROLE_ADMIN'),(_binary '',1708160302292,2,NULL,'Anh','anh@gmail.com','Nguyen','$2a$10$hKbWpsKf.B5pYT.sqpK46.HnKymCkewtQ6JItmknDTTsnQEWC247K',NULL,'ROLE_USER'),(_binary '',1708160302352,3,NULL,'Duy','duy@gmail.com','Le','$2a$10$Hr07m7JTUHOJvcn.KlPEU.nI3wgx08IIchVaKtiiMy8RbOmmixJtW',NULL,'ROLE_USER'),(_binary '',1708160302413,4,NULL,'Dat','dat@gmail.com','Luong','$2a$10$AZd3RdcdUmSI5Yj4olvCE.qU08xLtzJx7Y9nVu2DRWo2gzS9E1P0y',NULL,'ROLE_USER'),(_binary '',1708160302473,5,NULL,'Linh','linh@gmail.com','Vu','$2a$10$.61igyi8JxD.f1uNfQ7UK.7g6mDGdg54FV4LqxX0h4TibdaQh6qja',NULL,'ROLE_USER'),(_binary '\0',1708160302535,6,NULL,'Tien','tien@gmail.com','Sinh','$2a$10$g0XQlcU5dBX33L71MPOTOeLlnzAIMJClrN91KtHYVpOHrcq7OFBta',NULL,'ROLE_USER'),(_binary '',1708160302597,7,NULL,'Mai','mai@gmail.com','Dang','$2a$10$HE8gzg94XuGMDITpvzJPJebfSE.OiLlVbgAyC/jTSDX1wILOAZyCO',NULL,'ROLE_USER'),(_binary '\0',1708160302659,8,NULL,'Nhung','nhung@gmail.com','Trang','$2a$10$.MuqVdVnZ.IHGNx06fLcQeC5yYraNZ5bYiO0jJ2jBkkiPnLRzGMXS',NULL,'ROLE_USER'),(_binary '',1708160302724,9,NULL,'Binh','binh@gmail.com','Nhu','$2a$10$4sut/lJsRyRZwNZmbuh3hOCBdj2FyF2HMh8hh299trLlDL6RifbZ6',NULL,'ROLE_USER'),(_binary '',1708160302789,10,NULL,'Huong','huong@gmail.com','Pham','$2a$10$0TWhahx8tSAYcO8E8a7TEO00DZpEZib7CtleoSrtA7AEpfawMdvk2',NULL,'ROLE_USER'),(_binary '\0',1708160302854,11,NULL,'Thinh','thinh@gmail.com','Dinh','$2a$10$hHLj35T/VlRpaYRYj3zxO.9GmtPv3rc4JR42FYSlereV9x1tNCCD.',NULL,'ROLE_USER'),(_binary '',1708226512451,52,NULL,'Anh','an@gmail.com','Nguyen','$2a$10$cmSSkcvMj8RNScyKOwfd/.GErmU4rPMoV7jAOy65ZeN4w.iZmK7RO',NULL,'ROLE_USER');
+INSERT INTO `users` VALUES (_binary '',1708160302186,1,1708318635814,'Admin','admin@gmail.com','Account','$2a$10$ASqVO7Vbt34.NNvUJbSxQ.x9EqU2relLB70GGOLIckuGmIArQQAaO',NULL,'ROLE_ADMIN','https://res.cloudinary.com/dbiqkf60y/image/upload/v1708318635/user/user_avatar_admin%40gmail.com.png'),(_binary '',1708160302292,2,NULL,'Anh','anh@gmail.com','Nguyen','$2a$10$hKbWpsKf.B5pYT.sqpK46.HnKymCkewtQ6JItmknDTTsnQEWC247K',NULL,'ROLE_USER','https://w7.pngwing.com/pngs/540/48/png-transparent-green-tree-illustration-natural-resource-conservation-nature-natural-environment-nature-essay-grass-natural-science-thumbnail.png'),(_binary '',1708160302352,3,NULL,'Duy','duy@gmail.com','Le','$2a$10$Hr07m7JTUHOJvcn.KlPEU.nI3wgx08IIchVaKtiiMy8RbOmmixJtW',NULL,'ROLE_USER',NULL),(_binary '',1708160302413,4,NULL,'Dat','dat@gmail.com','Luong','$2a$10$AZd3RdcdUmSI5Yj4olvCE.qU08xLtzJx7Y9nVu2DRWo2gzS9E1P0y',NULL,'ROLE_USER',NULL),(_binary '',1708160302473,5,NULL,'Linh','linh@gmail.com','Vu','$2a$10$.61igyi8JxD.f1uNfQ7UK.7g6mDGdg54FV4LqxX0h4TibdaQh6qja',NULL,'ROLE_USER',NULL),(_binary '\0',1708160302535,6,NULL,'Tien','tien@gmail.com','Sinh','$2a$10$g0XQlcU5dBX33L71MPOTOeLlnzAIMJClrN91KtHYVpOHrcq7OFBta',NULL,'ROLE_USER',NULL),(_binary '',1708160302597,7,NULL,'Mai','mai@gmail.com','Dang','$2a$10$HE8gzg94XuGMDITpvzJPJebfSE.OiLlVbgAyC/jTSDX1wILOAZyCO',NULL,'ROLE_USER',NULL),(_binary '\0',1708160302659,8,NULL,'Nhung','nhung@gmail.com','Trang','$2a$10$.MuqVdVnZ.IHGNx06fLcQeC5yYraNZ5bYiO0jJ2jBkkiPnLRzGMXS',NULL,'ROLE_USER',NULL),(_binary '',1708160302724,9,NULL,'Binh','binh@gmail.com','Nhu','$2a$10$4sut/lJsRyRZwNZmbuh3hOCBdj2FyF2HMh8hh299trLlDL6RifbZ6',NULL,'ROLE_USER',NULL),(_binary '',1708160302789,10,NULL,'Huong','huong@gmail.com','Pham','$2a$10$0TWhahx8tSAYcO8E8a7TEO00DZpEZib7CtleoSrtA7AEpfawMdvk2',NULL,'ROLE_USER',NULL),(_binary '\0',1708160302854,11,1708318220058,'Thinh','thinh@gmail.com','Dinh','$2a$10$hHLj35T/VlRpaYRYj3zxO.9GmtPv3rc4JR42FYSlereV9x1tNCCD.',NULL,'ROLE_USER','https://res.cloudinary.com/dbiqkf60y/image/upload/v1708318219/user/user_avatar_thinh%40gmail.com.png'),(_binary '\0',1708226512451,52,1708421687077,'Anh','an@gmail.com','Nguyen','$2a$10$4v2PIjAdswMp.3xO/9Zx5OaedCXMHe0jvi/6SAaZIkMTpR1FdGHxW',NULL,'ROLE_USER','https://res.cloudinary.com/dbiqkf60y/image/upload/v1708402062/user/user_avatar_an%40gmail.com.png');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -614,7 +615,7 @@ CREATE TABLE `users_seq` (
 
 LOCK TABLES `users_seq` WRITE;
 /*!40000 ALTER TABLE `users_seq` DISABLE KEYS */;
-INSERT INTO `users_seq` VALUES (151);
+INSERT INTO `users_seq` VALUES (251);
 /*!40000 ALTER TABLE `users_seq` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -627,4 +628,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-18 14:52:56
+-- Dump completed on 2024-02-20 17:09:01
