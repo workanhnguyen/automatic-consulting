@@ -9,10 +9,7 @@ import com.nva.server.dtos.EditUserRequest;
 import com.nva.server.dtos.UserResponse;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
-import com.nva.server.exceptions.DatabaseException;
-import com.nva.server.exceptions.PasswordException;
-import com.nva.server.exceptions.UserExistedException;
-import com.nva.server.exceptions.UserNotFoundException;
+import com.nva.server.exceptions.*;
 import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -285,5 +282,18 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UserNotFoundException("User is not found.");
         }
+    }
+
+    @Override
+    public void deleteUser() {
+        Optional<User> optionalUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (optionalUser.isPresent()) {
+            try {
+                userRepository.delete(optionalUser.get());
+            } catch (Exception ex) {
+                throw new CommonException("Delete account failed.");
+            }
+        } else throw new UserNotFoundException("User is not found.");
     }
 }

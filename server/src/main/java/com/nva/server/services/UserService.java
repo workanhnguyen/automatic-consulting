@@ -26,4 +26,5 @@ public interface UserService {
     void removeUser(User user);
     void changePassword(String email, ChangePasswordDto changePasswordDto);
     void changePassword(ChangePasswordRequest request);
+    void deleteUser();
 }

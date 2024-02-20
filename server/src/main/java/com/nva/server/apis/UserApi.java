@@ -7,6 +7,7 @@ import com.nva.server.entities.User;
 import com.nva.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -47,8 +48,14 @@ public class UserApi {
         return ResponseEntity.ok(userService.toggleLockUser());
     }
 
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<?> deleteAccount() {
+        userService.deleteUser();
+        return ResponseEntity.ok(Collections.singletonMap("message", "Account has been deleted successfully!"));
+    }
+
     @GetMapping("/sayHello")
     public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("User hello!");
+        return ResponseEntity.ok(String.format("Hello %s", SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 }
