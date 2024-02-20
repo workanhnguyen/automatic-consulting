@@ -10,5 +10,4 @@ public interface AuthenticationService {
     User signup(SignUpRequest signUpRequest);
     JwtAuthenticationResponse signin(SignInRequest signInRequest);
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
-    void logout();
 }

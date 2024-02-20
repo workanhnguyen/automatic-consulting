@@ -3,8 +3,6 @@ package com.nva.server.services.impl;
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.dtos.ConversationResponse;
 import com.nva.server.entities.Conversation;
-import com.nva.server.entities.Faculty;
-import com.nva.server.entities.Major;
 import com.nva.server.entities.User;
 import com.nva.server.exceptions.DatabaseException;
 import com.nva.server.exceptions.EntityExistedException;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional

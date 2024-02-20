@@ -13,11 +13,8 @@ import com.nva.server.services.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -80,12 +77,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwtAuthenticationResponse;
         }
         return null;
-    }
-
-    @Override
-    public void logout() {
-        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        logoutHandler.logout(null, null, authentication);
     }
 }
