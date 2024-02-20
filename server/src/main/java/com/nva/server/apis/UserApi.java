@@ -42,6 +42,11 @@ public class UserApi {
         return ResponseEntity.ok(Collections.singletonMap("message", "Password has been changed successfully!"));
     }
 
+    @PostMapping("/toggleLockAccount")
+    public ResponseEntity<?> toggleLockAccount() {
+        return ResponseEntity.ok(userService.toggleLockUser());
+    }
+
     @GetMapping("/sayHello")
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("User hello!");

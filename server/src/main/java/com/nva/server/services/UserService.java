@@ -17,6 +17,7 @@ public interface UserService {
     void updateAvatar(User user);
     String updateAvatar(String avatarBase64, User user);
     void toggleLockUser(String email);
+    UserResponse toggleLockUser();
     Optional<User> getUserByEmail(String email);
     List<User> getUsers(Map<String, Object> params);
     long getUserCount(Map<String, Object> params);

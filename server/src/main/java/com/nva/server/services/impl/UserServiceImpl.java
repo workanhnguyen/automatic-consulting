@@ -77,22 +77,25 @@ public class UserServiceImpl implements UserService {
                 optionalUser.get().setLastModifiedDate(new Date().getTime());
                 optionalUser.get().setAvatarLink(updateAvatar(user.getAvatar(), optionalUser.get()));
 
-                UserResponse response = new UserResponse();
-                response.setEmail(optionalUser.get().getEmail());
-                response.setFirstName(optionalUser.get().getFirstName());
-                response.setLastName(optionalUser.get().getLastName());
-                response.setCreatedDate(optionalUser.get().getCreatedDate());
-                response.setLastModifiedDate(optionalUser.get().getLastModifiedDate());
-                response.setIsEnabled(optionalUser.get().isEnabled());
-                response.setAvatarLink(optionalUser.get().getAvatarLink());
-
-                return response;
+                return getUserResponse(optionalUser.get());
             } catch (Exception ex) {
                 throw new DatabaseException("Update user failed.");
             }
         } else {
             throw new UserNotFoundException("User is not found.");
         }
+    }
+
+    private static UserResponse getUserResponse(User user) {
+        UserResponse response = new UserResponse();
+        response.setEmail(user.getEmail());
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setCreatedDate(user.getCreatedDate());
+        response.setLastModifiedDate(user.getLastModifiedDate());
+        response.setIsEnabled(user.isEnabled());
+        response.setAvatarLink(user.getAvatarLink());
+        return response;
     }
 
     @Override
@@ -178,6 +181,18 @@ public class UserServiceImpl implements UserService {
                 User existingUser = optionalUser.get();
                 existingUser.setIsEnabled(!existingUser.isEnabled());
                 userRepository.save(existingUser);
+            } else throw new UserNotFoundException("You cannot lock ADMIN account.");
+        } else throw new UserNotFoundException("User is not found.");
+    }
+
+    @Override
+    public UserResponse toggleLockUser() {
+        Optional<User> optionalUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (optionalUser.isPresent()) {
+            if (!optionalUser.get().getRole().equals(Role.ROLE_ADMIN)) {
+                optionalUser.get().setIsEnabled(!optionalUser.get().isEnabled());
+
+                return getUserResponse(optionalUser.get());
             } else throw new UserNotFoundException("You cannot lock ADMIN account.");
         } else throw new UserNotFoundException("User is not found.");
     }
