@@ -1,6 +1,5 @@
 package com.nva.server.views.error;
 
-import com.nva.server.views.home.HomeView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;

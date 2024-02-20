@@ -5,7 +5,6 @@ import com.nva.server.security.SecurityService;
 import com.nva.server.services.UserService;
 import com.nva.server.views.action.ActionView;
 import com.nva.server.views.chat_conversation.ConversationView;
-import com.nva.server.views.home.HomeView;
 import com.nva.server.views.information.InformationView;
 import com.nva.server.views.scope.ScopeView;
 import com.nva.server.views.topic.TopicView;
