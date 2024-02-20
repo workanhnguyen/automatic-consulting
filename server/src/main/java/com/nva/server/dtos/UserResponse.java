@@ -11,6 +11,7 @@ public class UserResponse {
     private String email;
     private String firstName;
     private String lastName;
+    private String avatarLink;
     private Long createdDate;
     private Long lastModifiedDate;
     private Boolean isEnabled;

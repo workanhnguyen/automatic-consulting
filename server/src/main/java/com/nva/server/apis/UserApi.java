@@ -1,5 +1,6 @@
 package com.nva.server.apis;
 
+import com.nva.server.dtos.ChangePasswordRequest;
 import com.nva.server.dtos.EditUserRequest;
 import com.nva.server.dtos.UserResponse;
 import com.nva.server.entities.User;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,6 +34,12 @@ public class UserApi {
     @PatchMapping("/updateInfo")
     public ResponseEntity<UserResponse> updateUserInfo(@RequestBody EditUserRequest user) {
         return ResponseEntity.ok().body(userService.editUserInfo(user));
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        userService.changePassword(changePasswordRequest);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Password has been changed successfully!"));
     }
 
     @GetMapping("/sayHello")
