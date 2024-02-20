@@ -1,8 +1,11 @@
 package com.nva.server.services.impl;
 
 import com.cloudinary.Cloudinary;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.dtos.ChangePasswordDto;
+import com.nva.server.dtos.EditUserRequest;
+import com.nva.server.dtos.UserResponse;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
 import com.nva.server.exceptions.DatabaseException;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +39,8 @@ public class UserServiceImpl implements UserService {
     private Cloudinary cloudinary;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public User saveUser(User user) {
@@ -46,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User editUser(User user) {
+    public void editUser(User user) {
         Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
         if (optionalUser.isPresent()) {
             User existingUser = optionalUser.get();
@@ -58,8 +65,33 @@ public class UserServiceImpl implements UserService {
 
             existingUser = updateAvatar(existingUser);
 
-            return existingUser;
         } else throw new UserNotFoundException("User is not found.");
+    }
+
+    @Override
+    public UserResponse editUserInfo(EditUserRequest user) {
+        Optional<User> optionalUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (optionalUser.isPresent()) {
+            try {
+                optionalUser.get().setFirstName(user.getFirstName());
+                optionalUser.get().setLastName(user.getLastName());
+                optionalUser.get().setLastModifiedDate(new Date().getTime());
+
+                UserResponse response = new UserResponse();
+                response.setEmail(optionalUser.get().getEmail());
+                response.setFirstName(optionalUser.get().getFirstName());
+                response.setLastName(optionalUser.get().getLastName());
+                response.setCreatedDate(optionalUser.get().getCreatedDate());
+                response.setLastModifiedDate(optionalUser.get().getLastModifiedDate());
+                response.setIsEnabled(optionalUser.get().isEnabled());
+
+                return response;
+            } catch (Exception ex) {
+                throw new DatabaseException("Update user information failed.");
+            }
+        } else {
+            throw new UserNotFoundException("User is not found hehe");
+        }
     }
 
     @Override
@@ -127,7 +159,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUser(String email) {
+    public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -195,5 +227,13 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UserNotFoundException("User is not found.");
         }
+    }
+
+    private String getCurrentUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
+            return ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+        }
+        throw new UserNotFoundException("User is not found.");
     }
 }
