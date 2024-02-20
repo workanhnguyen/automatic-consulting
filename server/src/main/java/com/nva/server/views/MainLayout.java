@@ -5,7 +5,6 @@ import com.nva.server.security.SecurityService;
 import com.nva.server.services.UserService;
 import com.nva.server.views.action.ActionView;
 import com.nva.server.views.chat_conversation.ConversationView;
-import com.nva.server.views.home.HomeView;
 import com.nva.server.views.information.InformationView;
 import com.nva.server.views.scope.ScopeView;
 import com.nva.server.views.topic.TopicView;
@@ -90,7 +89,7 @@ public class MainLayout extends AppLayout {
         primaryNav.setWidthFull();
         primaryNav.setLabel("Primary management");
         primaryNav.setCollapsible(true);
-        primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
+//        primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
         primaryNav.addItem(new SideNavItem("User", UserView.class, LineAwesomeIcon.USER.create()));
 //
 //        SideNavItem facultyNav = new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create());

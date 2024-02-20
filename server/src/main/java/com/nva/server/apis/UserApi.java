@@ -1,15 +1,18 @@
 package com.nva.server.apis;
 
+import com.nva.server.dtos.ChangePasswordRequest;
 import com.nva.server.dtos.EditUserRequest;
 import com.nva.server.dtos.UserResponse;
 import com.nva.server.entities.User;
 import com.nva.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -34,8 +37,25 @@ public class UserApi {
         return ResponseEntity.ok().body(userService.editUserInfo(user));
     }
 
+    @PostMapping("/changePassword")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        userService.changePassword(changePasswordRequest);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Password has been changed successfully!"));
+    }
+
+    @PostMapping("/toggleLockAccount")
+    public ResponseEntity<?> toggleLockAccount() {
+        return ResponseEntity.ok(userService.toggleLockUser());
+    }
+
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<?> deleteAccount() {
+        userService.deleteUser();
+        return ResponseEntity.ok(Collections.singletonMap("message", "Account has been deleted successfully!"));
+    }
+
     @GetMapping("/sayHello")
     public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("User hello!");
+        return ResponseEntity.ok(String.format("Hello %s", SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 }

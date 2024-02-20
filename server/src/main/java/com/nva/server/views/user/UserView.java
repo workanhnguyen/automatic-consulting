@@ -35,6 +35,7 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AccessDeniedErrorRouter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import elemental.json.Json;
@@ -54,6 +55,8 @@ import java.util.Map;
 @Scope("prototype")
 @PageTitle("User | Management")
 @Route(value = "admin/users", layout = MainLayout.class)
+@RouteAlias(value = "admin", layout = MainLayout.class)
+@RouteAlias(value = "", layout = MainLayout.class)
 @RolesAllowed("ROLE_ADMIN")
 @AccessDeniedErrorRouter()
 @Getter

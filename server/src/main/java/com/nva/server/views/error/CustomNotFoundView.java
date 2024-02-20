@@ -1,6 +1,6 @@
 package com.nva.server.views.error;
 
-import com.nva.server.views.home.HomeView;
+import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -26,8 +26,8 @@ public class CustomNotFoundView extends VerticalLayout implements HasErrorParame
         setAlignItems(FlexComponent.Alignment.CENTER);
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-        Button backToHomePageBtn = new Button("Back to Homepage");
-        backToHomePageBtn.addClickListener(clickEvent -> UI.getCurrent().navigate(HomeView.class));
+        Button backToHomePageBtn = new Button("Back to page");
+        backToHomePageBtn.addClickListener(clickEvent -> UI.getCurrent().navigate(UserView.class));
         backToHomePageBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         backToHomePageBtn.getStyle().set("cursor", "pointer");
 

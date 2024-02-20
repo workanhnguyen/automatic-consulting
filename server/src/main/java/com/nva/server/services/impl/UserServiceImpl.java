@@ -4,14 +4,12 @@ import com.cloudinary.Cloudinary;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nva.server.constants.CustomConstants;
 import com.nva.server.dtos.ChangePasswordDto;
+import com.nva.server.dtos.ChangePasswordRequest;
 import com.nva.server.dtos.EditUserRequest;
 import com.nva.server.dtos.UserResponse;
 import com.nva.server.entities.Role;
 import com.nva.server.entities.User;
-import com.nva.server.exceptions.DatabaseException;
-import com.nva.server.exceptions.PasswordException;
-import com.nva.server.exceptions.UserExistedException;
-import com.nva.server.exceptions.UserNotFoundException;
+import com.nva.server.exceptions.*;
 import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,26 +72,31 @@ public class UserServiceImpl implements UserService {
                 optionalUser.get().setFirstName(user.getFirstName());
                 optionalUser.get().setLastName(user.getLastName());
                 optionalUser.get().setLastModifiedDate(new Date().getTime());
+                optionalUser.get().setAvatarLink(updateAvatar(user.getAvatar(), optionalUser.get()));
 
-                UserResponse response = new UserResponse();
-                response.setEmail(optionalUser.get().getEmail());
-                response.setFirstName(optionalUser.get().getFirstName());
-                response.setLastName(optionalUser.get().getLastName());
-                response.setCreatedDate(optionalUser.get().getCreatedDate());
-                response.setLastModifiedDate(optionalUser.get().getLastModifiedDate());
-                response.setIsEnabled(optionalUser.get().isEnabled());
-
-                return response;
+                return getUserResponse(optionalUser.get());
             } catch (Exception ex) {
-                throw new DatabaseException("Update user information failed.");
+                throw new DatabaseException("Update user failed.");
             }
         } else {
-            throw new UserNotFoundException("User is not found hehe");
+            throw new UserNotFoundException("User is not found.");
         }
     }
 
+    private static UserResponse getUserResponse(User user) {
+        UserResponse response = new UserResponse();
+        response.setEmail(user.getEmail());
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setCreatedDate(user.getCreatedDate());
+        response.setLastModifiedDate(user.getLastModifiedDate());
+        response.setIsEnabled(user.isEnabled());
+        response.setAvatarLink(user.getAvatarLink());
+        return response;
+    }
+
     @Override
-    public User updateAvatar(User user) {
+    public void updateAvatar(User user) {
         if (user.getAvatarFile() != null && !user.getAvatarFile().isEmpty()) {
             try {
                 String publicId = "user_avatar_" + user.getEmail();
@@ -137,11 +139,34 @@ public class UserServiceImpl implements UserService {
                     this.cloudinary.uploader().destroy(publicId, null);
                 }
             } catch (Exception e) {
-                throw new DatabaseException("Edit user failed");
+                throw new DatabaseException("Update avatar failed.");
             }
         }
 
-        return user;
+    }
+
+    @Override
+    public String updateAvatar(String avatarBase64, User user) {
+        if (avatarBase64 != null && !avatarBase64.isEmpty()) {
+            try {
+                String publicId = "user_avatar_" + user.getEmail();
+
+                Map<String, Object> params = new HashMap<>();
+                params.put("resource_type", "image");
+                params.put("folder", "user"); // Optional folder to organize your images
+                params.put("public_id", publicId);
+                Map<?, ?> uploadResult = this.cloudinary.uploader().upload(avatarBase64, params);
+
+                // Delete old avatar only if upload was successful
+                if (!uploadResult.isEmpty())
+                    this.cloudinary.uploader().destroy(publicId, null);
+
+                return uploadResult.get("secure_url").toString();
+            } catch (Exception e) {
+                throw new DatabaseException("Edit user failed");
+            }
+        }
+        return user.getAvatarLink();
     }
 
 
@@ -153,6 +178,18 @@ public class UserServiceImpl implements UserService {
                 User existingUser = optionalUser.get();
                 existingUser.setIsEnabled(!existingUser.isEnabled());
                 userRepository.save(existingUser);
+            } else throw new UserNotFoundException("You cannot lock ADMIN account.");
+        } else throw new UserNotFoundException("User is not found.");
+    }
+
+    @Override
+    public UserResponse toggleLockUser() {
+        Optional<User> optionalUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (optionalUser.isPresent()) {
+            if (!optionalUser.get().getRole().equals(Role.ROLE_ADMIN)) {
+                optionalUser.get().setIsEnabled(!optionalUser.get().isEnabled());
+
+                return getUserResponse(optionalUser.get());
             } else throw new UserNotFoundException("You cannot lock ADMIN account.");
         } else throw new UserNotFoundException("User is not found.");
     }
@@ -228,11 +265,35 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private String getCurrentUserEmail() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-            return ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+    @Override
+    public void changePassword(ChangePasswordRequest request) {
+        Optional<User> optionalUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (optionalUser.isPresent()) {
+            if (!passwordEncoder.matches(request.getOldPassword(), optionalUser.get().getPassword())) {
+                throw new PasswordException("Current password is incorrect.");
+            }
+            if (passwordEncoder.matches(request.getNewPassword(), optionalUser.get().getPassword())) {
+                throw new PasswordException("New password should not be equal to the old password.");
+            } else {
+                User existingUser = optionalUser.get();
+                existingUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+                existingUser.setLastModifiedDate(new Date().getTime());
+            }
+        } else {
+            throw new UserNotFoundException("User is not found.");
         }
-        throw new UserNotFoundException("User is not found.");
+    }
+
+    @Override
+    public void deleteUser() {
+        Optional<User> optionalUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (optionalUser.isPresent()) {
+            try {
+                userRepository.delete(optionalUser.get());
+            } catch (Exception ex) {
+                throw new CommonException("Delete account failed.");
+            }
+        } else throw new UserNotFoundException("User is not found.");
     }
 }
