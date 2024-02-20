@@ -63,8 +63,7 @@ public class UserServiceImpl implements UserService {
             existingUser.setAvatarBase64(user.getAvatarBase64());
             existingUser.setLastModifiedDate(new Date().getTime());
 
-            existingUser = updateAvatar(existingUser);
-
+            updateAvatar(existingUser);
         } else throw new UserNotFoundException("User is not found.");
     }
 
