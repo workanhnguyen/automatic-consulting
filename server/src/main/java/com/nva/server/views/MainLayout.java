@@ -90,7 +90,7 @@ public class MainLayout extends AppLayout {
         primaryNav.setWidthFull();
         primaryNav.setLabel("Primary management");
         primaryNav.setCollapsible(true);
-        primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
+//        primaryNav.addItem(new SideNavItem("Dashboard", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
         primaryNav.addItem(new SideNavItem("User", UserView.class, LineAwesomeIcon.USER.create()));
 //
 //        SideNavItem facultyNav = new SideNavItem("Faculty", FacultyView.class, LineAwesomeIcon.GRADUATION_CAP_SOLID.create());
