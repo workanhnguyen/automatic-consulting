@@ -44,4 +44,14 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CustomAuthenticationException.class)
+    public ResponseEntity<?> handleAuthenticationException(CustomAuthenticationException ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        exceptionResponse.setMessage(ex.getMessage());
+        exceptionResponse.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.BAD_REQUEST);
+    }
 }

@@ -1,5 +1,6 @@
 package com.nva.server.services;
 
+import com.nva.server.dtos.ConversationResponse;
 import com.nva.server.entities.Conversation;
 
 import java.util.List;
@@ -10,5 +11,6 @@ public interface ConversationService {
     Conversation editConversation(Conversation Conversation);
     void removeConversation(Conversation Conversation);
     List<Conversation> getConversation(Map<String, Object> params);
+    ConversationResponse getConversationsByUser(Map<String, String> params);
     long getConversationCount(Map<String, Object> params);
 }

@@ -117,7 +117,7 @@ public class MainLayout extends AppLayout {
 
     private Footer createFooter() {
         Footer footer = new Footer();
-        Optional<User> adminAccount = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        Optional<User> adminAccount = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
         HorizontalLayout footerLayout = new HorizontalLayout();
 
