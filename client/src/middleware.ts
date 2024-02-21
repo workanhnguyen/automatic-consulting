@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest, response: NextResponse) {
-  // const cookie = request.cookies.get('token')?.value;
-  return NextResponse.next();
-}
+const privateRoutes = ['/', '/profile'];
 
-export const config = {
-  matcher: "/"
+export default function middleware(request: NextRequest) {
+  const token = request.cookies.get('token');
+  if (!token && privateRoutes.includes(request.nextUrl.pathname)) {
+    const absoluteUrl = new URL('/auth/login', request.nextUrl.origin);
+    
+    return NextResponse.redirect(absoluteUrl.toString());
+  }
 }

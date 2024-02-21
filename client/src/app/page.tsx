@@ -1,30 +1,19 @@
-'use client';
-
-import { loginThunk } from '@/lib/redux/actions/Auth';
-import { UserLogin } from '@/lib/redux/module';
-import { AppDispatch, RootState } from '@/lib/redux/store';
 import Link from 'next/link';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+
+import { Box, Button, Typography } from '@mui/material';
 
 const HomePage = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const {} = useSelector((state: RootState) => state.auth);
-
-  useEffect(() => {
-    const account: UserLogin = {
-      email: 'an@gmail.com',
-      password: '1234',
-    };
-
-    dispatch(loginThunk(account));
-  }, []);
-
   return (
-    <>
-      <Link href="/about">About</Link>
-      <Link href="/contact">Contact</Link>
-    </>
+    <Box padding={2}>
+      <Typography variant="body1" sx={{ color: 'var(--primary)' }}>
+        He thong tu van tuyen sinh tu dong
+      </Typography>
+      <Link href="/profile">
+        <Button variant="contained" color="error" disableElevation>
+          Profile
+        </Button>
+      </Link>
+    </Box>
   );
 };
 
