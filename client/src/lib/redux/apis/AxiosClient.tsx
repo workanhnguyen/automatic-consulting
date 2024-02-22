@@ -38,8 +38,10 @@ axiosClient.interceptors.response.use(
         Cookies.remove('refreshToken');
         Cookies.remove('token');
         localStorage.removeItem('isFirstVisit');
+        return Promise.reject(error);
       }
-    } else return Promise.reject(error);
+    } 
+    else return Promise.reject(error);
   }
 );
 

@@ -6,6 +6,26 @@
   font-size: 100%;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #fff inset !important;
+  -webkit-text-fill-color: var(--black);
+}
+
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter"),
+    url("../lib/assets/fonts/Inter/Inter-Regular.ttf") format("truetype");
+}
+
+/* MuiDataGrid */
+[class*="-MuiDataGrid-root"] .MuiDataGrid-columnHeader:focus-within {
+  outline: none !important;
+}
+
 *::-webkit-scrollbar {
   width: 6px;
   height: 6px;

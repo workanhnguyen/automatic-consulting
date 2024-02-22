@@ -1,26 +1,44 @@
-'use client';
-
-import { createSlice } from '@reduxjs/toolkit';
-import { AuthState } from '../module';
-import { loginThunk } from '../actions/Auth';
+import { createSlice } from "@reduxjs/toolkit";
+import { AuthState } from "../module";
+import { loginThunk, registerThunk } from "../actions/Auth";
 
 const initialState: AuthState = {
   loadingLogin: false,
   successLogin: false,
   errorLogin: null,
   userInfo: null,
+
+  loadingRegister: false,
+  successRegister: null,
+  errorRegister: null,
 };
 
 export const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logOut: () => {
       return initialState;
-    }
+    },
+    resetLoginStatus: (state) => {
+      return {
+        ...state,
+        loadingLogin: false,
+        successLogin: false,
+        errorLogin: null,
+      };
+    },
+    resetRegisterStatus: (state) => {
+      return {
+        ...state,
+        loadingRegister: false,
+        successRegister: null,
+        errorRegister: null,
+      };
+    },
   },
   extraReducers: (builder) => {
-    //log in
+    // login
     builder.addCase(loginThunk.pending, (state) => {
       state.loadingLogin = true;
       state.successLogin = false;
@@ -37,8 +55,28 @@ export const authSlice = createSlice({
       state.successLogin = false;
       state.errorLogin = action.payload !== undefined ? action.payload : null;
     });
+
+    // register
+    builder.addCase(registerThunk.pending, (state) => {
+      state.loadingRegister = true;
+      state.successRegister = false;
+      state.errorRegister = null;
+    });
+    builder.addCase(registerThunk.fulfilled, (state, action) => {
+      state.loadingRegister = false;
+      state.successRegister = action.payload.data;
+      state.errorRegister = null;
+    });
+
+    builder.addCase(registerThunk.rejected, (state, action) => {
+      state.loadingRegister = false;
+      state.successRegister = false;
+      state.errorRegister =
+        action.payload !== undefined ? action.payload : null;
+    });
   },
 });
 
-export const { logOut } = authSlice.actions;
+export const { logOut, resetLoginStatus, resetRegisterStatus } =
+  authSlice.actions;
 export default authSlice.reducer;

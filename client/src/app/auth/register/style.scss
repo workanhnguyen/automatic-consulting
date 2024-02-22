@@ -1,0 +1,29 @@
+.register-container {
+    max-width: 500px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .register-wrapper {
+    padding-top: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .signup-switch {
+    color: var(--primary);
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+  
