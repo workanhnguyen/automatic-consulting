@@ -33,9 +33,9 @@ const CustomToast = (props: ToastProps) => {
           onClose={handleClose}
           severity={severity}
           iconMapping={{
-            success: <CheckCircle size={32} color="var(--success)" />,
-            info: <Info size={32} color="var(--information)" />,
-            warning: <WarningCircle size={32} color="var(--warning)" />,
+            success: <CheckCircle size={48} color="var(--success)" />,
+            info: <Info size={48} color="var(--information)" />,
+            warning: <WarningCircle size={48} color="var(--warning)" />,
             error: <XCircle size={48} color="var(--alert)" />,
           }}
         >

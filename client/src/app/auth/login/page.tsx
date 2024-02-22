@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { SyntheticEvent, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { SyntheticEvent, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 // @ts-ignore
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 import {
   Avatar,
   Box,
   Button,
   Checkbox,
-  CircularProgress,
   Container,
   FormControlLabel,
   IconButton,
@@ -22,17 +22,19 @@ import {
   Stack,
   TextField,
   Typography,
-} from '@mui/material';
-import { Eye, EyeSlash, Lock } from '@phosphor-icons/react';
+} from "@mui/material";
+import { Eye, EyeSlash, Lock } from "@phosphor-icons/react";
 
-import { loginThunk } from '@/lib/redux/actions/Auth';
-import { AppDispatch, RootState } from '@/lib/redux/store';
-import CustomToast from '@/lib/components/toast';
-import './style.scss';
+import { loginThunk } from "@/lib/redux/actions/Auth";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import CustomToast from "@/lib/components/toast";
+import { resetLoginStatus } from "@/lib/redux/features/authSlice";
+import CustomLoadingButton from "@/lib/components/loading-button";
+import "./style.scss";
 
 const loginUserSchema = z.object({
-  email: z.string().min(1, 'Không được bỏ trống').email('Email không hợp lệ'),
-  password: z.string().min(1, 'Không được bỏ trống'),
+  email: z.string().min(1, "Không được bỏ trống").email("Email không hợp lệ"),
+  password: z.string().min(1, "Không được bỏ trống"),
 });
 
 type UserLoginForm = z.infer<typeof loginUserSchema>;
@@ -51,7 +53,7 @@ const LoginPage = () => {
   const { register, handleSubmit, formState, getValues, reset } =
     useForm<UserLoginForm>({
       resolver: zodResolver(loginUserSchema),
-      mode: 'onChange',
+      mode: "onChange",
     });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -73,22 +75,22 @@ const LoginPage = () => {
     setRememberLogin(checked);
     if (checked) {
       const userAccount: UserLoginForm = {
-        email: getValues('email'),
+        email: getValues("email"),
         password: CryptoJS.AES.encrypt(
-          getValues('password'),
+          getValues("password"),
           process.env.NEXT_PUBLIC_ENCRYPT_PASSWORD_KEY
         ).toString(),
       };
 
-      localStorage.setItem('rememberedAccount', JSON.stringify(userAccount));
+      localStorage.setItem("rememberedAccount", JSON.stringify(userAccount));
     } else {
-      localStorage.removeItem('rememberedAccount');
+      localStorage.removeItem("rememberedAccount");
     }
   };
 
   // Load remembered account if it exists
   useEffect(() => {
-    const rememberedAccount = localStorage.getItem('rememberedAccount');
+    const rememberedAccount = localStorage.getItem("rememberedAccount");
 
     if (rememberedAccount) {
       const accountJson: UserLoginForm = JSON.parse(rememberedAccount);
@@ -96,7 +98,7 @@ const LoginPage = () => {
         accountJson.password,
         process.env.NEXT_PUBLIC_ENCRYPT_PASSWORD_KEY
       ).toString(CryptoJS.enc.Utf8);
-      
+
       accountJson.password = decryptedPassword;
 
       reset({ ...accountJson });
@@ -106,7 +108,10 @@ const LoginPage = () => {
 
   // Handle naviagate to home page if authenticated
   useEffect(() => {
-    successLogin && router.replace('/');
+    if (successLogin) {
+      dispatch(resetLoginStatus());
+      router.replace("/");
+    }
     errorLogin && setOpenToast(true);
   }, [successLogin, errorLogin]);
 
@@ -114,7 +119,7 @@ const LoginPage = () => {
     <>
       <Container className="login-container">
         <Box className="login-wrapper">
-          <Avatar sx={{ margin: 1, backgroundColor: 'var(--primary)' }}>
+          <Avatar sx={{ margin: 1, backgroundColor: "var(--primary)" }}>
             <Lock size={24} />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -139,13 +144,13 @@ const LoginPage = () => {
                 error={!!formState.errors.email}
                 helperText={formState.errors.email?.message}
                 disabled={loadingLogin}
-                {...register('email')}
+                {...register("email")}
               />
               <TextField
                 id="password"
                 fullWidth
                 label="Mật khẩu"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 error={!!formState.errors.password}
                 helperText={formState.errors.password?.message}
@@ -165,7 +170,7 @@ const LoginPage = () => {
                     </InputAdornment>
                   ),
                 }}
-                {...register('password')}
+                {...register("password")}
               />
               <FormControlLabel
                 disabled={loadingLogin}
@@ -175,25 +180,28 @@ const LoginPage = () => {
                 label={<Typography variant="body2">Lưu đăng nhập</Typography>}
               />
             </Stack>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              disableElevation
-              disabled={loadingLogin}
-            >
-              {loadingLogin ? (
-                <CircularProgress size={24} sx={{ color: 'var(--primary)' }} />
-              ) : (
+
+            {loadingLogin ? (
+              <CustomLoadingButton fullWidth />
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disableElevation
+                disabled={loadingLogin}
+              >
                 <Typography variant="button2">Đăng nhập</Typography>
-              )}
-            </Button>
+              </Button>
+            )}
             <Box className="flex-row">
               <Typography variant="body2">Chưa có tài khoản?&nbsp;</Typography>
-              <Typography variant="body2" className="signup-switch">
-                Đăng ký
-              </Typography>
+              <Link href="/auth/register">
+                <Typography variant="body2" className="signup-switch">
+                  Đăng ký
+                </Typography>
+              </Link>
             </Box>
           </Stack>
         </Box>

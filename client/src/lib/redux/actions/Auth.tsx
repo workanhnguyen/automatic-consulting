@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 //@ts-ignore
 import Cookies from 'js-cookie';
 
-import { AuthState, User, UserLogin } from '../module';
+import { AuthState, User, UserLogin, UserRegister } from '../module';
 import AuthApi from '../apis/AuthApi';
 
 export const handleAddOrUpdateLocalUser = (
@@ -37,6 +37,21 @@ export const loginThunk = createAsyncThunk(
       Cookies.set('refreshToken', refreshToken);
 
       return response;
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const registerThunk = createAsyncThunk(
+  'register',
+  async (userAccount: UserRegister, { rejectWithValue }) => {
+    try {
+      return await AuthApi.register(userAccount);
     } catch (error: any) {
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);

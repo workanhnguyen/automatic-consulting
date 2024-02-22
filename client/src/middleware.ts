@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const privateRoutes = ['/', '/profile'];
-const unauthorizedRoutes = ['/auth/login'];
+const unauthorizedRoutes = ['/auth/login', '/auth/register'];
 
 export default function middleware(request: NextRequest) {
   const token = request.cookies.get('token');

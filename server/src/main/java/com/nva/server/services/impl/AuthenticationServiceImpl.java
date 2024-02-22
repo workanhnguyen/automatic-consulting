@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
 
     @Override
-    public User signup(SignUpRequest signUpRequest) {
+    public void signup(SignUpRequest signUpRequest) {
         if (userRepository.findByEmail(signUpRequest.getEmail()).isEmpty()) {
             User user = new User();
             user.setEmail(signUpRequest.getEmail());
@@ -38,9 +38,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setLastName(signUpRequest.getLastName());
             user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
-            return userRepository.save(user);
+            userRepository.save(user);
         } else {
-            throw new UserExistedException("Email is taken.");
+            throw new UserExistedException("Email đã được sử dụng.");
         }
     }
 

@@ -1,4 +1,4 @@
-import { UserLogin } from '../module';
+import { UserLogin, UserRegister } from '../module';
 import AxiosClient from './AxiosClient';
 
 const AuthApi = {
@@ -8,11 +8,8 @@ const AuthApi = {
       password: userAccount.password,
     });
   },
-  register: (username: string, password: string) => {
-    return AxiosClient.post('/auth/register', {
-      username,
-      password,
-    });
+  register: (userAccount: UserRegister) => {
+    return AxiosClient.post('/auth/signup', { ...userAccount });
   },
   logout: () => {
     return AxiosClient.post('/auth/logout');

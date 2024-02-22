@@ -7,7 +7,7 @@ import com.nva.server.dtos.SignUpRequest;
 import com.nva.server.entities.User;
 
 public interface AuthenticationService {
-    User signup(SignUpRequest signUpRequest);
+    void signup(SignUpRequest signUpRequest);
     JwtAuthenticationResponse signin(SignInRequest signInRequest);
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 }
