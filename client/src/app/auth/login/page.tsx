@@ -15,11 +15,13 @@ import {
   CircularProgress,
   Container,
   FormControlLabel,
+  IconButton,
+  InputAdornment,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
-import { Lock } from '@phosphor-icons/react';
+import { Eye, EyeSlash, Lock } from '@phosphor-icons/react';
 
 import { loginThunk } from '@/lib/redux/actions/Auth';
 import { AppDispatch, RootState } from '@/lib/redux/store';
@@ -41,11 +43,20 @@ const LoginPage = () => {
   const router = useRouter();
 
   const [openToast, setOpenToast] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { register, handleSubmit, formState } = useForm<UserLoginForm>({
     resolver: zodResolver(loginUserSchema),
     mode: 'onChange',
   });
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const handleLogin = (data: UserLoginForm) => {
     dispatch(loginThunk(data));
@@ -91,11 +102,26 @@ const LoginPage = () => {
                 id="password"
                 fullWidth
                 label="Mật khẩu"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 error={!!formState.errors.password}
                 helperText={formState.errors.password?.message}
                 disabled={loadingLogin}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        sx={{ mr: 0 }}
+                      >
+                        {showPassword ? <EyeSlash /> : <Eye />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 {...register('password')}
               />
               <FormControlLabel
