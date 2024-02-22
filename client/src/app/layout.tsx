@@ -4,6 +4,12 @@ import { Inter } from 'next/font/google';
 import { ReduxProvider } from '@/lib/redux/store/ReduxProvider';
 import './globals.scss';
 import './App.scss';
+import {
+  CssBaseline,
+  StyledEngineProvider,
+  ThemeProvider,
+} from '@mui/material';
+import { theme } from '@/lib/theme/Theme';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +27,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              {children}
+            </ThemeProvider>
+          </StyledEngineProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
