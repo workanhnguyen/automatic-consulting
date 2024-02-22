@@ -1,15 +1,16 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
-import { ReduxProvider } from '@/lib/redux/store/ReduxProvider';
-import './globals.scss';
-import './App.scss';
 import {
   CssBaseline,
   StyledEngineProvider,
   ThemeProvider,
 } from '@mui/material';
+
+import { ReduxProvider } from '@/lib/redux/store/ReduxProvider';
 import { theme } from '@/lib/theme/Theme';
+import './globals.scss';
+import './App.scss';
 
 const inter = Inter({ subsets: ['latin'] });
 

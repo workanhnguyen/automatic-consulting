@@ -6,6 +6,11 @@
   font-size: 100%;
 }
 
+/* MuiDataGrid */
+[class*="-MuiDataGrid-root"] .MuiDataGrid-columnHeader:focus-within {
+  outline: none !important;
+}
+
 *::-webkit-scrollbar {
   width: 6px;
   height: 6px;
