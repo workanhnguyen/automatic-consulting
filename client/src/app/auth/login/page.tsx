@@ -1,11 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+// @ts-ignore
+import CryptoJS from 'crypto-js';
 
 import {
   Avatar,
@@ -44,11 +46,13 @@ const LoginPage = () => {
 
   const [openToast, setOpenToast] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberLogin, setRememberLogin] = useState(false);
 
-  const { register, handleSubmit, formState } = useForm<UserLoginForm>({
-    resolver: zodResolver(loginUserSchema),
-    mode: 'onChange',
-  });
+  const { register, handleSubmit, formState, getValues, reset } =
+    useForm<UserLoginForm>({
+      resolver: zodResolver(loginUserSchema),
+      mode: 'onChange',
+    });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -62,6 +66,45 @@ const LoginPage = () => {
     dispatch(loginThunk(data));
   };
 
+  const handleRememberLoginChange = (
+    _: SyntheticEvent<Element, Event>,
+    checked: boolean
+  ) => {
+    setRememberLogin(checked);
+    if (checked) {
+      const userAccount: UserLoginForm = {
+        email: getValues('email'),
+        password: CryptoJS.AES.encrypt(
+          getValues('password'),
+          process.env.NEXT_PUBLIC_ENCRYPT_PASSWORD_KEY
+        ).toString(),
+      };
+
+      localStorage.setItem('rememberedAccount', JSON.stringify(userAccount));
+    } else {
+      localStorage.removeItem('rememberedAccount');
+    }
+  };
+
+  // Load remembered account if it exists
+  useEffect(() => {
+    const rememberedAccount = localStorage.getItem('rememberedAccount');
+
+    if (rememberedAccount) {
+      const accountJson: UserLoginForm = JSON.parse(rememberedAccount);
+      const decryptedPassword = CryptoJS.AES.decrypt(
+        accountJson.password,
+        process.env.NEXT_PUBLIC_ENCRYPT_PASSWORD_KEY
+      ).toString(CryptoJS.enc.Utf8);
+      
+      accountJson.password = decryptedPassword;
+
+      reset({ ...accountJson });
+      setRememberLogin(true);
+    }
+  }, []);
+
+  // Handle naviagate to home page if authenticated
   useEffect(() => {
     successLogin && router.replace('/');
     errorLogin && setOpenToast(true);
@@ -127,7 +170,8 @@ const LoginPage = () => {
               <FormControlLabel
                 disabled={loadingLogin}
                 sx={{ gap: 1, ml: 0 }}
-                control={<Checkbox />}
+                control={<Checkbox checked={rememberLogin} />}
+                onChange={(e, checked) => handleRememberLoginChange(e, checked)}
                 label={<Typography variant="body2">Lưu đăng nhập</Typography>}
               />
             </Stack>
