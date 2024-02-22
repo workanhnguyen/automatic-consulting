@@ -39,7 +39,8 @@ axiosClient.interceptors.response.use(
         Cookies.remove('token');
         localStorage.removeItem('isFirstVisit');
       }
-    } else return Promise.reject(error);
+    } 
+    else return Promise.reject(error);
   }
 );
 

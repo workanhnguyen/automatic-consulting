@@ -49,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
         } catch (AuthenticationException e) {
-            throw new UserNotFoundException("Invalid email or password!");
+            throw new UserNotFoundException("Email hoặc mật khẩu không chính xác");
         }
 
         var user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password!"));

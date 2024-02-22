@@ -1,18 +1,20 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-// @ts-ignore
-import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 
 import {
   Avatar,
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Container,
   FormControlLabel,
-  Grid,
   Stack,
   TextField,
   Typography,
@@ -20,42 +22,44 @@ import {
 import { Lock } from '@phosphor-icons/react';
 
 import { loginThunk } from '@/lib/redux/actions/Auth';
-import { UserLogin } from '@/lib/redux/module';
-import { AppDispatch } from '@/lib/redux/store';
+import { AppDispatch, RootState } from '@/lib/redux/store';
+import CustomToast from '@/lib/components/toast';
 import './style.scss';
+
+const loginUserSchema = z.object({
+  email: z.string().min(1, 'Không được bỏ trống').email('Email không hợp lệ'),
+  password: z.string().min(1, 'Không được bỏ trống'),
+});
+
+type UserLoginForm = z.infer<typeof loginUserSchema>;
 
 const LoginPage = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const { loadingLogin, successLogin, errorLogin } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const router = useRouter();
+
+  const [openToast, setOpenToast] = useState(false);
+
+  const { register, handleSubmit, formState } = useForm<UserLoginForm>({
+    resolver: zodResolver(loginUserSchema),
+    mode: 'onChange',
+  });
+
+  const handleLogin = (data: UserLoginForm) => {
+    dispatch(loginThunk(data));
+  };
 
   useEffect(() => {
-    const account: UserLogin = {
-      email: 'an@gmail.com',
-      password: '1234',
-    };
-    const token = Cookies.get('token');
-    !token && dispatch(loginThunk(account));
-  }, []);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+    successLogin && router.replace('/');
+    errorLogin && setOpenToast(true);
+  }, [successLogin, errorLogin]);
 
   return (
     <>
       <Container className="login-container">
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
+        <Box className="login-wrapper">
           <Avatar sx={{ margin: 1, backgroundColor: 'var(--primary)' }}>
             <Lock size={24} />
           </Avatar>
@@ -67,30 +71,35 @@ const LoginPage = () => {
             gap={2}
             width="100%"
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(handleLogin)}
             noValidate
             sx={{ mt: 1 }}
           >
             <Stack direction="column" width="100%" gap={2}>
               <TextField
-                required
-                fullWidth
                 id="email"
+                fullWidth
                 label="Địa chỉ email"
-                name="email"
                 autoComplete="email"
                 autoFocus
+                error={!!formState.errors.email}
+                helperText={formState.errors.email?.message}
+                disabled={loadingLogin}
+                {...register('email')}
               />
               <TextField
-                required
+                id="password"
                 fullWidth
-                name="password"
                 label="Mật khẩu"
                 type="password"
-                id="password"
                 autoComplete="current-password"
+                error={!!formState.errors.password}
+                helperText={formState.errors.password?.message}
+                disabled={loadingLogin}
+                {...register('password')}
               />
               <FormControlLabel
+                disabled={loadingLogin}
                 sx={{ gap: 1, ml: 0 }}
                 control={<Checkbox />}
                 label={<Typography variant="body2">Lưu đăng nhập</Typography>}
@@ -102,8 +111,13 @@ const LoginPage = () => {
               variant="contained"
               color="primary"
               disableElevation
+              disabled={loadingLogin}
             >
-              Đăng nhập
+              {loadingLogin ? (
+                <CircularProgress size={24} sx={{ color: 'var(--primary)' }} />
+              ) : (
+                <Typography variant="button2">Đăng nhập</Typography>
+              )}
             </Button>
             <Box className="flex-row">
               <Typography variant="body2">Chưa có tài khoản?&nbsp;</Typography>
@@ -114,6 +128,13 @@ const LoginPage = () => {
           </Stack>
         </Box>
       </Container>
+      <CustomToast
+        open={openToast}
+        title="Thất bại"
+        handleClose={() => setOpenToast(false)}
+        message={errorLogin}
+        severity="error"
+      />
     </>
   );
 };

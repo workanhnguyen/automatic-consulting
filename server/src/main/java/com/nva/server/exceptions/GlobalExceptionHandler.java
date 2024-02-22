@@ -18,11 +18,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        exceptionResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(System.currentTimeMillis());
 
-        return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidApiEndpointException.class)

@@ -298,7 +298,6 @@ export const theme = createTheme({
               borderColor: 'var(--alert) ',
             },
             '&.Mui-disabled fieldset': {
-              backgroundColor: 'var(--grey-neutral-80) ',
               borderColor: 'var(--grey-neutral-200)',
               color: 'var(--text-disable)',
             },
