@@ -6,6 +6,13 @@
   font-size: 100%;
 }
 
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter"),
+    url("../lib/assets/fonts/Inter/Inter-Regular.ttf") format("truetype");
+}
+
 /* MuiDataGrid */
 [class*="-MuiDataGrid-root"] .MuiDataGrid-columnHeader:focus-within {
   outline: none !important;
