@@ -19,9 +19,6 @@ const AuthApi = {
       refreshToken,
     });
   },
-  getProfile: () => {
-    return AxiosClient.get('/auth/profile');
-  },
   updateProfile: (payload: any) => {
     return AxiosClient.patch('/auth/update', {
       payload,

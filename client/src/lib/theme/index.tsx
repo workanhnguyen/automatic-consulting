@@ -99,6 +99,19 @@ export const theme = createTheme({
                 backgroundColor: 'var(--primary)',
               },
             }),
+            ...(ownerState.variant === 'contained' &&
+            ownerState.color === 'info' && {
+              color: 'var(--white) ',
+              background: 'var(--gradient)',
+              '&:hover': {
+                background: 'var(--gradient)',
+                boxShadow: 'none',
+              },
+              '&:active': {
+                boxShadow: 'none',
+                background: 'var(--gradient-active)',
+              },
+            }),
 
           ...(ownerState.variant === 'outlined' &&
             ownerState.color === 'primary' && {

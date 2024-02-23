@@ -30,6 +30,7 @@ import { AppDispatch, RootState } from "@/lib/redux/store";
 import CustomToast from "@/lib/components/toast";
 import { resetLoginStatus } from "@/lib/redux/features/authSlice";
 import CustomLoadingButton from "@/lib/components/loading-button";
+import { getProfileThunk } from "@/lib/redux/actions/User";
 import "./style.scss";
 
 const loginUserSchema = z.object({
@@ -44,6 +45,10 @@ const LoginPage = () => {
   const { loadingLogin, successLogin, errorLogin } = useSelector(
     (state: RootState) => state.auth
   );
+  const { loadingUserProfile, userProfile, errorGetUserProfile } = useSelector(
+    (state: RootState) => state.user
+  );
+
   const router = useRouter();
 
   const [openToast, setOpenToast] = useState(false);
@@ -109,11 +114,16 @@ const LoginPage = () => {
   // Handle naviagate to home page if authenticated
   useEffect(() => {
     if (successLogin) {
+      dispatch(getProfileThunk());
       dispatch(resetLoginStatus());
-      router.replace("/");
     }
     errorLogin && setOpenToast(true);
   }, [successLogin, errorLogin]);
+
+  useEffect(() => {
+    userProfile && router.replace("/");
+    errorGetUserProfile && setOpenToast(true);
+  }, [userProfile, errorGetUserProfile]);
 
   return (
     <>
@@ -210,7 +220,7 @@ const LoginPage = () => {
         open={openToast}
         title="Thất bại"
         handleClose={() => setOpenToast(false)}
-        message={errorLogin}
+        message={errorLogin || errorGetUserProfile}
         severity="error"
       />
     </>

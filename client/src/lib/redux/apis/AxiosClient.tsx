@@ -40,8 +40,7 @@ axiosClient.interceptors.response.use(
         localStorage.removeItem('isFirstVisit');
         return Promise.reject(error);
       }
-    } 
-    else return Promise.reject(error);
+    }
   }
 );
 
