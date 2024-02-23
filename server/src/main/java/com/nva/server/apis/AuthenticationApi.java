@@ -4,7 +4,6 @@ import com.nva.server.dtos.JwtAuthenticationResponse;
 import com.nva.server.dtos.RefreshTokenRequest;
 import com.nva.server.dtos.SignInRequest;
 import com.nva.server.dtos.SignUpRequest;
-import com.nva.server.entities.User;
 import com.nva.server.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

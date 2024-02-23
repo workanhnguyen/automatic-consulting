@@ -64,10 +64,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
+        String userEmail = jwtService.extractUsername(refreshTokenRequest.getRefreshToken());
         User user = userRepository.findByEmail(userEmail).orElseThrow();
 
-        if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)) {
+        if (jwtService.isTokenValid(refreshTokenRequest.getRefreshToken(), user)) {
             var token = jwtService.generateToken(user);
 
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();

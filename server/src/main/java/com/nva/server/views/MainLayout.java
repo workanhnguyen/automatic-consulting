@@ -7,6 +7,7 @@ import com.nva.server.views.action.ActionView;
 import com.nva.server.views.chat_conversation.ConversationView;
 import com.nva.server.views.information.InformationView;
 import com.nva.server.views.scope.ScopeView;
+import com.nva.server.views.suggested_question.SuggestedQuestionView;
 import com.nva.server.views.topic.TopicView;
 import com.nva.server.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -104,6 +105,7 @@ public class MainLayout extends AppLayout {
         dialogflowNav.setWidthFull();
         dialogflowNav.setLabel("Dialogflow management");
         dialogflowNav.setCollapsible(true);
+        dialogflowNav.addItem(new SideNavItem("Suggested question", SuggestedQuestionView.class, LineAwesomeIcon.MAGIC_SOLID.create()));
         dialogflowNav.addItem(new SideNavItem("Action", ActionView.class, LineAwesomeIcon.SHAPES_SOLID.create()));
         dialogflowNav.addItem(new SideNavItem("Scope", ScopeView.class, LineAwesomeIcon.BINOCULARS_SOLID.create()));
         dialogflowNav.addItem(new SideNavItem("Topic", TopicView.class, LineAwesomeIcon.TAG_SOLID.create()));
