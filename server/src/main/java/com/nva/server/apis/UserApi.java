@@ -58,4 +58,9 @@ public class UserApi {
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok(String.format("Hello %s", SecurityContextHolder.getContext().getAuthentication().getName()));
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserResponse> getProfile() {
+        return ResponseEntity.ok(userService.getProfile());
+    }
 }

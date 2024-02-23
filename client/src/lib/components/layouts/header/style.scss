@@ -1,0 +1,24 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--height-header);
+    background-color: var(--grey-neutral-40);
+    border-radius: 16px;
+    margin: var(--margin-y) 0;
+}
+
+.avatar-ring {
+    box-shadow: 0px 0px 4px 0px rgba(30, 32, 32, 0.4);
+    border-radius: 50%;
+    padding: 6px;
+    border: 2px solid var(--primary);
+    cursor: pointer;
+}
+
+.reset-btn-style {
+    outline: none;
+    border: none;
+    background-color: transparent;
+}

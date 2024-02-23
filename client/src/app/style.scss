@@ -1,0 +1,52 @@
+$margin-bottom: 32px;
+
+.home-page-container {
+  margin-top: calc(var(--height-header) + var(--margin-y) * 2);
+  height: calc(100vh - var(--height-header) - var(--margin-y) * 2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-page-conversation {
+  width: 720px;
+  height: calc(100% - $margin-bottom);
+  margin-bottom: $margin-bottom;
+}
+
+.home-page-conversation-messages {
+  width: 100%;
+  overflow: auto;
+}
+
+.home-page-conversation-actions {
+  width: 100%;
+}
+
+.chat-input-field {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  .chat-input-field-placeholder {
+    position: absolute;
+    padding: 0 16px;
+    color: var(--text-tertiary);
+  }
+}
+
+.reset-btn-style {
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+.truncate {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}

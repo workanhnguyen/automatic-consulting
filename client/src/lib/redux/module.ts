@@ -13,6 +13,19 @@ export interface UserLogin {
   password: string;
 }
 
+export interface SuggestedQuestion {
+  id: number;
+  content: string;
+  note: string;
+  createdDate: number;
+  lastModifiedDate: number;
+}
+
+export interface SuggestedQuestionParams {
+  pageSize?: number;
+  pageNumber?: number;
+}
+
 export interface UserRegister {
   firstName: string;
   lastName: string;
@@ -31,4 +44,16 @@ export interface AuthState {
   loadingRegister: boolean;
   successRegister: any;
   errorRegister: any;
+}
+
+export interface UserState {
+  loadingUserProfile: boolean;
+  userProfile: User | null;
+  errorGetUserProfile: any;
+}
+
+export interface SuggestedQuestionState {
+  loading: boolean;
+  suggestedQuestions: SuggestedQuestion[];
+  error: any;
 }

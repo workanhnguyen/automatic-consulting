@@ -296,4 +296,21 @@ public class UserServiceImpl implements UserService {
             }
         } else throw new UserNotFoundException("User is not found.");
     }
+
+    @Override
+    public UserResponse getProfile() {
+        User existingUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new UserNotFoundException("User is not found."));;
+
+            UserResponse response = new UserResponse();
+            response.setEmail(existingUser.getEmail());
+            response.setFirstName(existingUser.getFirstName());
+            response.setLastName(existingUser.getLastName());
+            response.setAvatarLink(existingUser.getAvatarLink());
+            response.setIsEnabled(existingUser.getIsEnabled());
+            response.setCreatedDate(existingUser.getCreatedDate());
+            response.setLastModifiedDate(existingUser.getLastModifiedDate());
+
+            return response;
+    }
 }

@@ -1,7 +1,8 @@
 @use "../lib/assets/scss/index.scss" as *;
 :root {
-  --height-header: 56px;
+  --height-header: 64px;
   --padding-x: 32px;
+  --margin-y: 16px;
 
   --primary: #18a0a0;
   --alert: #ff1b0a;
@@ -9,6 +10,9 @@
   --success: #41c8b1;
   --information: #3385d7;
   --orange: #ff6c0a;
+
+  --gradient: linear-gradient(0deg, rgba(155,34,195,1) 0%, rgba(253,45,45,1) 100%);
+  --gradient-active: linear-gradient(0deg, rgba(74,34,195,1) 0%, rgba(253,195,45,1) 100%);
 
   --text-primary: #313535;
   --text-secondary: #6d7474;
