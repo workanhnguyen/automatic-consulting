@@ -5,15 +5,20 @@ import com.nva.server.dtos.RefreshTokenRequest;
 import com.nva.server.dtos.SignInRequest;
 import com.nva.server.dtos.SignUpRequest;
 import com.nva.server.entities.User;
+import com.nva.server.exceptions.CommonException;
+import com.nva.server.exceptions.InvalidTokenException;
 import com.nva.server.exceptions.UserExistedException;
 import com.nva.server.exceptions.UserNotFoundException;
 import com.nva.server.repositories.UserRepository;
 import com.nva.server.services.AuthenticationService;
 import com.nva.server.services.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -23,11 +28,13 @@ import java.util.HashMap;
 @Service
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public void signup(SignUpRequest signUpRequest) {
@@ -64,18 +71,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String userEmail = jwtService.extractUsername(refreshTokenRequest.getRefreshToken());
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+        if (refreshToken != null && !refreshToken.isEmpty()) {
+            try {
+                String userEmail = jwtService.extractUsernameV2(refreshToken);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-        if (jwtService.isTokenValid(refreshTokenRequest.getRefreshToken(), user)) {
-            var token = jwtService.generateToken(user);
+                if (jwtService.isTokenValid(refreshToken, userDetails)) {
+                    String token = jwtService.generateToken(userDetails);
 
-            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-            jwtAuthenticationResponse.setToken(token);
-            jwtAuthenticationResponse.setRefreshToken(jwtService.generateRefreshToken(new HashMap<>(), user));
+                    JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+                    jwtAuthenticationResponse.setToken(token);
+                    jwtAuthenticationResponse.setRefreshToken(jwtService.generateRefreshToken(new HashMap<>(), userDetails));
 
-            return jwtAuthenticationResponse;
+                    return jwtAuthenticationResponse;
+                }
+            } catch (Exception e) {
+                throw new InvalidTokenException("Refresh token is invalid or expired.");
+            }
         }
-        return null;
+        throw new CommonException("Refresh token is null or empty.");
     }
 }
