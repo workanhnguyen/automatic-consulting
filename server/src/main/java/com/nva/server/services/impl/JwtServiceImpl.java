@@ -60,6 +60,16 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    @Override
+    public String extractUsernameV2(String token) {
+        return Jwts.parser()
+                .setSigningKey(getSignInKey()).build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);

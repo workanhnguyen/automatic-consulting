@@ -74,4 +74,14 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        exceptionResponse.setMessage(ex.getMessage());
+        exceptionResponse.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.FORBIDDEN);
+    }
 }
