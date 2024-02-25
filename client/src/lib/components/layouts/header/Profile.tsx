@@ -1,6 +1,6 @@
 "use client";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -16,9 +16,11 @@ import {
 } from "@mui/material";
 import { SignOut, UserCircle } from "@phosphor-icons/react";
 
-import { RootState } from "@/lib/redux/store";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import { logout } from "@/lib/redux/features/userSlice";
 
 const Profile = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { userProfile } = useSelector((state: RootState) => state.user);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -30,6 +32,11 @@ const Profile = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    handleClose();
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? "profile-actions" : undefined;
@@ -72,17 +79,19 @@ const Profile = () => {
             </Stack>
           </MenuItem>
         </Link>
-        <MenuItem onClick={handleClose}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            gap={1}
-            sx={{ color: "var(--alert)" }}
-          >
-            <SignOut size={24} />
-            <Typography variant="body2">Đăng xuất</Typography>
-          </Stack>
-        </MenuItem>
+        <Link href='/auth/login'>
+          <MenuItem onClick={handleLogout}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap={1}
+              sx={{ color: "var(--alert)" }}
+            >
+              <SignOut size={24} />
+              <Typography variant="body2">Đăng xuất</Typography>
+            </Stack>
+          </MenuItem>
+        </Link>
       </Popover>
     </>
   );

@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+//@ts-ignore
+import Cookies from "js-cookie";
 
 import { UserState } from "../module";
 import {
@@ -23,6 +25,13 @@ const userSlice = createSlice({
         ...state.userProfile,
         ...action.payload,
       });
+    },
+    logout: (state) => {
+      state.userProfile = null;
+
+      Cookies.remove("token");
+      Cookies.remove("refreshToken");
+      localStorage.removeItem("userProfile");
     },
   },
   extraReducers: (builder) => {
@@ -49,5 +58,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { updateUserProfile } = userSlice.actions;
+export const { updateUserProfile, logout } = userSlice.actions;
 export default userSlice.reducer;

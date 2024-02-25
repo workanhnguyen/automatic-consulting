@@ -29,7 +29,7 @@ import CustomToast from "@/lib/components/toast";
 import CustomLoadingButton from "@/lib/components/loading-button";
 import { UserLogin, UserRegister } from "@/lib/redux/module";
 import { resetRegisterStatus } from "@/lib/redux/features/authSlice";
-import { ToastInformation } from "./module";
+import { ToastInformation } from "../module";
 import "./style.scss";
 
 const registerUserSchema = z
@@ -168,7 +168,6 @@ const RegisterPage = () => {
                 fullWidth
                 label="Địa chỉ email"
                 autoComplete="email"
-                autoFocus
                 error={!!formState.errors.email}
                 helperText={formState.errors.email?.message}
                 disabled={loadingRegister}

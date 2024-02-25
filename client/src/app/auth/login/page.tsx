@@ -45,7 +45,7 @@ const LoginPage = () => {
   const { loadingLogin, successLogin, errorLogin } = useSelector(
     (state: RootState) => state.auth
   );
-  const { loadingUserProfile, userProfile, errorGetUserProfile } = useSelector(
+  const { userProfile, errorGetUserProfile } = useSelector(
     (state: RootState) => state.user
   );
 
