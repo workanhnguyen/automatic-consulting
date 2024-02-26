@@ -16,6 +16,14 @@ public interface InformationRepository extends JpaRepository<Information, Long> 
     @Query("SELECT info FROM Information info WHERE LOWER(info.content) LIKE LOWER(concat('%', :keyword, '%'))")
     Page<Information> search(@Param("keyword") String keyword, Pageable pageable);
 
+    @Query("SELECT info FROM Information info WHERE LOWER(info.action.name) LIKE LOWER(:action) AND " +
+            "LOWER(info.scope.name) LIKE LOWER(:scope) AND " +
+            "LOWER(info.topic.name) LIKE LOWER(:topic)")
+    Page<Information> searchByIntent(@Param("action") String action,
+                                     @Param("scope") String scope,
+                                     @Param("topic") String topic,
+                                     Pageable pageable);
+
     @Query("SELECT COUNT(info) FROM Information info WHERE LOWER(info.content) LIKE LOWER(concat('%', :keyword, '%'))")
     long countByKeyword(@Param("keyword") String keyword);
 }

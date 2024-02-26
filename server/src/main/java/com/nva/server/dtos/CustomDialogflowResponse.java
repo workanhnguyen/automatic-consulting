@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class CustomDialogflowResponse implements Serializable {
-//    private Map<String, Object> parameters;
-//    private String fulfillmentText;
-//    private String intentDisplayName;
-    private String responseText;
+    private String question;
+    private String answer;
     private Long createdDate;
 }

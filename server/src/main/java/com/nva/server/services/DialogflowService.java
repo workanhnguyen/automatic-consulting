@@ -7,6 +7,7 @@ import com.google.protobuf.ListValue;
 import com.google.protobuf.Value;
 import com.nva.server.dtos.CustomDialogflowResponse;
 import com.nva.server.entities.Conversation;
+import com.nva.server.entities.Information;
 import com.nva.server.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +23,8 @@ public class DialogflowService {
     private UserService userService;
     @Autowired
     private ConversationService conversationService;
+    @Autowired
+    private InformationService informationService;
 
     private final SessionsClient sessionsClient;
 
@@ -43,7 +46,12 @@ public class DialogflowService {
         DetectIntentResponse intentResponse = sessionsClient.detectIntent(session, queryInput);
 
         String intent = intentResponse.getQueryResult().getIntent().getDisplayName();
-        String fulfillmentText = intentResponse.getQueryResult().getFulfillmentText();
+        List<String> intentParts = Arrays.asList(intent.split("\\."));
+        Map<String, String> params = new HashMap<>();
+        params.put("action", intentParts.get(0));
+        params.put("scope", intentParts.get(1));
+        params.put("topic", intentParts.get(2));
+        List<Information> result = informationService.getInformationByIntent(params);
         Map<String, Object> parameters = convertParameters(intentResponse.getQueryResult().getParameters().getFieldsMap());
 
         // Save conversation to database
@@ -52,17 +60,20 @@ public class DialogflowService {
             Conversation conversation = new Conversation();
             conversation.setUser(requestUser.get());
             conversation.setRequestText(text);
-            conversation.setResponseText(fulfillmentText);
+            conversation.setResponseText(result.get(0).getContent());
 
             conversationService.saveConversation(conversation);
+
+            // Send response to client
+            CustomDialogflowResponse response = new CustomDialogflowResponse();
+            response.setQuestion(text);
+            response.setAnswer(result.get(0).getContent());
+            response.setCreatedDate(new Date().getTime());
+
+            return response;
         }
 
-        // Send response to client
-        CustomDialogflowResponse response = new CustomDialogflowResponse();
-        response.setResponseText(fulfillmentText);
-        response.setCreatedDate(new Date().getTime());
-
-        return response;
+        return null;
     }
 
     private Map<String, Object> convertParameters(Map<String, Value> parameters) {

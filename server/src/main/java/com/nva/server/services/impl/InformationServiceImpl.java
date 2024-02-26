@@ -12,12 +12,12 @@ import com.nva.server.services.InformationService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class InformationServiceImpl implements InformationService {
@@ -107,7 +107,24 @@ public class InformationServiceImpl implements InformationService {
                 .getResultList();
     }
 
+    @Override
+    public List<Information> getInformationByIntent(Map<String, String> params) {
+        int pageNumber = Integer.parseInt(params.getOrDefault("pageNumber", "0"));
+        int pageSize = Integer.parseInt(params.getOrDefault("pageSize", String.valueOf(CustomConstants.INFORMATION_PAGE_SIZE)));
 
+        String action = params.get("action");
+        String scope = params.get("scope");
+        String topic = params.get("topic");
+
+        if (action != null && !action.isEmpty() &&
+                scope != null && !scope.isEmpty() &&
+                topic != null && !topic.isEmpty()
+        ) {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
+            return informationRepository.searchByIntent(action, scope, topic, pageable).getContent();
+        }
+        return new ArrayList<>();
+    }
 
 
     @Override
