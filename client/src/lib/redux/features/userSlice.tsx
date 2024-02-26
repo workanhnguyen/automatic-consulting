@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { UserState } from "../module";
 import {
   changeAvatarThunk,
+  changePasswordThunk,
   getProfileThunk,
   handleAddOrUpdateUserToLocalStorage,
   updateUserInfoThunk,
@@ -22,6 +23,10 @@ const initialState: UserState = {
   loadingUpdateUserInfo: false,
   newUserInfo: null,
   errorUpdateUserInfo: null,
+
+  loadingChangePassword: false,
+  successChangePassword: null,
+  errorChangePassword: null,
 };
 
 const userSlice = createSlice({
@@ -102,6 +107,24 @@ const userSlice = createSlice({
       state.loadingUpdateUserInfo = false;
       state.newUserInfo = null;
       state.errorUpdateUserInfo =
+        action.payload !== undefined ? action.payload : null;
+    });
+
+    // change password
+    builder.addCase(changePasswordThunk.pending, (state) => {
+      state.loadingChangePassword = true;
+      state.successChangePassword = null;
+      state.errorChangePassword = null;
+    });
+    builder.addCase(changePasswordThunk.fulfilled, (state, action) => {
+      state.loadingChangePassword = false;
+      state.successChangePassword = action.payload.data.message;
+      state.errorChangePassword = null;
+    });
+    builder.addCase(changePasswordThunk.rejected, (state, action) => {
+      state.loadingChangePassword = false;
+      state.successChangePassword = null;
+      state.errorChangePassword =
         action.payload !== undefined ? action.payload : null;
     });
   },

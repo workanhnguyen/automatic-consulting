@@ -1,4 +1,4 @@
-import { UserInfoUpdate } from "../module";
+import { UserInfoUpdate, UserPasswordUpdate } from "../module";
 import axiosClient from "./AxiosClient";
 
 const UserApi = {
@@ -10,6 +10,9 @@ const UserApi = {
   },
   updateInfo: (args: UserInfoUpdate) => {
     return axiosClient.post("/users/updateInfo", { ...args });
+  },
+  changePassword: (args: UserPasswordUpdate) => {
+    return axiosClient.post("/users/changePassword", { ...args });
   }
 };
 

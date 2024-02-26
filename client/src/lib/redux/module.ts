@@ -38,6 +38,11 @@ export interface UserInfoUpdate {
   lastName: string;
 }
 
+export interface UserPasswordUpdate {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface AuthState {
   // CASE: Login
   loadingLogin: boolean;
@@ -63,6 +68,10 @@ export interface UserState {
   loadingUpdateUserInfo: boolean;
   newUserInfo: User | null;
   errorUpdateUserInfo: any;
+
+  loadingChangePassword: boolean;
+  successChangePassword: any;
+  errorChangePassword: any;
 }
 
 export interface SuggestedQuestionState {

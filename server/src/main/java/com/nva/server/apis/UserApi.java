@@ -47,7 +47,7 @@ public class UserApi {
     @PostMapping("/changePassword")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(changePasswordRequest);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Password has been changed successfully!"));
+        return ResponseEntity.ok(Collections.singletonMap("message", "Mật khẩu đã được thay đổi thành công!"));
     }
 
     @PostMapping("/toggleLockAccount")
