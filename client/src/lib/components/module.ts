@@ -1,4 +1,4 @@
-import { AlertProps, SnackbarProps } from '@mui/material';
+import { AlertProps, SnackbarProps, SxProps, Theme } from '@mui/material';
 
 export interface ToastProps {
   open: boolean;
@@ -13,4 +13,14 @@ export interface CustomLoadingButtonProps {
   fullWidth?: boolean;
   variant?: "text" | "contained" | "outlined";
   color?: "success" | "info" | "warning" | "error" | "inherit" | "primary" | "secondary";
+  sx?: SxProps<Theme>
+}
+
+export interface CustomAvatarProps {
+  width?: number;
+  height?: number;
+  src: string | undefined;
+  alt?: string;
+  sx?: SxProps<Theme>
+  className?: string;
 }

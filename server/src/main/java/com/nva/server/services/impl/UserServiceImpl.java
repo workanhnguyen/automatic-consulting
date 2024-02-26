@@ -72,7 +72,6 @@ public class UserServiceImpl implements UserService {
                 optionalUser.get().setFirstName(user.getFirstName());
                 optionalUser.get().setLastName(user.getLastName());
                 optionalUser.get().setLastModifiedDate(new Date().getTime());
-                optionalUser.get().setAvatarLink(updateAvatar(user.getAvatar(), optionalUser.get()));
 
                 return getUserResponse(optionalUser.get());
             } catch (Exception ex) {
@@ -270,17 +269,17 @@ public class UserServiceImpl implements UserService {
         Optional<User> optionalUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if (optionalUser.isPresent()) {
             if (!passwordEncoder.matches(request.getOldPassword(), optionalUser.get().getPassword())) {
-                throw new PasswordException("Current password is incorrect.");
+                throw new PasswordException("Mật khẩu hiện tại không đúng.");
             }
             if (passwordEncoder.matches(request.getNewPassword(), optionalUser.get().getPassword())) {
-                throw new PasswordException("New password should not be equal to the old password.");
+                throw new PasswordException("Mật khẩu mới phải khác mật khẩu cũ.");
             } else {
                 User existingUser = optionalUser.get();
                 existingUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
                 existingUser.setLastModifiedDate(new Date().getTime());
             }
         } else {
-            throw new UserNotFoundException("User is not found.");
+            throw new UserNotFoundException("Người dùng không tồn tại.");
         }
     }
 

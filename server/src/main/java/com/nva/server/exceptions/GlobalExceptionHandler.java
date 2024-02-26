@@ -78,10 +78,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        exceptionResponse.setStatus(HttpStatus.I_AM_A_TEAPOT.value());
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(System.currentTimeMillis());
 
-        return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(objectMapper.convertValue(exceptionResponse, Map.class), HttpStatus.I_AM_A_TEAPOT);
     }
 }

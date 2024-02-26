@@ -39,7 +39,7 @@ axiosClient.interceptors.response.use(
         Cookies.remove("token");
         return Promise.reject(error);
       }
-    } else if (error.response?.status === 403) {
+    } else if (error.response?.status === 418) {
       Cookies.remove("refreshToken");
       Cookies.remove("token");
       window.location.reload();

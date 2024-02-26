@@ -1,11 +1,10 @@
 "use client";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import Link from "next/link";
 
 import {
-  Avatar,
   Box,
   MenuItem,
   Popover,
@@ -16,9 +15,12 @@ import {
 } from "@mui/material";
 import { SignOut, UserCircle } from "@phosphor-icons/react";
 
-import { RootState } from "@/lib/redux/store";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import { logout } from "@/lib/redux/features/userSlice";
+import CustomAvatar from "../../custom-avatar";
 
 const Profile = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { userProfile } = useSelector((state: RootState) => state.user);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -29,6 +31,11 @@ const Profile = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    handleClose();
   };
 
   const open = Boolean(anchorEl);
@@ -42,11 +49,12 @@ const Profile = () => {
         onClick={handleClick}
         className="reset-btn-style"
       >
-        <Avatar
+        <CustomAvatar
           src={userProfile?.avatarLink}
-          alt="user-avt"
-          className="avatar-ring"
-          sx={{ width: "42px", height: "42px" }}
+          width={42}
+          height={42}
+          alt="user-avatar"
+          sx={{ cursor: "pointer" }}
         />
       </Box>
       <Popover
@@ -72,17 +80,19 @@ const Profile = () => {
             </Stack>
           </MenuItem>
         </Link>
-        <MenuItem onClick={handleClose}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            gap={1}
-            sx={{ color: "var(--alert)" }}
-          >
-            <SignOut size={24} />
-            <Typography variant="body2">Đăng xuất</Typography>
-          </Stack>
-        </MenuItem>
+        <Link href="/auth/login">
+          <MenuItem onClick={handleLogout}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap={1}
+              sx={{ color: "var(--alert)" }}
+            >
+              <SignOut size={24} />
+              <Typography variant="body2">Đăng xuất</Typography>
+            </Stack>
+          </MenuItem>
+        </Link>
       </Popover>
     </>
   );
@@ -94,7 +104,7 @@ const popoverStyles: SxProps<Theme> = {
   "& .MuiPaper-root": {
     minWidth: "260px",
     padding: 1,
-    marginTop: '12px',
+    marginTop: "12px",
     boxShadow: "0px 2px 4px 0px rgba(30, 32, 32, 0.4)",
   },
 };

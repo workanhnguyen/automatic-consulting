@@ -33,6 +33,16 @@ export interface UserRegister {
   password: string;
 }
 
+export interface UserInfoUpdate {
+  firstName: string;
+  lastName: string;
+}
+
+export interface UserPasswordUpdate {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface AuthState {
   // CASE: Login
   loadingLogin: boolean;
@@ -50,6 +60,18 @@ export interface UserState {
   loadingUserProfile: boolean;
   userProfile: User | null;
   errorGetUserProfile: any;
+
+  loadingChangeAvatar: boolean;
+  newAvatarLink: any;
+  errorChangeAvatar: any;
+
+  loadingUpdateUserInfo: boolean;
+  newUserInfo: User | null;
+  errorUpdateUserInfo: any;
+
+  loadingChangePassword: boolean;
+  successChangePassword: any;
+  errorChangePassword: any;
 }
 
 export interface SuggestedQuestionState {

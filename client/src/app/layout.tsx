@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { ReduxProvider } from "@/lib/redux/store/ReduxProvider";
 import ThemeRegistry from "@/lib/theme/ThemeRegistry";
-import CustomLayout from "@/lib/components/layouts";
 import "./globals.scss";
 import "./App.scss";
 
@@ -22,7 +21,7 @@ export default function RootLayout({
       <ThemeRegistry>
         <body>
           <ReduxProvider>
-            <CustomLayout>{children}</CustomLayout>
+            {children}
           </ReduxProvider>
         </body>
       </ThemeRegistry>

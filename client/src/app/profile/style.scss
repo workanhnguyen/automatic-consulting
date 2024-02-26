@@ -1,0 +1,8 @@
+.profile-page-container {
+    width: 100%;
+    height: calc(100vh - (var(--height-header) + var(--margin-y) * 2) - 20px);
+    margin-top: calc(var(--height-header) + var(--margin-y) * 2);
+    border-radius: 12px;
+    border: 1px solid var(--primary);
+    overflow: scroll;
+}
