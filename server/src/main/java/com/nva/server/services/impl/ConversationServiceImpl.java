@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -108,7 +109,7 @@ public class ConversationServiceImpl implements ConversationService {
         }
 
         criteriaQuery.where(predicate);
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("createdDate")));
+        criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdDate")));
 
         List<Tuple> resultList = entityManager.createQuery(criteriaQuery)
                 .setFirstResult((pageNumber - 1) * pageSize)
@@ -127,11 +128,17 @@ public class ConversationServiceImpl implements ConversationService {
         }
 
         boolean hasNext = resultList.size() > pageSize;
+        if (hasNext) {
+            data = data.subList(0, pageSize); // Adjust sublist condition if there's a next page
+        }
+
         conversationResponse.setData(data);
         conversationResponse.setHasNext(hasNext); // Set hasNext based on the condition
 
         return conversationResponse;
     }
+
+
 
 
     @Override

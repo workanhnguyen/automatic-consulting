@@ -26,6 +26,19 @@ export interface SuggestedQuestionParams {
   pageNumber?: number;
 }
 
+export interface ConversationParams extends SuggestedQuestionParams {}
+
+export interface Message {
+  createdDate: number;
+  question: string;
+  answer: string;
+}
+
+export interface ConversationResponse {
+  data: Message[];
+  hasNext: boolean;
+}
+
 export interface UserRegister {
   firstName: string;
   lastName: string;
@@ -78,4 +91,15 @@ export interface SuggestedQuestionState {
   loading: boolean;
   suggestedQuestions: SuggestedQuestion[];
   error: any;
+}
+
+export interface ConversationState {
+  loadingMessages: boolean;
+  messages: ConversationResponse | null;
+  totalMessages: {
+    createdDate: number;
+    question: string;
+    answer: string;
+  }[];
+  errorGetMessages: any;
 }
