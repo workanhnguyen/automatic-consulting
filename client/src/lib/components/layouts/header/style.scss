@@ -9,16 +9,15 @@
     margin: var(--margin-y) 0;
 }
 
-.avatar-ring {
-    box-shadow: 0px 0px 4px 0px rgba(30, 32, 32, 0.4);
-    border-radius: 50%;
-    padding: 6px;
-    border: 2px solid var(--primary);
-    cursor: pointer;
-}
-
 .reset-btn-style {
     outline: none;
     border: none;
     background-color: transparent;
 }
+
+.avatar-ring {
+    border-radius: 50%;
+    padding: 6px;
+    border: 2px solid var(--primary);
+    cursor: pointer;
+  }
