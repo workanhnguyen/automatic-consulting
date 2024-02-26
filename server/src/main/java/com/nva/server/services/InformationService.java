@@ -10,5 +10,6 @@ public interface InformationService {
     Information editInformation(Information Information);
     void removeInformation(Information Information);
     List<Information> getInformation(Map<String, Object> params);
+    List<Information> getInformationByIntent(Map<String, String> params);
     long getInformationCount(Map<String, Object> params);
 }
