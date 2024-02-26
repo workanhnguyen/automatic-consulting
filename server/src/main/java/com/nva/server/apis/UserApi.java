@@ -39,6 +39,11 @@ public class UserApi {
         return ResponseEntity.ok().body(Collections.singletonMap("avatarLink", userService.updateAvatar(avatarObj.get("avatarBase64"), user)));
     }
 
+    @PostMapping("/updateInfo")
+    public ResponseEntity<UserResponse> updateInfo(@RequestBody EditUserRequest request) {
+        return ResponseEntity.ok().body(userService.editUserInfo(request));
+    }
+
     @PostMapping("/changePassword")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(changePasswordRequest);

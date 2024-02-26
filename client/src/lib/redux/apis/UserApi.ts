@@ -1,3 +1,4 @@
+import { UserInfoUpdate } from "../module";
 import axiosClient from "./AxiosClient";
 
 const UserApi = {
@@ -6,6 +7,9 @@ const UserApi = {
   },
   changeAvatar: (avatarBase64: string) => {
     return axiosClient.post("/users/changeAvatar", { avatarBase64 });
+  },
+  updateInfo: (args: UserInfoUpdate) => {
+    return axiosClient.post("/users/updateInfo", { ...args });
   }
 };
 

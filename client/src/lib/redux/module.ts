@@ -59,6 +59,10 @@ export interface UserState {
   loadingChangeAvatar: boolean;
   newAvatarLink: any;
   errorChangeAvatar: any;
+
+  loadingUpdateUserInfo: boolean;
+  newUserInfo: User | null;
+  errorUpdateUserInfo: any;
 }
 
 export interface SuggestedQuestionState {

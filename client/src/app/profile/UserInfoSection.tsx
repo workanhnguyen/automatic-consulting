@@ -16,6 +16,11 @@ import {
 
 import { theme } from "@/lib/theme";
 import { AppDispatch, RootState } from "@/lib/redux/store";
+import { updateUserInfoThunk } from "@/lib/redux/actions/User";
+import CustomLoadingButton from "@/lib/components/loading-button";
+import CustomToast from "@/lib/components/toast";
+import { updateUserProfile } from "@/lib/redux/features/userSlice";
+import { ToastInformation } from "../auth/module";
 
 const userInfoSchema = z.object({
   firstName: z.string().min(1, "Không được bỏ trống").max(20, "Tên quá dài"),
@@ -29,9 +34,16 @@ type UserInfoForm = z.infer<typeof userInfoSchema>;
 
 const UserInfoSection = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { userProfile } = useSelector((state: RootState) => state.user);
+  const {
+    userProfile,
+    loadingUpdateUserInfo,
+    newUserInfo,
+    errorUpdateUserInfo,
+  } = useSelector((state: RootState) => state.user);
 
   const [isAllowToEditUserInfo, setIsAllowToEditUserInfo] = useState(false);
+  const [openToast, setOpenToast] = useState(false);
+  const [toastInfo, setToastInfo] = useState<ToastInformation>();
 
   // Form handling for user info
   const { register, handleSubmit, formState, getValues, reset } =
@@ -45,7 +57,7 @@ const UserInfoSection = () => {
   };
 
   const handleUpdateUserInfo = (data: UserInfoForm) => {
-    console.log(data);
+    dispatch(updateUserInfoThunk(data));
     handleToggleEditUserInfo();
   };
 
@@ -62,96 +74,137 @@ const UserInfoSection = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (newUserInfo) {
+      reset({ ...newUserInfo });
+      dispatch(updateUserProfile({ ...newUserInfo }));
+      setIsAllowToEditUserInfo(false);
+      setOpenToast(true);
+      setToastInfo({
+        title: "Thành công",
+        message: "Cập nhật thông tin thành công!",
+        severity: "success",
+      });
+    } else if (errorUpdateUserInfo) {
+      setOpenToast(true);
+      setToastInfo({
+        title: "Thất bại",
+        message: "Cập nhật thông tin thất bại. Vui lòng thử lại sau",
+        severity: "error",
+      });
+    }
+  }, [newUserInfo, errorUpdateUserInfo]);
+
   // Responsive
   const isDesktop = useMediaQuery(theme.breakpoints.up("desktop"));
   const isTablet = useMediaQuery(theme.breakpoints.up("tablet"));
 
   return (
-    <Stack direction="column" gap={2}>
-      <Typography variant="label1">Thông tin người dùng</Typography>
+    <>
       <Stack direction="column" gap={2}>
-        <TextField
-          type="text"
-          variant="outlined"
-          label="Email / Tên đăng nhập"
-          value={userProfile?.email}
-          disabled
-          fullWidth
-        />
-        <Stack
-          component="form"
-          onSubmit={handleSubmit(handleUpdateUserInfo)}
-          direction={isTablet ? "row" : "column"}
-          gap={2}
-        >
+        <Typography variant="label1">Thông tin người dùng</Typography>
+        <Stack direction="column" gap={2}>
           <TextField
             type="text"
             variant="outlined"
-            label="Họ và tên đệm"
-            error={!!formState.errors.lastName}
-            helperText={formState.errors.lastName?.message}
-            disabled={!isAllowToEditUserInfo}
-            {...register("lastName")}
+            label="Email / Tên đăng nhập"
+            value={userProfile?.email}
+            disabled
+            fullWidth
           />
+          <Stack
+            component="form"
+            onSubmit={handleSubmit(handleUpdateUserInfo)}
+            direction={isTablet ? "row" : "column"}
+            gap={2}
+          >
+            <TextField
+              type="text"
+              variant="outlined"
+              label="Họ và tên đệm"
+              error={!!formState.errors.lastName}
+              helperText={formState.errors.lastName?.message}
+              disabled={!isAllowToEditUserInfo}
+              {...register("lastName")}
+            />
 
-          <TextField
-            type="text"
-            variant="outlined"
-            label="Tên"
-            error={!!formState.errors.firstName}
-            helperText={formState.errors.firstName?.message}
-            disabled={!isAllowToEditUserInfo}
-            {...register("firstName")}
-          />
+            <TextField
+              type="text"
+              variant="outlined"
+              label="Tên"
+              error={!!formState.errors.firstName}
+              helperText={formState.errors.firstName?.message}
+              disabled={!isAllowToEditUserInfo}
+              {...register("firstName")}
+            />
 
-          {isAllowToEditUserInfo ? (
-            <Stack direction="row" gap={2} width="100%">
+            {isAllowToEditUserInfo ? (
+              <Stack direction="row" gap={2} width="100%">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    height: "40px",
+                    marginTop: `${isTablet ? "28px" : "6px"}`,
+                  }}
+                  onClick={handleResetUserInfo}
+                  fullWidth
+                  disabled={loadingUpdateUserInfo}
+                >
+                  Hủy
+                </Button>
+                {loadingUpdateUserInfo ? (
+                  <CustomLoadingButton
+                    sx={{
+                      height: "40px",
+                      marginTop: `${isTablet ? "28px" : "6px"}`,
+                    }}
+                  />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      height: "40px",
+                      marginTop: `${isTablet ? "28px" : "6px"}`,
+                    }}
+                    fullWidth
+                    disabled={
+                      getValues("firstName") === "" ||
+                      getValues("lastName") === ""
+                    }
+                  >
+                    Lưu
+                  </Button>
+                )}
+              </Stack>
+            ) : (
               <Button
-                variant="outlined"
-                color="primary"
-                sx={{
-                  height: "40px",
-                  marginTop: `${isTablet ? "28px" : "6px"}`,
-                }}
-                onClick={handleResetUserInfo}
-                fullWidth
-              >
-                Hủy
-              </Button>
-              <Button
-                type="submit"
                 variant="contained"
                 color="primary"
                 sx={{
+                  width: `${isTablet ? "100%" : "fit-content"}`,
+                  alignSelf: "flex-end",
                   height: "40px",
                   marginTop: `${isTablet ? "28px" : "6px"}`,
                 }}
-                fullWidth
-                disabled={
-                  getValues("firstName") === "" || getValues("lastName") === ""
-                }
+                onClick={handleToggleEditUserInfo}
               >
-                Lưu
+                Chỉnh sửa
               </Button>
-            </Stack>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                width: `${isTablet ? "100%" : "fit-content"}`,
-                alignSelf: "flex-end",
-                height: "40px",
-                marginTop: `${isTablet ? "28px" : "6px"}`,
-              }}
-              onClick={handleToggleEditUserInfo}
-            >
-              Chỉnh sửa
-            </Button>
-          )}
+            )}
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
+      <CustomToast
+        open={openToast}
+        title={toastInfo?.title || ""}
+        handleClose={() => setOpenToast(false)}
+        message={toastInfo?.message || ""}
+        severity={toastInfo?.severity}
+      />
+    </>
   );
 };
 

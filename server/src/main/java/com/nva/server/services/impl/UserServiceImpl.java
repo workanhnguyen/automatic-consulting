@@ -72,7 +72,6 @@ public class UserServiceImpl implements UserService {
                 optionalUser.get().setFirstName(user.getFirstName());
                 optionalUser.get().setLastName(user.getLastName());
                 optionalUser.get().setLastModifiedDate(new Date().getTime());
-                optionalUser.get().setAvatarLink(updateAvatar(user.getAvatar(), optionalUser.get()));
 
                 return getUserResponse(optionalUser.get());
             } catch (Exception ex) {

@@ -7,6 +7,7 @@ import {
   changeAvatarThunk,
   getProfileThunk,
   handleAddOrUpdateUserToLocalStorage,
+  updateUserInfoThunk,
 } from "../actions/User";
 
 const initialState: UserState = {
@@ -17,6 +18,10 @@ const initialState: UserState = {
   loadingChangeAvatar: false,
   newAvatarLink: null,
   errorChangeAvatar: null,
+
+  loadingUpdateUserInfo: false,
+  newUserInfo: null,
+  errorUpdateUserInfo: null,
 };
 
 const userSlice = createSlice({
@@ -77,6 +82,26 @@ const userSlice = createSlice({
       state.loadingChangeAvatar = false;
       state.newAvatarLink = false;
       state.errorChangeAvatar =
+        action.payload !== undefined ? action.payload : null;
+    });
+
+    // update user information (first name, last name)
+    builder.addCase(updateUserInfoThunk.pending, (state) => {
+      state.loadingUpdateUserInfo = true;
+      state.newUserInfo = null;
+      state.errorUpdateUserInfo = null;
+    });
+    builder.addCase(updateUserInfoThunk.fulfilled, (state, action) => {
+      state.loadingUpdateUserInfo = false;
+      state.newUserInfo = action.payload.data;
+      state.errorUpdateUserInfo = null;
+
+      handleAddOrUpdateUserToLocalStorage(action.payload.data);
+    });
+    builder.addCase(updateUserInfoThunk.rejected, (state, action) => {
+      state.loadingUpdateUserInfo = false;
+      state.newUserInfo = null;
+      state.errorUpdateUserInfo =
         action.payload !== undefined ? action.payload : null;
     });
   },
