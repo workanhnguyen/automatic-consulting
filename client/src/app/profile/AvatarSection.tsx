@@ -1,29 +1,49 @@
 "use client";
 
-import { ChangeEvent, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Stack, useMediaQuery } from "@mui/material";
 
 import CustomAvatar from "@/lib/components/custom-avatar";
 import { theme } from "@/lib/theme";
-import { RootState } from "@/lib/redux/store";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import { changeAvatarThunk } from "@/lib/redux/actions/User";
+import CustomToast from "@/lib/components/toast";
+import CustomLoadingButton from "@/lib/components/loading-button";
+import { updateUserProfile } from "@/lib/redux/features/userSlice";
+import { ToastInformation } from "../auth/module";
 
 const AvatarSection = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { loadingChangeAvatar, newAvatarLink, errorChangeAvatar } = useSelector(
+    (state: RootState) => state.user
+  );
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { userProfile } = useSelector((state: RootState) => state.user);
 
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>("");
+  const [isAllowToOpenAvatarAction, setIsAllowToOpenAvatarAction] =
+    useState(false);
+  const [openToast, setOpenToast] = useState(false);
+  const [toastInfo, setToastInfo] = useState<ToastInformation>();
 
   const handleResetAvatar = () => {
-    setAvatarUrl(userProfile?.avatarLink || "");
+    setAvatarUrl("");
+    setIsAllowToOpenAvatarAction(false);
   };
 
-  const handleUpdateAvatar = () => {};
+  const handleUpdateAvatar = () => {
+    avatarUrl && dispatch(changeAvatarThunk(avatarUrl));
+  };
 
   const handleOpenFileDialog = () => {
-    if (fileInputRef.current) fileInputRef.current.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+      setIsAllowToOpenAvatarAction(true);
+    }
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +59,26 @@ const AvatarSection = () => {
     }
   };
 
+  useEffect(() => {
+    if (newAvatarLink) {
+      dispatch(updateUserProfile({ avatarLink: newAvatarLink }));
+      handleResetAvatar();
+      setOpenToast(true);
+      setToastInfo({
+        title: "Thành công",
+        message: "Thay đổi ảnh đại diện thành công",
+        severity: "success",
+      });
+    } else if (errorChangeAvatar) {
+      setOpenToast(true);
+      setToastInfo({
+        title: "Thất bại",
+        message: errorChangeAvatar,
+        severity: "error",
+      });
+    }
+  }, [newAvatarLink, errorChangeAvatar]);
+
   // Responsive
   const isDesktop = useMediaQuery(theme.breakpoints.up("desktop"));
 
@@ -51,12 +91,12 @@ const AvatarSection = () => {
         alignItems="center"
       >
         <CustomAvatar
-          src={avatarUrl}
+          src={avatarUrl !== "" ? avatarUrl : userProfile?.avatarLink}
           width={150}
           height={150}
           className="avatar-ring"
         />
-        {Boolean(avatarUrl) !== Boolean(userProfile?.avatarLink) ? (
+        {isAllowToOpenAvatarAction ? (
           <Stack direction="row" gap={2} width="100%" justifyContent="center">
             <Button
               variant="outlined"
@@ -66,22 +106,30 @@ const AvatarSection = () => {
                 height: "40px",
               }}
               onClick={handleResetAvatar}
-              fullWidth
+              disabled={loadingChangeAvatar}
             >
               Hủy
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                width: `${isDesktop ? "100%" : "240px"}`,
-                height: "40px",
-              }}
-              onClick={handleUpdateAvatar}
-              fullWidth
-            >
-              Lưu
-            </Button>
+            {loadingChangeAvatar ? (
+              <CustomLoadingButton
+                sx={{
+                  width: `${isDesktop ? "100%" : "240px"}`,
+                  height: "40px",
+                }}
+              />
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleUpdateAvatar}
+                sx={{
+                  width: `${isDesktop ? "100%" : "240px"}`,
+                  height: "40px",
+                }}
+              >
+                Lưu
+              </Button>
+            )}
           </Stack>
         ) : (
           <Button
@@ -100,6 +148,13 @@ const AvatarSection = () => {
         ref={fileInputRef}
         onChange={handleFileChange}
         accept=".png, .jpg, .jpeg"
+      />
+      <CustomToast
+        open={openToast}
+        title={toastInfo?.title || ""}
+        handleClose={() => setOpenToast(false)}
+        message={toastInfo?.message || ""}
+        severity={toastInfo?.severity}
       />
     </>
   );

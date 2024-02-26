@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 import { UserState } from "../module";
 import {
+  changeAvatarThunk,
   getProfileThunk,
   handleAddOrUpdateUserToLocalStorage,
 } from "../actions/User";
@@ -12,6 +13,10 @@ const initialState: UserState = {
   loadingUserProfile: false,
   userProfile: JSON.parse(localStorage.getItem("userProfile")!),
   errorGetUserProfile: null,
+
+  loadingChangeAvatar: false,
+  newAvatarLink: null,
+  errorChangeAvatar: null,
 };
 
 const userSlice = createSlice({
@@ -48,11 +53,30 @@ const userSlice = createSlice({
 
       handleAddOrUpdateUserToLocalStorage(action.payload.data);
     });
-
     builder.addCase(getProfileThunk.rejected, (state, action) => {
       state.loadingUserProfile = false;
       state.userProfile = null;
       state.errorGetUserProfile =
+        action.payload !== undefined ? action.payload : null;
+    });
+
+    // change avatar
+    builder.addCase(changeAvatarThunk.pending, (state) => {
+      state.loadingChangeAvatar = true;
+      state.newAvatarLink = false;
+      state.errorChangeAvatar = null;
+    });
+    builder.addCase(changeAvatarThunk.fulfilled, (state, action) => {
+      state.loadingChangeAvatar = false;
+      state.newAvatarLink = action.payload.data.avatarLink;
+      state.errorChangeAvatar = null;
+
+      handleAddOrUpdateUserToLocalStorage(action.payload.data);
+    });
+    builder.addCase(changeAvatarThunk.rejected, (state, action) => {
+      state.loadingChangeAvatar = false;
+      state.newAvatarLink = false;
+      state.errorChangeAvatar =
         action.payload !== undefined ? action.payload : null;
     });
   },

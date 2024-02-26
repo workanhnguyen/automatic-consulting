@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -32,9 +33,10 @@ public class UserApi {
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
-    @PatchMapping("/updateInfo")
-    public ResponseEntity<UserResponse> updateUserInfo(@RequestBody EditUserRequest user) {
-        return ResponseEntity.ok().body(userService.editUserInfo(user));
+    @PostMapping("/changeAvatar")
+    public ResponseEntity<?> changeAvatar(@RequestBody Map<String, String> avatarObj) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(Collections.singletonMap("avatarLink", userService.updateAvatar(avatarObj.get("avatarBase64"), user)));
     }
 
     @PostMapping("/changePassword")

@@ -33,6 +33,11 @@ export interface UserRegister {
   password: string;
 }
 
+export interface UserInfoUpdate {
+  firstName: string;
+  lastName: string;
+}
+
 export interface AuthState {
   // CASE: Login
   loadingLogin: boolean;
@@ -50,6 +55,10 @@ export interface UserState {
   loadingUserProfile: boolean;
   userProfile: User | null;
   errorGetUserProfile: any;
+
+  loadingChangeAvatar: boolean;
+  newAvatarLink: any;
+  errorChangeAvatar: any;
 }
 
 export interface SuggestedQuestionState {

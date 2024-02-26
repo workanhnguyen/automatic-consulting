@@ -35,3 +35,19 @@ export const getProfileThunk = createAsyncThunk(
     }
   }
 );
+
+export const changeAvatarThunk = createAsyncThunk(
+  "changeAvatar",
+  async (avatarBase64: string, { rejectWithValue }) => {
+    try {
+      return await UserApi.changeAvatar(avatarBase64);
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+

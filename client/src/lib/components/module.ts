@@ -1,5 +1,4 @@
 import { AlertProps, SnackbarProps, SxProps, Theme } from '@mui/material';
-import { StaticImageData } from 'next/image';
 
 export interface ToastProps {
   open: boolean;
@@ -14,6 +13,7 @@ export interface CustomLoadingButtonProps {
   fullWidth?: boolean;
   variant?: "text" | "contained" | "outlined";
   color?: "success" | "info" | "warning" | "error" | "inherit" | "primary" | "secondary";
+  sx?: SxProps<Theme>
 }
 
 export interface CustomAvatarProps {

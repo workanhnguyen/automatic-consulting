@@ -5,7 +5,6 @@ import { useState } from "react";
 import Link from "next/link";
 
 import {
-  Avatar,
   Box,
   MenuItem,
   Popover,
@@ -18,6 +17,7 @@ import { SignOut, UserCircle } from "@phosphor-icons/react";
 
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import { logout } from "@/lib/redux/features/userSlice";
+import CustomAvatar from "../../custom-avatar";
 
 const Profile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -36,7 +36,7 @@ const Profile = () => {
   const handleLogout = () => {
     dispatch(logout());
     handleClose();
-  }
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? "profile-actions" : undefined;
@@ -49,11 +49,12 @@ const Profile = () => {
         onClick={handleClick}
         className="reset-btn-style"
       >
-        <Avatar
+        <CustomAvatar
           src={userProfile?.avatarLink}
-          alt="user-avt"
-          className="avatar-ring"
-          sx={{ width: "42px", height: "42px" }}
+          width={42}
+          height={42}
+          alt="user-avatar"
+          sx={{ cursor: "pointer" }}
         />
       </Box>
       <Popover
@@ -79,7 +80,7 @@ const Profile = () => {
             </Stack>
           </MenuItem>
         </Link>
-        <Link href='/auth/login'>
+        <Link href="/auth/login">
           <MenuItem onClick={handleLogout}>
             <Stack
               direction="row"
@@ -103,7 +104,7 @@ const popoverStyles: SxProps<Theme> = {
   "& .MuiPaper-root": {
     minWidth: "260px",
     padding: 1,
-    marginTop: '12px',
+    marginTop: "12px",
     boxShadow: "0px 2px 4px 0px rgba(30, 32, 32, 0.4)",
   },
 };
