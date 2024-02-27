@@ -23,6 +23,7 @@ import {
 } from "../lib/redux/actions/Conversation";
 import SuggestedQuestionSection from "./SuggestedQuestionSection";
 import MessageCard from "./MessageCard";
+import { CONVERSATION_PAGE_SIZE } from '../lib/constants/index';
 import "./style.scss";
 
 const HomePage = () => {
@@ -31,7 +32,6 @@ const HomePage = () => {
     loadingMessages,
     messages,
     errorGetMessages,
-    loadingSendQuery,
     returnedResult,
     errorSendQuery,
   } = useSelector((state: RootState) => state.conversation);
@@ -40,7 +40,6 @@ const HomePage = () => {
 
   const [question, setQuestion] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
   const [data, setData] = useState<Message[]>([]);
 
   const handleQuestionChange = (
@@ -53,7 +52,7 @@ const HomePage = () => {
     if (messages?.hasNext) {
       setPageNumber((prev) => prev + 1);
       dispatch(
-        getConversationMessagesThunk({ pageNumber: pageNumber + 1, pageSize })
+        getConversationMessagesThunk({ pageNumber: pageNumber + 1, pageSize: CONVERSATION_PAGE_SIZE })
       );
       if (scrollEndRef.current) {
         scrollEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -72,7 +71,7 @@ const HomePage = () => {
 
   // Fetch initial messages
   useEffect(() => {
-    dispatch(getConversationMessagesThunk({ pageNumber, pageSize }));
+    dispatch(getConversationMessagesThunk({ pageNumber, pageSize: CONVERSATION_PAGE_SIZE }));
   }, []);
 
   useEffect(() => {
