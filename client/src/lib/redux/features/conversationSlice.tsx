@@ -1,19 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { ConversationState } from "../module";
-import { getConversationMessagesThunk } from "../actions/Conversation";
+import {
+  getConversationMessagesThunk,
+  sendQueryThunk,
+} from "../actions/Conversation";
 
 const initialState: ConversationState = {
   loadingMessages: false,
   messages: null,
   totalMessages: [],
   errorGetMessages: null,
+
+  loadingSendQuery: false,
+  returnedResult: null,
+  errorSendQuery: false,
 };
 
 const conversationSlice = createSlice({
   name: "conversation",
   initialState,
-  reducers: {},
+  reducers: {
+    resetConversationState: () => {
+      return initialState;
+    },
+  },
   extraReducers: (builder) => {
     // get messages
     builder.addCase(getConversationMessagesThunk.pending, (state) => {
@@ -29,10 +40,29 @@ const conversationSlice = createSlice({
     builder.addCase(getConversationMessagesThunk.rejected, (state, action) => {
       state.loadingMessages = false;
       state.messages = null;
-      state.errorGetMessages = action.payload !== undefined ? action.payload : null;
+      state.errorGetMessages =
+        action.payload !== undefined ? action.payload : null;
+    });
+
+    // send query
+    builder.addCase(sendQueryThunk.pending, (state) => {
+      state.loadingSendQuery = true;
+      state.returnedResult = null;
+      state.errorSendQuery = null;
+    });
+    builder.addCase(sendQueryThunk.fulfilled, (state, action) => {
+      state.loadingSendQuery = false;
+      state.returnedResult = action.payload.data;
+      state.errorSendQuery = null;
+    });
+    builder.addCase(sendQueryThunk.rejected, (state, action) => {
+      state.loadingSendQuery = false;
+      state.returnedResult = null;
+      state.errorSendQuery =
+        action.payload !== undefined ? action.payload : null;
     });
   },
 });
 
-export const {} = conversationSlice.actions;
+export const { resetConversationState } = conversationSlice.actions;
 export default conversationSlice.reducer;

@@ -146,23 +146,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String updateAvatar(String avatarBase64, User user) {
-        if (avatarBase64 != null && !avatarBase64.isEmpty()) {
-            try {
-                String publicId = "user_avatar_" + user.getEmail();
+        Optional<User> persistedUser = userRepository.findByEmail(user.getEmail());
+        if (persistedUser.isPresent()) {
+            if (avatarBase64 != null && !avatarBase64.isEmpty()) {
+                try {
+                    String publicId = "user_avatar_" + user.getEmail();
 
-                Map<String, Object> params = new HashMap<>();
-                params.put("resource_type", "image");
-                params.put("folder", "user"); // Optional folder to organize your images
-                params.put("public_id", publicId);
-                Map<?, ?> uploadResult = this.cloudinary.uploader().upload(avatarBase64, params);
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("resource_type", "image");
+                    params.put("folder", "user"); // Optional folder to organize your images
+                    params.put("public_id", publicId);
+                    Map<?, ?> uploadResult = this.cloudinary.uploader().upload(avatarBase64, params);
 
-                // Delete old avatar only if upload was successful
-                if (!uploadResult.isEmpty())
-                    this.cloudinary.uploader().destroy(publicId, null);
+                    // Delete old avatar only if upload was successful
+                    if (!uploadResult.isEmpty())
+                        this.cloudinary.uploader().destroy(publicId, null);
 
-                return uploadResult.get("secure_url").toString();
-            } catch (Exception e) {
-                throw new DatabaseException("Edit user failed");
+                    persistedUser.get().setAvatarLink(uploadResult.get("secure_url").toString());
+
+                    return uploadResult.get("secure_url").toString();
+                } catch (Exception e) {
+                    throw new DatabaseException("Edit user failed");
+                }
             }
         }
         return user.getAvatarLink();

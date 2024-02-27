@@ -17,6 +17,8 @@ import { SignOut, UserCircle } from "@phosphor-icons/react";
 
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import { logout } from "@/lib/redux/features/userSlice";
+import { resetConversationState } from "@/lib/redux/features/conversationSlice";
+import { resetSuggestedQuestionState } from "@/lib/redux/features/suggestedQuestionSlice";
 import CustomAvatar from "../../custom-avatar";
 
 const Profile = () => {
@@ -35,6 +37,8 @@ const Profile = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(resetConversationState());
+    dispatch(resetSuggestedQuestionState());
     handleClose();
   };
 

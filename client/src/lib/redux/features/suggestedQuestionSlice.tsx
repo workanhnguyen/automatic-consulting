@@ -13,7 +13,11 @@ const initialState: SuggestedQuestionState = {
 const suggestedQuestionSlice = createSlice({
   name: "suggestedQuestion",
   initialState,
-  reducers: {},
+  reducers: {
+    resetSuggestedQuestionState: () => {
+      return initialState;
+    },
+  },
   extraReducers: (builder) => {
     // get suggested
     builder.addCase(getSuggestedQuestionsThunk.pending, (state) => {
@@ -37,5 +41,5 @@ const suggestedQuestionSlice = createSlice({
   },
 });
 
-export const {} = suggestedQuestionSlice.actions;
+export const { resetSuggestedQuestionState } = suggestedQuestionSlice.actions;
 export default suggestedQuestionSlice.reducer;

@@ -31,13 +31,13 @@ const MessageCard = (props: MessageCardProps) => {
               borderRadius: "12px",
             }}
           >
-            <Typography>
+            <Box>
               {content.split("\n").map((line, index) => (
                 <Typography variant={isTablet ? "body2" : "body3"} key={index}>
                   {line}
                 </Typography>
               ))}
-            </Typography>
+            </Box>
           </Box>
         </Stack>
       ) : (
@@ -50,13 +50,13 @@ const MessageCard = (props: MessageCardProps) => {
               borderRadius: "12px",
             }}
           >
-            <Typography>
+            <Box>
               {content.split("\n").map((line, index) => (
                 <Typography variant={isTablet ? "body2" : "body3"} key={index}>
                   {line}
                 </Typography>
               ))}
-            </Typography>
+            </Box>
           </Box>
           <Avatar src={userProfile?.avatarLink} alt="avatar" />
         </Stack>

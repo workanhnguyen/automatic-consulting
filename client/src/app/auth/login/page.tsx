@@ -116,6 +116,7 @@ const LoginPage = () => {
     if (successLogin) {
       dispatch(getProfileThunk());
       dispatch(resetLoginStatus());
+      window.location.reload();
     }
     errorLogin && setOpenToast(true);
   }, [successLogin, errorLogin]);

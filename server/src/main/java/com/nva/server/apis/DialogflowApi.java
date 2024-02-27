@@ -2,6 +2,7 @@ package com.nva.server.apis;
 
 import com.nva.server.dtos.CustomDialogflowResponse;
 import com.nva.server.services.DialogflowService;
+import com.nva.server.services.impl.DialogflowServiceImpl;
 import com.nva.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -19,8 +20,6 @@ public class DialogflowApi {
     private Environment env;
     @Autowired
     private DialogflowService dialogflowService;
-    @Autowired
-    private UserService userService;
 
     @PostMapping("/query")
     public ResponseEntity<CustomDialogflowResponse> handleDialogflowQuery(@RequestBody Map<String, Object> requestBody) {
