@@ -118,6 +118,7 @@ const HomePage = () => {
       data.pop();
       setData((prev) => [...prev, returnedResult]);
     } else if (errorSendQuery) {
+      data.pop();
       setOpenToast(true);
       setToastInfo({
         title: "Thất bại",

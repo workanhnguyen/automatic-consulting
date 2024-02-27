@@ -4,6 +4,7 @@ import com.nva.server.constants.CustomConstants;
 import com.nva.server.dtos.ConversationResponse;
 import com.nva.server.entities.Conversation;
 import com.nva.server.entities.User;
+import com.nva.server.exceptions.CommonException;
 import com.nva.server.exceptions.DatabaseException;
 import com.nva.server.exceptions.EntityExistedException;
 import com.nva.server.exceptions.EntityNotFoundException;
@@ -83,59 +84,63 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public ConversationResponse getConversationsByUser(Map<String, String> params) {
-        int pageNumber = Integer.parseInt(params.getOrDefault("pageNumber", "1"));
-        int pageSize = Integer.parseInt(params.getOrDefault("pageSize", String.valueOf(CustomConstants.CONVERSATION_PAGE_SIZE)));
+        try {
+            int pageNumber = Integer.parseInt(params.getOrDefault("pageNumber", "1"));
+            int pageSize = Integer.parseInt(params.getOrDefault("pageSize", String.valueOf(CustomConstants.CONVERSATION_PAGE_SIZE)));
 
-        if (pageNumber <= 0) pageNumber = 1;
-        if (pageSize <= 0) pageSize = 10;
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
 
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
-        Root<Conversation> root = criteriaQuery.from(Conversation.class);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
+            Root<Conversation> root = criteriaQuery.from(Conversation.class);
 
-        criteriaQuery.multiselect(
-                root.get("requestText").alias("question"),
-                root.get("responseText").alias("answer"),
-                root.get("createdDate").alias("createdDate")
-        );
+            criteriaQuery.multiselect(
+                    root.get("requestText").alias("question"),
+                    root.get("responseText").alias("answer"),
+                    root.get("createdDate").alias("createdDate")
+            );
 
-        Predicate predicate = criteriaBuilder.conjunction();
+            Predicate predicate = criteriaBuilder.conjunction();
 
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+            String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (userEmail != null) {
-            Join<Conversation, User> userJoin = root.join("user");
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(userJoin.get("email"), userEmail));
+            if (userEmail != null) {
+                Join<Conversation, User> userJoin = root.join("user");
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(userJoin.get("email"), userEmail));
+            }
+
+            criteriaQuery.where(predicate);
+            criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdDate")));
+
+            List<Tuple> resultList = entityManager.createQuery(criteriaQuery)
+                    .setFirstResult((pageNumber - 1) * pageSize)
+                    .setMaxResults(pageSize + 1) // Fetch one more to check if there's next page
+                    .getResultList();
+
+            ConversationResponse conversationResponse = new ConversationResponse();
+            List<Object> data = new ArrayList<>();
+
+            for (Tuple tuple : resultList) {
+                Map<String, Object> conversationData = new HashMap<>();
+                conversationData.put("question", tuple.get("question"));
+                conversationData.put("answer", tuple.get("answer"));
+                conversationData.put("createdDate", tuple.get("createdDate"));
+                data.add(conversationData);
+            }
+
+            boolean hasNext = resultList.size() > pageSize;
+            if (hasNext) {
+                data = data.subList(0, pageSize); // Adjust sublist condition if there's a next page
+            }
+
+            conversationResponse.setData(data);
+            conversationResponse.setHasNext(hasNext); // Set hasNext based on the condition
+
+            return conversationResponse;
+        } catch (Exception ex) {
+            throw new CommonException("Tải cuộc hội thoại thất bại. Vui lòng thử lại sau");
         }
-
-        criteriaQuery.where(predicate);
-        criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdDate")));
-
-        List<Tuple> resultList = entityManager.createQuery(criteriaQuery)
-                .setFirstResult((pageNumber - 1) * pageSize)
-                .setMaxResults(pageSize + 1) // Fetch one more to check if there's next page
-                .getResultList();
-
-        ConversationResponse conversationResponse = new ConversationResponse();
-        List<Object> data = new ArrayList<>();
-
-        for (Tuple tuple : resultList) {
-            Map<String, Object> conversationData = new HashMap<>();
-            conversationData.put("question", tuple.get("question"));
-            conversationData.put("answer", tuple.get("answer"));
-            conversationData.put("createdDate", tuple.get("createdDate"));
-            data.add(conversationData);
-        }
-
-        boolean hasNext = resultList.size() > pageSize;
-        if (hasNext) {
-            data = data.subList(0, pageSize); // Adjust sublist condition if there's a next page
-        }
-
-        conversationResponse.setData(data);
-        conversationResponse.setHasNext(hasNext); // Set hasNext based on the condition
-
-        return conversationResponse;
     }
 
 
