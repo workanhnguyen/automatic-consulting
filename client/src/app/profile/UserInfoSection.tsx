@@ -19,7 +19,9 @@ import { AppDispatch, RootState } from "@/lib/redux/store";
 import { updateUserInfoThunk } from "@/lib/redux/actions/User";
 import CustomLoadingButton from "@/lib/components/loading-button";
 import CustomToast from "@/lib/components/toast";
-import { updateUserProfile } from "@/lib/redux/features/userSlice";
+import {
+  updateUserProfile,
+} from "@/lib/redux/features/userSlice";
 import { ToastInformation } from "../auth/module";
 
 const userInfoSchema = z.object({
@@ -72,7 +74,7 @@ const UserInfoSection = () => {
         firstName: userProfile.firstName,
         lastName: userProfile.lastName,
       });
-  }, []);
+  }, [userProfile]);
 
   useEffect(() => {
     if (newUserInfo) {
@@ -96,7 +98,6 @@ const UserInfoSection = () => {
   }, [newUserInfo, errorUpdateUserInfo]);
 
   // Responsive
-  const isDesktop = useMediaQuery(theme.breakpoints.up("desktop"));
   const isTablet = useMediaQuery(theme.breakpoints.up("tablet"));
 
   return (
@@ -197,13 +198,15 @@ const UserInfoSection = () => {
           </Stack>
         </Stack>
       </Stack>
-      <CustomToast
-        open={openToast}
-        title={toastInfo?.title || ""}
-        handleClose={() => setOpenToast(false)}
-        message={toastInfo?.message || ""}
-        severity={toastInfo?.severity}
-      />
+      {(Boolean(newUserInfo) || Boolean(errorUpdateUserInfo)) && (
+        <CustomToast
+          open={openToast}
+          title={toastInfo?.title || ""}
+          handleClose={() => setOpenToast(false)}
+          message={toastInfo?.message || ""}
+          severity={toastInfo?.severity}
+        />
+      )}
     </>
   );
 };

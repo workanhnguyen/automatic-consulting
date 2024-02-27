@@ -119,13 +119,15 @@ const UserPasswordSection = () => {
           Đổi mật khẩu
         </Button>
       </Stack>
-      <CustomToast
-        open={openToast}
-        title={toastInfo?.title || ""}
-        handleClose={() => setOpenToast(false)}
-        message={toastInfo?.message || ""}
-        severity={toastInfo?.severity}
-      />
+      {(Boolean(successChangePassword) || Boolean(errorChangePassword)) && (
+        <CustomToast
+          open={openToast}
+          title={toastInfo?.title || ""}
+          handleClose={() => setOpenToast(false)}
+          message={toastInfo?.message || ""}
+          severity={toastInfo?.severity}
+        />
+      )}
     </>
   );
 };
