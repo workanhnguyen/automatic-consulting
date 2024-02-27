@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 @Component
@@ -54,7 +55,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse signin(SignInRequest signInRequest) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
+            Optional<User> user = userRepository.findByEmail(signInRequest.getEmail());
+            if (user.isPresent()) {
+                if (user.get().getIsEnabled())
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
+                else
+                    throw new UserNotFoundException("Tài khoản đã bị khóa");
+            }
         } catch (AuthenticationException e) {
             throw new UserNotFoundException("Email hoặc mật khẩu không chính xác");
         }
