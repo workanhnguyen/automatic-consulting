@@ -94,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     return jwtAuthenticationResponse;
                 }
             } catch (Exception e) {
-                throw new InvalidTokenException("Refresh token is invalid or expired.");
+                throw new InvalidTokenException("Vui lòng đăng nhập lại.");
             }
         }
         throw new CommonException("Refresh token is null or empty.");
