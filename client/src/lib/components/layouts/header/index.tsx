@@ -19,6 +19,7 @@ import { theme } from "@/lib/theme";
 import Profile from "./Profile";
 import AddtionalInfo from "../../common/empty-data/AddtionalInfo";
 import "./style.scss";
+import Link from "next/link";
 
 const CustomHeader = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -59,7 +60,9 @@ const CustomHeader = () => {
         marginX={responsiveMargin}
       >
         <Stack direction="row" gap={2} alignItems="center">
-          <Image src={images.logoOU} alt="logo-ou" width={50} />
+          <Link href="/" style={{ lineHeight: 0 }}>
+            <Image src={images.logoOU} alt="logo-ou" width={50} />
+          </Link>
           <Box sx={{ position: "relative" }}>
             <Typography variant={isTablet ? "h5" : "h6"}>
               Tư vấn tuyển sinh tự động
@@ -74,7 +77,7 @@ const CustomHeader = () => {
                 cursor: "pointer",
                 outline: "none",
                 border: "none",
-                backgroundColor: 'transparent'
+                backgroundColor: "transparent",
               }}
             >
               <Info size={16} />
