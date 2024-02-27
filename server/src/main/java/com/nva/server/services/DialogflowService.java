@@ -9,6 +9,7 @@ import com.nva.server.dtos.CustomDialogflowResponse;
 import com.nva.server.entities.Conversation;
 import com.nva.server.entities.Information;
 import com.nva.server.entities.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
+@Slf4j
 public class DialogflowService {
     @Autowired
     private UserService userService;
@@ -46,13 +48,19 @@ public class DialogflowService {
         DetectIntentResponse intentResponse = sessionsClient.detectIntent(session, queryInput);
 
         String intent = intentResponse.getQueryResult().getIntent().getDisplayName();
-        List<String> intentParts = Arrays.asList(intent.split("\\."));
-        Map<String, String> params = new HashMap<>();
-        params.put("action", intentParts.get(0));
-        params.put("scope", intentParts.get(1));
-        params.put("topic", intentParts.get(2));
-        List<Information> result = informationService.getInformationByIntent(params);
-        Map<String, Object> parameters = convertParameters(intentResponse.getQueryResult().getParameters().getFieldsMap());
+        String answer;
+        if (intent.equals("default-fallback") || intent.equals("default-welcome")) {
+            answer = intentResponse.getQueryResult().getFulfillmentText();
+        } else {
+            List<String> intentParts = Arrays.asList(intent.split("\\."));
+            Map<String, String> params = new HashMap<>();
+            params.put("action", intentParts.get(0));
+            params.put("scope", intentParts.get(1));
+            params.put("topic", intentParts.get(2));
+            List<Information> result = informationService.getInformationByIntent(params);
+            answer = result.get(0).getContent();
+//        Map<String, Object> parameters = convertParameters(intentResponse.getQueryResult().getParameters().getFieldsMap());
+        }
 
         // Save conversation to database
         Optional<User> requestUser = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -60,14 +68,14 @@ public class DialogflowService {
             Conversation conversation = new Conversation();
             conversation.setUser(requestUser.get());
             conversation.setRequestText(text);
-            conversation.setResponseText(result.get(0).getContent());
+            conversation.setResponseText(answer);
 
             conversationService.saveConversation(conversation);
 
             // Send response to client
             CustomDialogflowResponse response = new CustomDialogflowResponse();
             response.setQuestion(text);
-            response.setAnswer(result.get(0).getContent());
+            response.setAnswer(answer);
             response.setCreatedDate(new Date().getTime());
 
             return response;

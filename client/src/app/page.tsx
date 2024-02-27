@@ -17,15 +17,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import EmptyDataPlaceholder from "@/lib/components/common/empty-data";
 import { Message } from "@/lib/redux/module";
-import { getConversationMessagesThunk } from "../lib/redux/actions/Conversation";
+import {
+  getConversationMessagesThunk,
+  sendQueryThunk,
+} from "../lib/redux/actions/Conversation";
 import SuggestedQuestionSection from "./SuggestedQuestionSection";
 import MessageCard from "./MessageCard";
 import "./style.scss";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loadingMessages, totalMessages, messages, errorGetMessages } =
-    useSelector((state: RootState) => state.conversation);
+  const {
+    loadingMessages,
+    messages,
+    errorGetMessages,
+    loadingSendQuery,
+    returnedResult,
+    errorSendQuery,
+  } = useSelector((state: RootState) => state.conversation);
 
   const scrollEndRef = useRef<HTMLDivElement>(null);
 
@@ -50,6 +59,15 @@ const HomePage = () => {
         scrollEndRef.current.scrollIntoView({ behavior: "smooth" });
       }
     }
+  };
+
+  const handleSendQuery = () => {
+    setData((prev) => [
+      ...prev,
+      { question, answer: "...", createdDate: Date.now() },
+    ]);
+    setQuestion("");
+    dispatch(sendQueryThunk(question));
   };
 
   // Fetch initial messages
@@ -77,6 +95,14 @@ const HomePage = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (returnedResult) {
+      data.pop();
+      setData((prev) => [...prev, returnedResult]);
+    } else if (errorGetMessages) {
+    }
+  }, [returnedResult, errorSendQuery]);
+
   return (
     <CustomLayout>
       <Box className="home-page-container">
@@ -96,7 +122,7 @@ const HomePage = () => {
               >
                 <CircularProgress sx={{ color: "var(--primary)" }} />
               </Stack>
-            ) : data.length !== 0 ? (
+            ) : data.length === 0 ? (
               <EmptyDataPlaceholder />
             ) : (
               <Stack
@@ -201,6 +227,7 @@ const HomePage = () => {
                         variant="contained"
                         color="primary"
                         disabled={question === ""}
+                        onClick={handleSendQuery}
                       >
                         <PaperPlaneRight size={20} />
                       </Button>

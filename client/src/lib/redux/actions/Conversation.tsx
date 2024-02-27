@@ -17,3 +17,18 @@ export const getConversationMessagesThunk = createAsyncThunk(
     }
   }
 );
+
+export const sendQueryThunk = createAsyncThunk(
+  "sendQuery",
+  async (query: String, { rejectWithValue }) => {
+    try {
+      return await ConversationApi.sendQuery(query);
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);

@@ -41,12 +41,12 @@ const userSlice = createSlice({
         ...action.payload,
       });
     },
-    logout: (state) => {
-      state.userProfile = null;
-
+    logout: () => {
       Cookies.remove("token");
       Cookies.remove("refreshToken");
       localStorage.removeItem("userProfile");
+
+      return initialState;
     },
   },
   extraReducers: (builder) => {

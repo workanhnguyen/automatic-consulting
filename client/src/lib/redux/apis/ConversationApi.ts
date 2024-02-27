@@ -9,6 +9,9 @@ const ConversationApi = {
       }${params?.pageSize ? `&pageSize=${params?.pageSize}` : ""}`
     );
   },
+  sendQuery: (query: String) => {
+    return axiosClient.post("/dialogflow/query", { query });
+  }
 };
 
 export default ConversationApi;

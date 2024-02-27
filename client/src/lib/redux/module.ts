@@ -102,4 +102,8 @@ export interface ConversationState {
     answer: string;
   }[];
   errorGetMessages: any;
+
+  loadingSendQuery: boolean;
+  returnedResult: Message | null;
+  errorSendQuery: any;
 }
