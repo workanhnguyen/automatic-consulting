@@ -13,7 +13,7 @@ import {
 
 const initialState: UserState = {
   loadingUserProfile: false,
-  userProfile: JSON.parse(localStorage.getItem("userProfile")!),
+  userProfile: null,
   errorGetUserProfile: null,
 
   loadingChangeAvatar: false,
@@ -41,11 +41,18 @@ const userSlice = createSlice({
         ...action.payload,
       });
     },
+    getUserProfileFromLocalStorage: (state) => {
+      const userProfileString = localStorage.getItem("userProfile");
+      if (userProfileString) state.userProfile = JSON.parse(userProfileString);
+    },
     logout: () => {
       Cookies.remove("token");
       Cookies.remove("refreshToken");
       localStorage.removeItem("userProfile");
 
+      return initialState;
+    },
+    resetUserState: () => {
       return initialState;
     },
   },
@@ -130,5 +137,10 @@ const userSlice = createSlice({
   },
 });
 
-export const { updateUserProfile, logout } = userSlice.actions;
+export const {
+  updateUserProfile,
+  logout,
+  getUserProfileFromLocalStorage,
+  resetUserState,
+} = userSlice.actions;
 export default userSlice.reducer;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import {
@@ -20,8 +20,13 @@ import Profile from "./Profile";
 import AddtionalInfo from "../../common/empty-data/AddtionalInfo";
 import "./style.scss";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/redux/store";
+import { getUserProfileFromLocalStorage } from "@/lib/redux/features/userSlice";
 
 const CustomHeader = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -46,6 +51,10 @@ const CustomHeader = () => {
     : isTablet
     ? "32px"
     : "16px";
+
+  useEffect(() => {
+    dispatch(getUserProfileFromLocalStorage());
+  }, [])
 
   return (
     <>

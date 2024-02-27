@@ -149,13 +149,15 @@ const AvatarSection = () => {
         onChange={handleFileChange}
         accept=".png, .jpg, .jpeg"
       />
-      <CustomToast
-        open={openToast}
-        title={toastInfo?.title || ""}
-        handleClose={() => setOpenToast(false)}
-        message={toastInfo?.message || ""}
-        severity={toastInfo?.severity}
-      />
+      {(Boolean(newAvatarLink) || Boolean(errorChangeAvatar)) && (
+        <CustomToast
+          open={openToast}
+          title={toastInfo?.title || ""}
+          handleClose={() => setOpenToast(false)}
+          message={toastInfo?.message || ""}
+          severity={toastInfo?.severity}
+        />
+      )}
     </>
   );
 };

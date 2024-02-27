@@ -79,19 +79,23 @@ const LoginPage = () => {
   ) => {
     setRememberLogin(checked);
     if (checked) {
-      const userAccount: UserLoginForm = {
-        email: getValues("email"),
-        password: CryptoJS.AES.encrypt(
-          getValues("password"),
-          process.env.NEXT_PUBLIC_ENCRYPT_PASSWORD_KEY
-        ).toString(),
-      };
-
-      localStorage.setItem("rememberedAccount", JSON.stringify(userAccount));
+      handleSaveUserAccountToLocalStorage()
     } else {
       localStorage.removeItem("rememberedAccount");
     }
   };
+
+  const handleSaveUserAccountToLocalStorage = () => {
+    const userAccount: UserLoginForm = {
+      email: getValues("email"),
+      password: CryptoJS.AES.encrypt(
+        getValues("password"),
+        process.env.NEXT_PUBLIC_ENCRYPT_PASSWORD_KEY
+      ).toString(),
+    };
+
+    localStorage.setItem("rememberedAccount", JSON.stringify(userAccount));
+  }
 
   // Load remembered account if it exists
   useEffect(() => {
@@ -116,6 +120,9 @@ const LoginPage = () => {
     if (successLogin) {
       dispatch(getProfileThunk());
       dispatch(resetLoginStatus());
+
+      if (rememberLogin) handleSaveUserAccountToLocalStorage();
+
       window.location.reload();
     }
     errorLogin && setOpenToast(true);
