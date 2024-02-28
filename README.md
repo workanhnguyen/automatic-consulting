@@ -21,7 +21,7 @@ Trong bối cảnh hiện nay, trí tuệ nhân tạo (AI) đang chiếm xu th�
 ## Hướng dẫn cài đặt (Chạy trên local)
 #### Bước 1: Yêu cầu môi trường cài đặt (vui lòng bỏ qua nếu đã đáp ứng các môi trường bên dưới).
 * **Cài đặt môi trường NodeJS:** vào [trang chủ của NodeJS](https://nodejs.org) và tải về phiên bản `20.11.1 LTS` (tính đến ngày 28/02/2024). Sau đó mở tập tin cài đặt đã tải và làm theo hướng dẫn.
-* **Cài đặt JDK 18:** tải và cài đặt JDK 18 [tại đây](https://www.oracle.com/java/technologies/javase/jdk18-archive-downloads.html). Sau đó mở tập tin cài đặt đã tải và làm theo hướng dẫn.
+* **Cài đặt JDK 17:** tải và cài đặt JDK 17 [tại đây](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html). Sau đó mở tập tin cài đặt đã tải và làm theo hướng dẫn.
 * **Cài đặt MySQL Community Server:** tải và cài đặt MySQL Community Server [tại đây](https://dev.mysql.com/get/Downloads/MySQL-8.1/mysql-8.1.0-winx64.msi). Sau đó mở tập tin cài đặt đã tải và làm theo hướng dẫn.
 * **Cài đặt MySQL Workbench:** tải và cài đặt MySQL Workbench [tại đây](https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community-8.0.34-winx64.msi). Sau đó mở tập tin cài đặt đã tải và làm theo hướng dẫn.
 * **Cài đặt Visual Studio Code:** vào [trang chủ của Visual Studio Code](https://code.visualstudio.com/download) và tải phiên bản phù hợp với máy tính.
