@@ -2,8 +2,6 @@ package com.nva.server.apis;
 
 import com.nva.server.dtos.CustomDialogflowResponse;
 import com.nva.server.services.DialogflowService;
-import com.nva.server.services.impl.DialogflowServiceImpl;
-import com.nva.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;

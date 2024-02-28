@@ -7,6 +7,7 @@ import com.nva.server.repositories.*;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,11 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 @EnableVaadin
 @RequiredArgsConstructor
-public class ServerApplication {
+public class ServerApplication implements CommandLineRunner {
     private final ObjectMapper objectMapper;
     @Autowired
     private UserRepository userRepository;
@@ -47,6 +49,20 @@ public class ServerApplication {
         SpringApplication.run(ServerApplication.class, args);
     }
 
+    @Override
+    public void run(String... args) throws Exception {
+        Optional<User> existingUser = userRepository.findByEmail("admin@gmail.com");
+        if (existingUser.isEmpty()) {
+            User user = new User();
+            user.setFirstName("Admin");
+            user.setLastName("Account");
+            user.setEmail("admin@gmail.com");
+            user.setRole(Role.ROLE_ADMIN);
+            user.setPassword(passwordEncoder.encode("admin"));
+
+            userRepository.save(user);
+        }
+    }
 //    @Bean
 //    public CommandLineRunner loadData() {
 //        return args -> {
