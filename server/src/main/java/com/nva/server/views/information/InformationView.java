@@ -184,7 +184,7 @@ public class InformationView extends VerticalLayout {
     }
 
     private void configureEditInformationDialog() {
-        editInformationDialog.setHeaderTitle("Edit major");
+        editInformationDialog.setHeaderTitle("Edit information");
         editInformationForm.getDeleteButton().setVisible(false);
         editInformationDialog.getFooter().add(editInformationForm.getSaveButton(), editInformationForm.getCancelButton());
 

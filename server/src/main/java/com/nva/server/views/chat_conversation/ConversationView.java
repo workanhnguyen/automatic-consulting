@@ -111,7 +111,7 @@ public class ConversationView extends VerticalLayout {
     }
 
     private void configureEditConversationDialog() {
-        editConversationDialog.setHeaderTitle("Edit major");
+        editConversationDialog.setHeaderTitle("Conversation detail");
         editConversationForm.getDeleteButton().setVisible(false);
         editConversationDialog.getFooter().add(editConversationForm.getSaveButton(), editConversationForm.getCancelButton());
 
