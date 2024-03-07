@@ -40,8 +40,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@PageTitle("General information | Management")
-@Route(value = "admin/general-information", layout = MainLayout.class)
+@PageTitle("Information | Management")
+@Route(value = "admin/information", layout = MainLayout.class)
 @RolesAllowed("ROLE_ADMIN")
 @AccessDeniedErrorRouter
 public class InformationView extends VerticalLayout {
