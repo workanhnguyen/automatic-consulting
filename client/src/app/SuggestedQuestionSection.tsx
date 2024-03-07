@@ -98,7 +98,7 @@ const SuggestedQuestionSection = (props: SuggestedQuestionSectionProps) => {
               }
             >
               <Typography variant="body2" style={truncatedStyles}>
-                {item.content}hhh
+                {item.content}
               </Typography>
             </MenuItem>
           ))
